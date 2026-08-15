@@ -1,0 +1,236 @@
+# The seven-minute talk {#sec-talk}
+
+The script for the lightning talk, with timings. The deck it goes with is
+`slides/lightning-talk.qmd`.
+
+Seven minutes is roughly 1,000 spoken words. That is enough for **one** idea
+with **three** supporting beats. The idea here is:
+
+> Graph embeddings turn structure into vectors, the main algorithms are all the
+> same algorithm wearing different hats, and the payoff is that a transformer
+> can finally see your graph.
+
+Everything that does not serve that gets cut. In particular the talk does not
+cover: GraphSAGE sampling, over-smoothing, evaluation methodology, or node2vec's
+$p$ and $q$. Those are what the book is for, and the last slide says so.
+
+---
+
+## Timing plan
+
+| Slide | Beat | Running time |
+|---|---|---|
+| 1 | Title | 0:00 – 0:15 |
+| 2 | The problem | 0:15 – 1:00 |
+| 3 | The idea + the karate picture | 1:00 – 1:50 |
+| 4 | Spectral | 1:50 – 2:50 |
+| 5 | Random walks | 2:50 – 3:50 |
+| 6 | They are all the same algorithm | 3:50 – 4:30 |
+| 7 | GNNs, briefly | 4:30 – 5:00 |
+| 8 | Into a transformer: three doors | 5:00 – 5:45 |
+| 9 | The result | 5:45 – 6:35 |
+| 10 | Takeaways | 6:35 – 7:00 |
+
+Slides 4 and 5 are the ones to cut into if you are running long: drop the code
+from 4, drop the loss-curve mention from 5. Slide 9 is the one you must not
+rush.
+
+---
+
+## The script
+
+### Slide 1 — Title (0:00)
+
+> Graph embeddings, in R. Seven minutes, four algorithms, and one demo where
+> the accuracy goes from 11% to 96%.
+
+### Slide 2 — The problem (0:15)
+
+> Here is a graph. Thirty-four people in a karate club in the 1970s, and who was
+> friends with whom. The club had a falling-out and split in two, and the
+> question people have been asking of this dataset for fifty years is: could you
+> have predicted the split from the friendships?
+>
+> Now, to do anything statistical with this you need a table. One row per
+> person, a fixed number of columns. What you have is an adjacency matrix, and
+> it is the wrong shape in three ways. It is 34 columns wide, so it changes
+> shape when someone joins. It is 87% zeros. And worst of all, it has no
+> geometry — two people three hops apart in the same tight friendship group look
+> exactly as unrelated as two people in different countries.
+>
+> An adjacency matrix records edges. What you want is similarity. And in a
+> graph, similarity comes from paths, not from single entries.
+
+### Slide 3 — The idea (1:00)
+
+> So: a graph embedding is a map from each node to a short dense vector — say 32
+> numbers — chosen so that *close in the vector space* means *structurally
+> close in the graph*.
+>
+> Here is the karate club embedded into two dimensions. Colour is the faction
+> people actually joined. The algorithm never saw those labels, and the first
+> axis alone gets 33 of the 34 people right.
+>
+> Look at the one in the middle. That is node 9, who joined the officers'
+> faction despite being better connected to the instructor's side. A method
+> that was overconfident would have put him firmly on one side. This one puts
+> him in the middle, which is the honest answer.
+
+### Slide 4 — Spectral (1:50)
+
+> Four algorithms. The first is the oldest and it is four lines of R.
+>
+> Write down what you want: connected nodes should be close. So penalise every
+> edge by the squared gap it has to stretch. Expand that square and it collapses
+> into a quadratic form in the matrix $D - A$ — degree matrix minus adjacency.
+> That is the graph Laplacian, and the whole field runs on this identity.
+>
+> Minimise it, constrain it so it can't collapse to zero, and the answer is
+> eigenvectors. Take the ones with the smallest eigenvalues — the smoothest
+> non-constant functions on the graph. That is the picture you just saw.
+>
+> Bonus: the eigenvalues tell you how many communities there are. Three near
+> zero, then a jump, means three communities. You get that for free.
+
+### Slide 5 — Random walks (2:50)
+
+> Second algorithm. 2014, and someone notices that word2vec is doing something
+> suspiciously relevant.
+>
+> Word2vec learns word vectors from "words that appear near each other are
+> related". DeepWalk's move is: a random walk on a graph *is* a sentence. Start
+> anywhere, step to a random neighbour, forty times. Do that ten times per node.
+> Now you have a corpus, and the nodes are the words.
+>
+> Then run skip-gram: every node gets a vector, real co-occurring pairs should
+> score high, random pairs should score low. Logistic regression against noise.
+> The gradient is one line, and I've written it out in the book — it's about
+> sixty lines of R with no autodiff.
+>
+> On the karate club this recovers the factions perfectly. And crucially,
+> nothing here is quadratic in the number of nodes, which is why this is the
+> family that scaled to billions of edges.
+
+### Slide 6 — They're all the same algorithm (3:50)
+
+> Now the part I actually want you to remember.
+>
+> In 2018 Qiu and co-authors proved that DeepWalk is not really a neural
+> method. Skip-gram with negative sampling provably converges to a factorisation
+> of a pointwise-mutual-information matrix — that's Levy and Goldberg, 2014 —
+> and for random walks on a graph, that matrix has a closed form. It's this: the
+> transition matrix $P$, summed over powers 1 to T, times $D$ inverse, log of
+> the whole thing.
+>
+> So you can skip the walks and the gradient descent entirely and just take an
+> SVD. In the book I check this: the learned dot products correlate 0.98 with
+> the PMI the theory predicts, and the sampled matrix converges to the exact one
+> as you draw more walks.
+>
+> Same accuracy on the karate club. About a thousand times faster.
+>
+> Every method on this slide is a low-rank factorisation of some matrix built
+> from $A$. They differ in *which matrix*. That's it.
+
+### Slide 7 — GNNs (4:30)
+
+> Which also tells you the ceiling. Every one of those is a function of $A$
+> alone. It can't use the fact that a node is a 34-year-old who joined in March,
+> and it can't embed anyone who wasn't there when you factorised.
+>
+> Graph neural networks fix both by replacing the lookup table with a function:
+> average your neighbours' features, multiply by a shared weight matrix, repeat.
+> Shared weights, so new nodes just get a forward pass.
+>
+> Two things worth knowing. A GCN layer is a learned smoother — so if you stack
+> twenty of them every node converges to the same vector, which is why GNNs are
+> almost always two or three layers deep. And graph attention, GAT, is
+> self-attention with the adjacency matrix as its mask.
+>
+> Which raises the question: what if you took the mask off?
+
+### Slide 8 — Into a transformer (5:00)
+
+> Self-attention has no idea what order its inputs are in. Permute them and the
+> output permutes with them. That's why transformers need positional encodings
+> — and text has an obvious order to encode. A graph doesn't.
+>
+> So: how do you tell a permutation-invariant architecture about a structure
+> with no canonical ordering? Three doors.
+>
+> One: use graph embeddings as your input vectors. If your tokens are entities
+> that also live in a graph — clinical codes in a vocabulary hierarchy, products
+> in a catalogue — embed the graph offline and initialise the embedding table.
+> Zero architecture changes, and the rare tokens benefit most.
+>
+> Two: structural positional encodings. Feed each node its Laplacian
+> eigenvectors — literally the spectral embedding from slide 4. That analogy is
+> exact, by the way: sine waves are the eigenvectors of the Laplacian of a
+> line graph.
+>
+> Three, and this is the interesting one: put the graph inside the attention
+> computation.
+
+### Slide 9 — The result (5:45)
+
+> Graphormer's trick. Attention scores are query dot key over root d. Add one
+> more term: a learnable scalar indexed by the shortest-path distance between
+> the two nodes. That's it.
+>
+> Here's what it does. Ninety nodes, three communities. I reveal the true
+> community for 40% of them and zero out the rest, and the model has to infer
+> the others. The content-based part of attention is deliberately uninformative,
+> so the only route to the answer is the graph.
+>
+> Without the bias, attention is flat — 33% of its mass lands on your own
+> community, which is exactly chance, because a third of the graph *is* your
+> community. The transformer is blind. Add the distance bias and that goes to
+> 88%. You can see it in the attention matrix: the block structure appears.
+>
+> Downstream test accuracy: 11% without, 96% with. Same architecture, same
+> features, same parameter count. One scalar per distance, added before the
+> softmax.
+
+### Slide 10 — Takeaways (6:35)
+
+> Three things.
+>
+> Graph embeddings turn structure into geometry, and they're small — I wrote all
+> four from scratch in base R.
+>
+> They're all the same algorithm: a low-rank factorisation of a matrix built
+> from the adjacency. Before you reach for a library, try an SVD, and always run
+> "count the mutual friends" as a baseline — it wins more often than anyone
+> admits.
+>
+> And if you're putting a transformer near a graph, the structure has to get in
+> somewhere. Input vectors, positional encodings, or attention bias. Pick at
+> least one.
+>
+> Book and code are at the link. Thank you.
+
+---
+
+## Delivery notes
+
+**Rehearse slide 6.** It is the intellectual core and the easiest to garble.
+Practise saying "pointwise mutual information" until it is one word.
+
+**Do not read the code on slides 4 and 5.** It is there so the audience can see
+how short it is. Say "four lines" and move on.
+
+**The pause is on slide 9.** After "11% without, 96% with", stop for a beat
+before the last sentence. It is the only number anyone will remember.
+
+**If you are asked "does this beat a GNN?"** --- the honest answer is: on a
+fixed featureless graph, usually not by much, and NetMF is a much harder
+baseline than people expect. The GNN earns its keep when you have node features
+or a changing graph.
+
+**If you are asked about scale** --- NetMF as written is $O(n^3)$ and dense.
+Past about 20,000 nodes, use sparse spectral methods or go back to sampled
+walks. The sampling that looks unnecessary is exactly what makes it scale.
+
+**If you overrun**, cut slide 7 to one sentence: "GNNs add node features and
+handle new nodes; a GAT is masked self-attention." It buys you thirty seconds
+and slide 8 follows from it anyway.

@@ -1,0 +1,5458 @@
+format-version: 1.2
+data-version: releases/2026-07-31/doid.obo
+ontology: doid/cardiovascular-excerpt
+!
+! EXCERPT -- not the full Disease Ontology.
+!
+! Source:      https://purl.obolibrary.org/obo/doid.obo
+! Release:     releases/2026-07-31/doid.obo
+! Extracted:   the 627 terms in the is_a subtree rooted at
+!              DOID:1287 (cardiovascular system disease), inclusive.
+! Edits:       obsolete terms dropped; is_a links to parents outside the
+!              subtree dropped; only id/name/synonym/xref/is_a tags kept;
+!              xrefs limited to ICD10CM, SNOMED CT, UMLS and MeSH.
+! Rebuild:     Rscript scripts/make-ontology-data.R
+!
+! Disease Ontology is CC0. Schriml et al., Nucleic Acids Res (2022).
+!
+
+[Term]
+id: DOID:0001816
+name: angiosarcoma
+synonym: "hemangiosarcoma" EXACT []
+xref: MESH:D006394
+xref: SNOMEDCT_US_2025_09_01:39000009
+xref: UMLS_CUI:C0018923
+xref: UMLS_CUI:C0854893
+is_a: DOID:175 ! vascular cancer
+
+[Term]
+id: DOID:0040095
+name: autoimmune cardiomyopathy
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0040096
+name: autoimmune atherosclerosis
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+
+[Term]
+id: DOID:0040097
+name: autoimmune vasculitis
+xref: SNOMEDCT_US_2025_09_01:427213005
+xref: UMLS_CUI:C1328843
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+
+[Term]
+id: DOID:0040099
+name: livedoid vasculitis
+synonym: "livedoid vasculopathy" EXACT []
+xref: ICD10CM:L95.0
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:0050431
+name: arrhythmogenic right ventricular cardiomyopathy
+synonym: "arrhythmogenic right ventricular dysplasia" EXACT []
+synonym: "arrhythmogenic right ventricular dysplasia/cardiomyopathy" EXACT []
+synonym: "ARVC" EXACT OMO:0003012 []
+synonym: "ARVC cardiomyopathy" EXACT []
+synonym: "ARVD" EXACT OMO:0003012 []
+synonym: "right ventricular ACM" EXACT []
+xref: MESH:D019571
+xref: SNOMEDCT_US_2025_09_01:281170005
+xref: UMLS_CUI:C0349788
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:0050434
+name: Andersen-Tawil syndrome
+synonym: "ANDERSEN CARDIODYSRHYTHMIC PERIODIC PARALYSIS" EXACT []
+synonym: "Andersen syndrome" EXACT []
+synonym: "Long QT syndrome 7" EXACT []
+synonym: "LQT7" EXACT OMO:0003012 []
+synonym: "Potassium-Sensitive Cardiodysrhythmic Type" EXACT []
+xref: MESH:D050030
+xref: SNOMEDCT_US_2025_09_01:422348008
+xref: UMLS_CUI:C1563715
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0050451
+name: Brugada syndrome
+synonym: "Bangungut" EXACT []
+synonym: "Brugada type idiopathic ventricular fibrillation" EXACT []
+synonym: "Dream disease" EXACT []
+synonym: "Pokkuri death syndrome" EXACT []
+synonym: "sudden unexplained nocturnal death syndrome" EXACT []
+synonym: "SUNDS" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:D053840
+xref: SNOMEDCT_US_2025_09_01:418818005
+xref: UMLS_CUI:C1142166
+xref: UMLS_CUI:C1721096
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0050535
+name: exudative vitreoretinopathy
+synonym: "familial exudative vitreoretinopathy" EXACT []
+synonym: "FEVR" EXACT OMO:0003012 []
+xref: ICD10CM:H35.00
+xref: SNOMEDCT_US_2025_09_01:193355009
+xref: UMLS_CUI:C0004608
+is_a: DOID:2462 ! retinal vascular disease
+
+[Term]
+id: DOID:0050638
+name: hereditary systemic amyloidosis 1
+synonym: "Amyloidosis, hereditary, transthyretin-related" EXACT []
+synonym: "ATTR amyloidosis" EXACT []
+synonym: "ATTRm amyloidosis" EXACT []
+synonym: "Corino de Andrade's disease" EXACT []
+synonym: "familial amyloid polyneuropathy" EXACT []
+synonym: "Familial transthyretin amyloidosis" EXACT []
+synonym: "paramyloidosis" EXACT []
+synonym: "transthyretin amyloidosis" EXACT []
+synonym: "transthyretin-related hereditary amyloidosis" EXACT []
+synonym: "TTR amyloidosis" EXACT []
+xref: ICD10CM:E85.82
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0050644
+name: arterial calcification of infancy
+synonym: "generalized arterial calcification of infancy" EXACT []
+synonym: "idiopathic infantile arterial calcification" EXACT []
+synonym: "infantile arteriosclerosis" EXACT []
+xref: MESH:C537440
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:0050650
+name: familial atrial fibrillation
+synonym: "ATFB" EXACT OMO:0003012 []
+is_a: DOID:0060224 ! atrial fibrillation
+
+[Term]
+id: DOID:0050651
+name: atrioventricular septal defect
+synonym: "atrioventricular canal defect" EXACT []
+synonym: "AVCD" EXACT OMO:0003012 []
+synonym: "AVSD" EXACT OMO:0003012 []
+synonym: "ECD" EXACT OMO:0003012 []
+synonym: "endocardial cushion defect" EXACT []
+xref: ICD10CM:Q21.2
+xref: MESH:D004694
+xref: SNOMEDCT_US_2025_09_01:204322008
+xref: UMLS_CUI:C0014116
+is_a: DOID:1681 ! heart septal defect
+
+[Term]
+id: DOID:0050700
+name: cardiomyopathy
+synonym: "Cardiomyopathies" EXACT []
+xref: ICD10CM:I42
+xref: MESH:D009202
+xref: SNOMEDCT_US_2025_09_01:266301006
+xref: SNOMEDCT_US_2025_09_01:89461002
+xref: SNOMEDCT_US_2025_09_01:89600009
+xref: UMLS_CUI:C0033141
+xref: UMLS_CUI:C0036529
+xref: UMLS_CUI:C0878544
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0050792
+name: multiple cutaneous and mucosal venous malformations
+synonym: "cutaneomucosal venous malformation" EXACT []
+synonym: "mucocutaneous venous malformations" EXACT []
+synonym: "VMCM" EXACT OMO:0003012 []
+xref: MESH:C563977
+xref: SNOMEDCT_US_2025_09_01:699301008
+xref: UMLS_CUI:C1838437
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:0050793
+name: short QT syndrome
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0050820
+name: atrioventricular block
+synonym: "AV block" EXACT []
+xref: ICD10CM:I44.3
+xref: MESH:D054537
+xref: SNOMEDCT_US_2025_09_01:58547007
+xref: UMLS_CUI:C0004245
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0050821
+name: first-degree atrioventricular block
+is_a: DOID:0050820 ! atrioventricular block
+
+[Term]
+id: DOID:0050822
+name: second-degree atrioventricular block
+synonym: "second-degree heart block" EXACT []
+is_a: DOID:0050820 ! atrioventricular block
+
+[Term]
+id: DOID:0050823
+name: third-degree atrioventricular block
+synonym: "complete AV block" EXACT []
+is_a: DOID:0050820 ! atrioventricular block
+
+[Term]
+id: DOID:0050824
+name: sinoatrial node disease
+synonym: "SA node" EXACT []
+synonym: "sinuatrial node" EXACT []
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0050825
+name: endocardium disease
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0050826
+name: tricuspid valve disease
+synonym: "disease of tricuspid valve" EXACT []
+synonym: "RH. tricuspid valve disease" EXACT []
+synonym: "Rheumatic disease of tricuspid valve" EXACT []
+synonym: "rheumatic tricuspid valve disease" EXACT []
+synonym: "Tricuspid disease" EXACT []
+xref: ICD10CM:I07
+xref: SNOMEDCT_US_2025_09_01:49699002
+xref: UMLS_CUI:C0264776
+is_a: DOID:4079 ! heart valve disease
+
+[Term]
+id: DOID:0050827
+name: rheumatic heart disease
+synonym: "rheumatic carditis" EXACT []
+xref: MESH:D012214
+is_a: DOID:4079 ! heart valve disease
+
+[Term]
+id: DOID:0050828
+name: artery disease
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:0050829
+name: pericardium disease
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:0050830
+name: peripheral artery disease
+xref: MESH:D058729
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:0050852
+name: limb ischemia
+is_a: DOID:326 ! ischemia
+
+[Term]
+id: DOID:0050853
+name: chronic venous insufficiency
+is_a: DOID:10128 ! venous insufficiency
+
+[Term]
+id: DOID:0050912
+name: colon adenoma
+is_a: DOID:235 ! colonic benign neoplasm
+
+[Term]
+id: DOID:0051054
+name: coarctation of the aorta
+xref: MESH:D001017
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:0051061
+name: stroke
+synonym: "cerebrovascular accident" RELATED []
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:0051062
+name: ischemic stroke
+is_a: DOID:0051061 ! stroke
+
+[Term]
+id: DOID:0051063
+name: hemorrhagic stroke
+is_a: DOID:0051061 ! stroke
+
+[Term]
+id: DOID:0051064
+name: left ventricular failure
+synonym: "Left heart failure" EXACT []
+synonym: "left ventricular dysfunction" EXACT []
+is_a: DOID:6000 ! congestive heart failure
+
+[Term]
+id: DOID:0051073
+name: dilated cardiomyopathy 3C
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0060000
+name: infective endocarditis
+is_a: DOID:10314 ! endocarditis
+
+[Term]
+id: DOID:0060036
+name: intrinsic cardiomyopathy
+is_a: DOID:0050700 ! cardiomyopathy
+
+[Term]
+id: DOID:0060051
+name: autoimmune disease of cardiovascular system
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:0060068
+name: nonbacterial thrombotic endocarditis
+synonym: "marantic endocarditis" EXACT []
+synonym: "non-bacterial thrombotic endocarditis" EXACT []
+xref: MESH:D059905
+is_a: DOID:10314 ! endocarditis
+
+[Term]
+id: DOID:0060091
+name: cardiovascular organ benign neoplasm
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:0060224
+name: atrial fibrillation
+synonym: "A-fib" EXACT []
+synonym: "AFib" EXACT []
+xref: MESH:D001281
+xref: SNOMEDCT_US_2025_09_01:266306001
+xref: UMLS_CUI:C0004238
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0060228
+name: intracranial berry aneurysm
+synonym: "familial aneurysmal subarachnoid hemorrhage" EXACT []
+synonym: "familial berry aneurysm" EXACT []
+synonym: "familial intracranial saccular aneurysm" EXACT []
+synonym: "saccular cerebral aneurysm" EXACT []
+is_a: DOID:10941 ! intracranial aneurysm
+
+[Term]
+id: DOID:0060319
+name: cardiac arrest
+synonym: "cardiopulmonary arrest" EXACT []
+synonym: "circulatory arrest" EXACT []
+xref: ICD10CM:I46
+xref: MESH:D006323
+xref: SNOMEDCT_US_2025_09_01:30298009
+xref: UMLS_CUI:C0018790
+xref: UMLS_CUI:C0600228
+is_a: DOID:6000 ! congestive heart failure
+
+[Term]
+id: DOID:0060480
+name: left ventricular noncompaction
+synonym: "left ventricular hypertrabeculation" EXACT []
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:0060562
+name: anomalous left coronary artery from the pulmonary artery
+synonym: "ALCAPA" EXACT OMO:0003012 []
+synonym: "Bland-White-Garland syndrome" EXACT []
+synonym: "White-Garland syndrome" EXACT []
+xref: MESH:D063748
+is_a: DOID:11843 ! coronary artery anomaly
+
+[Term]
+id: DOID:0060563
+name: Char syndrome
+xref: MESH:C566815
+is_a: DOID:13832 ! patent ductus arteriosus
+
+[Term]
+id: DOID:0060567
+name: erythema elevatum diutinum
+xref: ICD10CM:L95.1
+xref: MESH:C535509
+xref: SNOMEDCT_US_2025_09_01:201300002
+xref: UMLS_CUI:C0263398
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:0060570
+name: cardiac tuberculosis
+synonym: "cardiovascular tuberculosis" NARROW []
+xref: MESH:D014381
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0060669
+name: cerebral cavernous malformation
+synonym: "cavernous angiomatous malformations" EXACT []
+synonym: "cerebral capillary malformations" EXACT []
+synonym: "familial cavernous angioma" EXACT []
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:0060670
+name: cerebral cavernous malformation 2
+xref: ICD10CM:Q28.3
+is_a: DOID:0060669 ! cerebral cavernous malformation
+
+[Term]
+id: DOID:0060671
+name: cerebral cavernous malformation 3
+xref: ICD10CM:Q28.3
+is_a: DOID:0060669 ! cerebral cavernous malformation
+
+[Term]
+id: DOID:0060674
+name: catecholaminergic polymorphic ventricular tachycardia
+xref: ICD10CM:I47.2
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0060675
+name: catecholaminergic polymorphic ventricular tachycardia 1
+synonym: "arrhythmogenic right ventricular dysplasia 2" EXACT []
+synonym: "CVPT1" EXACT OMO:0003012 []
+xref: ICD10CM:I42.8
+xref: ICD10CM:I47.2
+is_a: DOID:0060674 ! catecholaminergic polymorphic ventricular tachycardia
+
+[Term]
+id: DOID:0060676
+name: catecholaminergic polymorphic ventricular tachycardia 2
+synonym: "CVPT2" EXACT OMO:0003012 []
+xref: ICD10CM:I47.2
+is_a: DOID:0060674 ! catecholaminergic polymorphic ventricular tachycardia
+
+[Term]
+id: DOID:0060677
+name: catecholaminergic polymorphic ventricular tachycardia 3
+synonym: "CVPT3" EXACT OMO:0003012 []
+xref: ICD10CM:I47.2
+is_a: DOID:0060674 ! catecholaminergic polymorphic ventricular tachycardia
+
+[Term]
+id: DOID:0060678
+name: catecholaminergic polymorphic ventricular tachycardia 4
+synonym: "CVPT4" EXACT OMO:0003012 []
+xref: ICD10CM:I47.2
+is_a: DOID:0060674 ! catecholaminergic polymorphic ventricular tachycardia
+
+[Term]
+id: DOID:0060679
+name: catecholaminergic polymorphic ventricular tachycardia 5
+synonym: "CVPT5" EXACT OMO:0003012 []
+xref: ICD10CM:I47.2
+is_a: DOID:0060674 ! catecholaminergic polymorphic ventricular tachycardia
+
+[Term]
+id: DOID:0060688
+name: arteriovenous malformations of the brain
+synonym: "cerebral arteriovenous malformation" EXACT []
+synonym: "intracranial arteriovenous malformation" EXACT []
+xref: ICD10CM:Q28.2
+xref: MESH:D002538
+xref: UMLS_CUI:C0007772
+is_a: DOID:255 ! hemangioma
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:0060770
+name: dextro-looped transposition of the great arteries
+synonym: "congenitally uncorrected transposition of the great arteries" EXACT []
+synonym: "congenitally uncorrected transposition of the great vessels" EXACT []
+synonym: "D-TGA" EXACT OMO:0003012 []
+synonym: "DTGA1" EXACT OMO:0003012 []
+synonym: "isolated ventriculoarterial discordance" EXACT []
+synonym: "ventriculoarterial discordance with atrioventricular concordance" EXACT []
+xref: ICD10CM:Q20.3
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:0060772
+name: multiple types of congenital heart defects 6
+synonym: "dextro-looped transposition of the great arteries 3" EXACT []
+synonym: "DTGA3" EXACT OMO:0003012 []
+xref: ICD10CM:Q20.3
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:0060903
+name: thrombosis
+xref: MESH:D013927
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:0061025
+name: familial restrictive cardiomyopathy 6
+synonym: "RCM6" EXACT OMO:0003012 []
+synonym: "restrictive cardiomyopathy 6" EXACT []
+is_a: DOID:397 ! restrictive cardiomyopathy
+
+[Term]
+id: DOID:0061102
+name: hypertrophic cardiomyopathy 27
+synonym: "CMH27" EXACT OMO:0003012 []
+synonym: "familial hypertrophic cardiomyopathy 27" EXACT []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0061139
+name: coronary atherosclerosis
+is_a: DOID:1936 ! atherosclerosis
+
+[Term]
+id: DOID:0070315
+name: hypoplastic right heart syndrome
+synonym: "Right hypoplastic heart syndrome" EXACT []
+xref: ICD10CM:Q22.6
+xref: SNOMEDCT_US_2025_09_01:204348000
+xref: UMLS_CUI:C0344963
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:0070533
+name: long QT syndrome 16
+synonym: "LQT16" EXACT OMO:0003012 []
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0070534
+name: arrhythmogenic left ventricular cardiomyopathy
+synonym: "ALVC" EXACT OMO:0003012 []
+synonym: "left ventricular ACM" EXACT []
+synonym: "left-dominant arrhythmogenic cardiomyopathy" EXACT []
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:0070535
+name: arrhythmogenic biventricular cardiomyopathy
+synonym: "biventricular ACM" EXACT []
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:0080169
+name: tricuspid atresia
+xref: MESH:D018785
+is_a: DOID:0050826 ! tricuspid valve disease
+
+[Term]
+id: DOID:0080177
+name: hepatic veno-occlusive disease
+synonym: "veno-occlusive disease" EXACT []
+xref: ICD10CM:K76.5
+xref: MESH:D006504
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:0080189
+name: malignant hemangioma
+is_a: DOID:175 ! vascular cancer
+
+[Term]
+id: DOID:0080190
+name: malignant epithelioid hemangioendothelioma
+is_a: DOID:0080189 ! malignant hemangioma
+
+[Term]
+id: DOID:0080198
+name: infantile histiocytoid cardiomyopathy
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:0080264
+name: exudative vitreoretinopathy 7
+synonym: "EVR7" EXACT OMO:0003012 []
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0080326
+name: familial hypertrophic cardiomyopathy
+xref: MESH:D024741
+xref: SNOMEDCT_US_2025_09_01:83978005
+xref: UMLS_CUI:C0949658
+is_a: DOID:11984 ! hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0080332
+name: bicuspid aortic valve disease
+synonym: "Familial bicuspid aortic valve" EXACT []
+xref: MESH:D000082882
+is_a: DOID:62 ! aortic valve disease
+
+[Term]
+id: DOID:0080333
+name: aortic valve disease 1
+is_a: DOID:0080332 ! bicuspid aortic valve disease
+
+[Term]
+id: DOID:0080334
+name: aortic valve disease 2
+is_a: DOID:0080332 ! bicuspid aortic valve disease
+
+[Term]
+id: DOID:0080491
+name: cerebral cavernous malformation 1
+is_a: DOID:0060669 ! cerebral cavernous malformation
+
+[Term]
+id: DOID:0080662
+name: atrial standstill 1
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0080663
+name: atrial standstill 2
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0080685
+name: aortic dissection
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:0080740
+name: Libman-Sacks endocarditis
+synonym: "Libmann–Sachs, Endocarditis in systemic lupus erythematosus" EXACT []
+xref: ICD10CM:M32.11
+is_a: DOID:0060068 ! nonbacterial thrombotic endocarditis
+
+[Term]
+id: DOID:0080767
+name: autoimmune myocarditis
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+is_a: DOID:820 ! myocarditis
+
+[Term]
+id: DOID:0080895
+name: rapidly involuting congenital hemangioma
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:0080896
+name: pericytoma with t(7;12)
+is_a: DOID:3316 ! perivascular tumor
+
+[Term]
+id: DOID:0080933
+name: immunoglobulin light chain amyloidosis
+synonym: "AL amyloidosis" EXACT []
+synonym: "Amyloidosis primary systemic" EXACT []
+synonym: "Light chain amyloidosis" EXACT []
+synonym: "Primary AL amyloidosis" EXACT []
+synonym: "Primary systemic AL amyloidosis" EXACT []
+synonym: "Primary systemic amyloidosis" EXACT []
+synonym: "Systemic AL amyloidsis" EXACT []
+xref: ICD10CM:E85.81
+xref: MESH:D000075363
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0080937
+name: wild-type amyloidosis
+synonym: "Age related amyloidosis" EXACT []
+synonym: "ATTRwt amyloidosis" EXACT []
+synonym: "Old age amyloidosis" EXACT []
+synonym: "senile systemic amyloidosis" EXACT []
+synonym: "wild-type ATTR amyloidosis" EXACT []
+synonym: "wild-type transthyretin cardiac amyloidosis" EXACT []
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0080938
+name: nonobstructive coronary artery disease
+synonym: "non-CAD" EXACT OMO:0003012 []
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:0080959
+name: arrhythmogenic right ventricular dysplasia 14
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0080964
+name: intracranial berry aneurysm 1
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080965
+name: intracranial berry aneurysm 2
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080966
+name: intracranial berry aneurysm 3
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080967
+name: intracranial berry aneurysm 4
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080968
+name: intracranial berry aneurysm 5
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080969
+name: intracranial berry aneurysm 6
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080970
+name: intracranial berry aneurysm 7
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080971
+name: intracranial berry aneurysm 8
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080972
+name: intracranial berry aneurysm 9
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080973
+name: intracranial berry aneurysm 10
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080974
+name: intracranial berry aneurysm 11
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080975
+name: intracranial berry aneurysm 12
+is_a: DOID:0060228 ! intracranial berry aneurysm
+
+[Term]
+id: DOID:0080977
+name: aortic valve disease 3
+is_a: DOID:0080332 ! bicuspid aortic valve disease
+
+[Term]
+id: DOID:0081157
+name: dilated cardiomyopathy 1LL
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081158
+name: dilated cardiomyopathy 1MM
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081159
+name: dilated cardiomyopathy 2C
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081160
+name: dilated cardiomyopathy 2D
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081161
+name: dilated cardiomyopathy 2E
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081162
+name: dilated cardiomyopathy 2F
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081163
+name: dilated cardiomyopathy 2G
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0081268
+name: pulmonary venoocclusive disease 1
+is_a: DOID:5453 ! pulmonary venoocclusive disease
+
+[Term]
+id: DOID:0081269
+name: pulmonary venoocclusive disease 2
+synonym: "FAMILIAL PULMONARY CAPILLARY HEMANGIOMATOSIS" EXACT []
+is_a: DOID:5453 ! pulmonary venoocclusive disease
+
+[Term]
+id: DOID:0081394
+name: Caroli syndrome
+is_a: DOID:272 ! hepatic vascular disease
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:0110070
+name: arrhythmogenic right ventricular dysplasia 1
+synonym: "arrhythmogenic right ventricular cardiomyopathy 1" EXACT []
+synonym: "ARVC1" EXACT OMO:0003012 []
+synonym: "Uhl anomaly" EXACT []
+xref: ICD10CM:I42.8
+xref: ICD10CM:Q24.8
+xref: MESH:C536932
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110072
+name: arrhythmogenic right ventricular dysplasia 3
+synonym: "arrhythmogenic right ventricular cardiomyopathy 3" EXACT []
+synonym: "ARVC3" EXACT OMO:0003012 []
+synonym: "ARVD3" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 3" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110073
+name: arrhythmogenic right ventricular dysplasia 4
+synonym: "arrhythmogenic right ventricular cardiomyopathy 4" EXACT []
+synonym: "ARVC4" EXACT OMO:0003012 []
+synonym: "ARVD4" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 4" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110074
+name: arrhythmogenic right ventricular dysplasia 5
+synonym: "arrhythmogenic right ventricular cardiomyopathy 5" EXACT []
+synonym: "ARVC5" EXACT OMO:0003012 []
+synonym: "ARVD5" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 5" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110075
+name: arrhythmogenic right ventricular dysplasia 6
+synonym: "arrhythmogenic right ventricular cardiomyopathy 6" EXACT []
+synonym: "ARVC6" EXACT OMO:0003012 []
+synonym: "ARVD6" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 6" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110076
+name: arrhythmogenic right ventricular dysplasia 8
+synonym: "arrhythmogenic right ventricular cardiomyopathy 8" EXACT []
+synonym: "ARVC8" EXACT OMO:0003012 []
+synonym: "ARVD8" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 8" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110077
+name: arrhythmogenic right ventricular dysplasia 9
+synonym: "arrhythmogenic right ventricular cardiomyopathy 9" EXACT []
+synonym: "ARVC9" EXACT OMO:0003012 []
+synonym: "ARVD9" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 9" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110081
+name: arrhythmogenic right ventricular dysplasia 10
+synonym: "arrhythmogenic right ventricular cardiomyopathy 10" EXACT []
+synonym: "ARVC10" EXACT OMO:0003012 []
+synonym: "ARVD10" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 10" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110082
+name: arrhythmogenic right ventricular dysplasia 11
+synonym: "arrhythmogenic right ventricular cardiomyopathy 11" EXACT []
+synonym: "ARVC11" EXACT OMO:0003012 []
+synonym: "ARVD11" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 11" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110083
+name: arrhythmogenic right ventricular dysplasia 12
+synonym: "arrhythmogenic right ventricular cardiomyopathy 12" EXACT []
+synonym: "ARVC12" EXACT OMO:0003012 []
+synonym: "ARVD12" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 12" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110084
+name: arrhythmogenic right ventricular dysplasia 13
+synonym: "arrhythmogenic right ventricular cardiomyopathy 13" EXACT []
+synonym: "ARVC13" EXACT OMO:0003012 []
+synonym: "ARVD13" EXACT OMO:0003012 []
+synonym: "familial arrhythmogenic right ventricular dysplasia 13" EXACT []
+xref: ICD10CM:I42.8
+is_a: DOID:0050431 ! arrhythmogenic right ventricular cardiomyopathy
+
+[Term]
+id: DOID:0110106
+name: atrial heart septal defect 1
+synonym: "ASD1" EXACT OMO:0003012 []
+synonym: "atrial septal defect 1" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110107
+name: atrial heart septal defect 2
+synonym: "ASD2" EXACT OMO:0003012 []
+synonym: "atrial septal defect 2" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110108
+name: atrial heart septal defect 3
+synonym: "ASD3" EXACT OMO:0003012 []
+synonym: "atrial septal defect 3" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110109
+name: atrial heart septal defect 4
+synonym: "ASD4" EXACT OMO:0003012 []
+synonym: "atrial septal defect 4" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110110
+name: atrial heart septal defect 5
+synonym: "ASD5" EXACT OMO:0003012 []
+synonym: "atrial septal defect 5" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110111
+name: atrial heart septal defect 6
+synonym: "ASD6" EXACT OMO:0003012 []
+synonym: "atrial septal defect 6" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110112
+name: atrial heart septal defect 7
+synonym: "ASD with or without atrioventricular conduction defects" EXACT []
+synonym: "atrial septal defect 7, with or without AV conduction defects" EXACT []
+synonym: "atrial septal defect-atrioventricular conduction defects syndrome" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110113
+name: atrial heart septal defect 8
+synonym: "ASD8" EXACT OMO:0003012 []
+synonym: "atrial septal defect 8" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110114
+name: atrial heart septal defect 9
+synonym: "ASD9" EXACT OMO:0003012 []
+synonym: "atrial septal defect 9" EXACT []
+xref: ICD10CM:Q21.1
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:0110218
+name: Brugada syndrome 1
+synonym: "BRGDA1" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110219
+name: Brugada syndrome 2
+synonym: "BRGDA2" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567087
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110220
+name: Brugada syndrome 3
+synonym: "BRGDA3" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567509
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110221
+name: Brugada syndrome 4
+synonym: "BRGDA4" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567508
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110222
+name: Brugada syndrome 5
+synonym: "BRGDA5" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567556
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110223
+name: Brugada syndrome 6
+synonym: "BRGDA6" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567735
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110224
+name: Brugada syndrome 7
+synonym: "BRGDA7" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567734
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110225
+name: Brugada syndrome 8
+synonym: "BRGDA8" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+xref: MESH:C567732
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110226
+name: Brugada syndrome 9
+synonym: "BRGDA9" EXACT OMO:0003012 []
+xref: ICD10CM:I49.8
+is_a: DOID:0050451 ! Brugada syndrome
+
+[Term]
+id: DOID:0110307
+name: hypertrophic cardiomyopathy 1
+synonym: "cardiomyopathy, familial hypertrophic 1" EXACT []
+synonym: "CMH1" EXACT OMO:0003012 []
+synonym: "hypertrophic cardiomyopathy 19" EXACT []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110308
+name: hypertrophic cardiomyopathy 2
+synonym: "cardiomyopathy familial hypertrophic 2" EXACT []
+synonym: "CMH2" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110309
+name: hypertrophic cardiomyopathy 3
+synonym: "cardiomyopathy familial hypertrophic 3" EXACT []
+synonym: "CMH3" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110310
+name: hypertrophic cardiomyopathy 4
+synonym: "cardiomyopathy, familial hypertrophic, 4" EXACT []
+synonym: "CMH4" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110311
+name: hypertrophic cardiomyopathy 21
+synonym: "cardiomyopathy familial hypertrophic 21" EXACT []
+synonym: "CMH21" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110312
+name: hypertrophic cardiomyopathy 6
+synonym: "cardiomyopathy, familial hypertrophic 6" EXACT []
+synonym: "CMH6" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110313
+name: hypertrophic cardiomyopathy 7
+synonym: "cardiomyopathy, familial hypertrophic 7" EXACT []
+synonym: "CMH7" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110314
+name: hypertrophic cardiomyopathy 8
+synonym: "cardiomyopathy hypertrophic mid-left ventricular chamber type 1" EXACT []
+synonym: "cardiomyopathy, familial hypertrophic, 8" EXACT []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110315
+name: hypertrophic cardiomyopathy 9
+synonym: "cardiomyopathy, familial hypertrophic, 9" EXACT []
+synonym: "CMH9" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110316
+name: hypertrophic cardiomyopathy 10
+synonym: "cardiomyopathy, familial hypertrophic, 10" EXACT []
+synonym: "CMH10" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110317
+name: hypertrophic cardiomyopathy 11
+synonym: "cardiomyopathy familial hypertrophic 11" EXACT []
+synonym: "CMH11" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110318
+name: hypertrophic cardiomyopathy 12
+synonym: "cardiomyopathy familial hypertrophic 12" EXACT []
+synonym: "CMH12" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110319
+name: hypertrophic cardiomyopathy 13
+synonym: "cardiomyopathy familial hypertrophic 13" EXACT []
+synonym: "CMH13" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110320
+name: hypertrophic cardiomyopathy 14
+synonym: "cardiomyopathy familial hypertrophic 14" EXACT []
+synonym: "CMH14" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110321
+name: hypertrophic cardiomyopathy 15
+synonym: "cardiomyopathy familial hypertrophic 15" EXACT []
+synonym: "CMH15" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110322
+name: hypertrophic cardiomyopathy 16
+synonym: "cardiomyopathy familial hypertrophic 16" EXACT []
+synonym: "CMH16" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110323
+name: hypertrophic cardiomyopathy 17
+synonym: "cardiomyopathy familial hypertrophic 17" EXACT []
+synonym: "CMH17" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110324
+name: hypertrophic cardiomyopathy 18
+synonym: "cardiomyopathy familial hypertrophic 18" EXACT []
+synonym: "CMH18" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110326
+name: hypertrophic cardiomyopathy 20
+synonym: "cardiomyopathy familial hypertrophic 20" EXACT []
+synonym: "CMH20" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110327
+name: hypertrophic cardiomyopathy 26
+synonym: "cardiomyopathy familial hypertrophic 26" EXACT []
+synonym: "CMH26" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110328
+name: hypertrophic cardiomyopathy 25
+synonym: "cardiomyopathy familial hypertrophic 25" EXACT []
+synonym: "CMH25" EXACT OMO:0003012 []
+is_a: DOID:0080326 ! familial hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0110423
+name: dilated cardiomyopathy 1C
+synonym: "CMDC1" EXACT OMO:0003012 []
+synonym: "dilated cardiomyopathy 1C with or without left ventricular noncompaction" EXACT []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110424
+name: dilated cardiomyopathy 1CC
+synonym: "CMD1CC" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110425
+name: dilated cardiomyopathy 1A
+synonym: "CDCD1" EXACT OMO:0003012 []
+synonym: "dilated cardiomyopathy with conduction defect 1" EXACT []
+synonym: "familial dilated cardiomyopathy with conduction defect due to LMNA mutation" EXACT []
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110426
+name: dilated cardiomyopathy 1D
+synonym: "CMD1D" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110427
+name: dilated cardiomyopathy 1V
+synonym: "CMD1V" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110428
+name: dilated cardiomyopathy 1AA
+synonym: "CMD1AA" EXACT OMO:0003012 []
+synonym: "dilated cardiomyopathy 1AA with or without left ventricular noncompaction" EXACT []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110429
+name: dilated cardiomyopathy 1H
+synonym: "dilated cardiomyopathy with conduction defect" EXACT []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110430
+name: dilated cardiomyopathy 1G
+synonym: "CMD1G" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110431
+name: dilated cardiomyopathy 1I
+synonym: "CMD1I" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110432
+name: dilated cardiomyopathy 1NN
+synonym: "CMD1NN" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110433
+name: dilated cardiomyopathy 1E
+synonym: "CDCD2" EXACT OMO:0003012 []
+synonym: "CMD1E" EXACT OMO:0003012 []
+synonym: "dilated cardiomyopathy with conduction defect 2" EXACT []
+synonym: "dilated cardiomyopathy with conduction disorder and arrhythmia" EXACT []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110434
+name: dilated cardiomyopathy 1Z
+synonym: "CMD1Z" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110435
+name: dilated cardiomyopathy 1GG
+synonym: "CMD1GG" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110436
+name: dilated cardiomyopathy 1L
+synonym: "CMD1L" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110437
+name: dilated cardiomyopathy 1K
+synonym: "CMD1K" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110438
+name: dilated cardiomyopathy 1JJ
+synonym: "CMD1JJ" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110439
+name: dilated cardiomyopathy 1P
+synonym: "CMD1P" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110440
+name: dilated cardiomyopathy 1J
+synonym: "autosomal dominant dilated cardiomyopathy with sensorineural hearing loss" EXACT []
+synonym: "CMD1J" EXACT OMO:0003012 []
+synonym: "neurosensory deafness with dilated cardiomyopathy" EXACT []
+synonym: "neurosensory hearing loss with dilated cardiomyopathy" EXACT []
+synonym: "sensorineural deafness with dilated cardiomyopathy" EXACT []
+synonym: "sensorineural hearing loss with dilated cardiomyopathy" EXACT []
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110441
+name: dilated cardiomyopathy 2B
+synonym: "CMD2B" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110442
+name: dilated cardiomyopathy 1Q
+synonym: "CMD1Q" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110443
+name: dilated cardiomyopathy 1B
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110444
+name: dilated cardiomyopathy 1X
+synonym: "CMD1X" EXACT OMO:0003012 []
+synonym: "dilated cardiomyopathy with mild or no proximal muscle weakness" EXACT []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110445
+name: dilated cardiomyopathy 1KK
+synonym: "CMD1KK" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110446
+name: dilated cardiomyopathy 1W
+synonym: "CMD1W" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110447
+name: dilated cardiomyopathy 1DD
+synonym: "CMD1DD" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110448
+name: dilated cardiomyopathy 1HH
+synonym: "CMD1HH" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110449
+name: dilated cardiomyopathy 1M
+synonym: "CMD1M" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110450
+name: dilated cardiomyopathy 1II
+synonym: "CMD1II" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110451
+name: dilated cardiomyopathy 1O
+synonym: "CMD1O" EXACT OMO:0003012 []
+synonym: "dilated cardiomyopathy with ventricular tachycardia" EXACT []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110452
+name: dilated cardiomyopathy 1T
+synonym: "CMD1T" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110453
+name: dilated cardiomyopathy 1EE
+synonym: "CMD1EE" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110454
+name: dilated cardiomyopathy 1S
+synonym: "CMD1S" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110455
+name: dilated cardiomyopathy 1U
+synonym: "CMD1U" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110456
+name: dilated cardiomyopathy 1R
+synonym: "CMD1R" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110457
+name: dilated cardiomyopathy 1Y
+synonym: "CMD1Y" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110458
+name: dilated cardiomyopathy 1BB
+synonym: "CMD1BB" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110459
+name: dilated cardiomyopathy 1FF
+synonym: "CMD1FF" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110460
+name: dilated cardiomyopathy 2A
+synonym: "CMD2A" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110461
+name: dilated cardiomyopathy 3B
+synonym: "CMD3B" EXACT OMO:0003012 []
+synonym: "DMD-related dilated cardiomyopathy" EXACT []
+synonym: "X-linked dilated cardiomyopathy" EXACT []
+synonym: "XLCM" EXACT OMO:0003012 []
+xref: ICD10CM:I42.0
+xref: MESH:C580047
+is_a: DOID:12930 ! dilated cardiomyopathy
+
+[Term]
+id: DOID:0110644
+name: long QT syndrome 1
+synonym: "LQT1" EXACT OMO:0003012 []
+synonym: "ventricular fibrillation with prolonged QT interval" EXACT []
+xref: ICD10CM:I45.8
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110645
+name: long QT syndrome 2
+synonym: "LQT2" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C563614
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110646
+name: long QT syndrome 3
+synonym: "LQT3" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C565840
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110647
+name: long QT syndrome 5
+synonym: "LQT5" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C566766
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110648
+name: long QT syndrome 6
+synonym: "LQT6" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C566333
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110649
+name: long QT syndrome 8
+synonym: "LQT8" EXACT OMO:0003012 []
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110650
+name: long QT syndrome 9
+synonym: "LQT9" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C567515
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110651
+name: long QT syndrome 10
+synonym: "LQT10" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C567514
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110652
+name: long QT syndrome 11
+synonym: "LQT11" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C567513
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110653
+name: long QT syndrome 12
+synonym: "LQT12" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+xref: MESH:C567842
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110654
+name: long QT syndrome 13
+synonym: "LQT13" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110655
+name: long QT syndrome 14
+synonym: "LQT14" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0110656
+name: long QT syndrome 15
+synonym: "LQT15" EXACT OMO:0003012 []
+xref: ICD10CM:I45.8
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0111073
+name: progressive familial heart block
+synonym: "familial Lenegre disease" EXACT []
+synonym: "familial Lev disease" EXACT []
+synonym: "familial Lev-Lenegre disease" EXACT []
+synonym: "familial PCCD" EXACT []
+synonym: "familial progressive heart block" EXACT []
+synonym: "hereditary bundle branch defect" EXACT []
+synonym: "PFHB" EXACT OMO:0003012 []
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0111074
+name: progressive familial heart block type IA
+synonym: "PFHB1A" EXACT OMO:0003012 []
+is_a: DOID:0111073 ! progressive familial heart block
+
+[Term]
+id: DOID:0111075
+name: progressive familial heart block type II
+synonym: "PFHB2" EXACT OMO:0003012 []
+xref: MESH:C564202
+is_a: DOID:0111073 ! progressive familial heart block
+
+[Term]
+id: DOID:0111076
+name: progressive familial heart block type IB
+synonym: "PFHB1B" EXACT OMO:0003012 []
+xref: MESH:C567037
+is_a: DOID:0111073 ! progressive familial heart block
+
+[Term]
+id: DOID:0111151
+name: Prinzmetal angina
+synonym: "angina inversa" EXACT []
+synonym: "Prinzmetal's angina" EXACT []
+synonym: "Prinzmetal's variant angina" EXACT []
+synonym: "variant angina" EXACT []
+synonym: "variant angina pectoris" EXACT []
+xref: MESH:D000788
+is_a: DOID:11840 ! coronary artery vasospasm
+
+[Term]
+id: DOID:0111154
+name: postural orthostatic tachycardia syndrome
+synonym: "familial orthostatic tachycardia due to norepinephrine transporter deficiency" EXACT []
+synonym: "irritable heart" EXACT []
+synonym: "mitral valve prolapse syndrome" EXACT []
+synonym: "orhtostatic intolerance" EXACT []
+synonym: "orthostatic intolerance due to NET deficiency" EXACT []
+synonym: "postural tachycardia syndrome due to NET deficiency" EXACT []
+synonym: "soldiers heart" EXACT []
+xref: ICD10CM:I95.1
+xref: MESH:D054972
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:0111408
+name: exudative vitreoretinopathy 5
+synonym: "EVR5" EXACT OMO:0003012 []
+xref: MESH:C567648
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0111409
+name: exudative vitreoretinopathy 3
+synonym: "EVR3" EXACT OMO:0003012 []
+xref: MESH:C565297
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0111410
+name: exudative vitreoretinopathy 6
+synonym: "EVR6" EXACT OMO:0003012 []
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0111411
+name: exudative vitreoretinopathy 4
+synonym: "EVR4" EXACT OMO:0003012 []
+xref: MESH:C566619
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0111412
+name: exudative vitreoretinopathy 1
+synonym: "EVR1" EXACT OMO:0003012 []
+xref: MESH:C536382
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0111413
+name: X-linked exudative vitreoretinopathy 2
+synonym: "EVR2" EXACT OMO:0003012 []
+synonym: "EVRX" EXACT OMO:0003012 []
+synonym: "FEVRX" EXACT OMO:0003012 []
+is_a: DOID:0050535 ! exudative vitreoretinopathy
+
+[Term]
+id: DOID:0111425
+name: familial restrictive cardiomyopathy 1
+synonym: "RCM1" EXACT OMO:0003012 []
+synonym: "restrictive cardiomyopathy 1" EXACT []
+is_a: DOID:397 ! restrictive cardiomyopathy
+
+[Term]
+id: DOID:0111426
+name: familial restrictive cardiomyopathy 2
+synonym: "RCM2" EXACT OMO:0003012 []
+synonym: "restrictive cardiomyopathy 2" EXACT []
+is_a: DOID:397 ! restrictive cardiomyopathy
+
+[Term]
+id: DOID:0111427
+name: familial restrictive cardiomyopathy 3
+synonym: "RCM3" EXACT OMO:0003012 []
+synonym: "restrictive cardiomyopathy 3" EXACT []
+is_a: DOID:397 ! restrictive cardiomyopathy
+
+[Term]
+id: DOID:0111457
+name: STING-associated vasculopathy with onset in infancy
+synonym: "SAVI" EXACT OMO:0003012 []
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+
+[Term]
+id: DOID:0111529
+name: familial multiple nevi flammei
+synonym: "CMC" EXACT OMO:0003012 []
+synonym: "congenital capillary malformations" EXACT []
+synonym: "familial multiple port-wine stains" EXACT []
+xref: MESH:C535816
+xref: SNOMEDCT_US_2025_09_01:763714006
+xref: UMLS_CUI:C2931029
+is_a: DOID:1271 ! capillary disease
+
+[Term]
+id: DOID:0111547
+name: retinal arterial tortuosity
+synonym: "RATOR" EXACT OMO:0003012 []
+synonym: "retinal arteriolar tortuosity" EXACT []
+synonym: "retinal hemorrhage with vascular tortuosity" EXACT []
+synonym: "tortuosity of retinal arteries" EXACT []
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:0111563
+name: Sturge-Weber syndrome
+synonym: "encephalofacial angiomatosis" EXACT []
+synonym: "encephalotrigeminal angiomatosis" EXACT []
+synonym: "fourth phacomatosis" EXACT []
+synonym: "leptomeningeal angiomatosis" EXACT []
+synonym: "meningeal capillary angiomatosis" EXACT []
+synonym: "Sturge-Weber-Dimitri syndrome" EXACT []
+synonym: "Sturge-Weber-Krabbe angiomatosis" EXACT []
+synonym: "Sturge-Weber-Krabbe syndrome" EXACT []
+synonym: "SWS" EXACT OMO:0003012 []
+xref: ICD10CM:Q85.89
+xref: MESH:D013341
+xref: SNOMEDCT_US_2025_09_01:157030004
+xref: UMLS_CUI:C0038505
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:0111567
+name: retinal vasculopathy with cerebral leukodystrophy
+synonym: "CRV" EXACT OMO:0003012 []
+synonym: "hereditary cerebroretinal vasculopathy" EXACT []
+synonym: "retinal vasculopathy and cerebral leukoencephalopathy" EXACT []
+synonym: "retinal vasculopathy with cerebral leukoencephalopathy and systemic manifestations" EXACT []
+synonym: "retinopathy, vascular, with cerebral and renal involvement and Raynaud and migraine phenomena" EXACT []
+synonym: "RVCL" EXACT OMO:0003012 []
+synonym: "RVCL-S" EXACT OMO:0003012 []
+xref: MESH:C566007
+xref: SNOMEDCT_US_2025_09_01:783787000
+xref: UMLS_CUI:C1860518
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:0111700
+name: ankyrin-B-related cardiac arrhythmia
+synonym: "ankyrin-B syndrome" EXACT []
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:0111701
+name: long QT syndrome 4
+synonym: "LQT4" EXACT OMO:0003012 []
+xref: MESH:C563428
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:0111753
+name: infantile hypertrophic cardiomyopathy
+is_a: DOID:11984 ! hypertrophic cardiomyopathy
+
+[Term]
+id: DOID:0111765
+name: X-linked cardiac valvular dysplasia
+synonym: "CVD1" EXACT OMO:0003012 []
+synonym: "Dystrophie valvulaire associee a FLNA" EXACT []
+synonym: "EDS5" EXACT OMO:0003012 []
+synonym: "Ehlers-Danlos syndrome, type 5" EXACT []
+synonym: "Filamin A-related X-linked myxomatous valvular dysplasia" EXACT []
+synonym: "FLNA-related valvular dystrophy" EXACT []
+synonym: "FLNA-related X-linked myxomatous valvular dysplasia" EXACT []
+synonym: "XMVD" EXACT OMO:0003012 []
+xref: MESH:C536197
+xref: SNOMEDCT_US_2025_09_01:67202007
+xref: UMLS_CUI:C0268341
+is_a: DOID:4079 ! heart valve disease
+
+[Term]
+id: DOID:10079
+name: cysticercosis
+synonym: "intestinal taenia solium infection" EXACT []
+synonym: "neurocysticercosis" EXACT []
+synonym: "Pork tapeworm infection" EXACT []
+synonym: "Tapeworm infection intestinal taenia solum" EXACT []
+synonym: "Tapeworm infection pork" EXACT []
+synonym: "tenia solium infectious disease" EXACT []
+xref: ICD10CM:B69
+xref: MESH:D003551
+xref: SNOMEDCT_US_2025_09_01:59051007
+xref: UMLS_CUI:C0010678
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:10127
+name: cerebral artery occlusion
+xref: SNOMEDCT_US_2025_09_01:20059004
+xref: UMLS_CUI:C0028790
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:10128
+name: venous insufficiency
+synonym: "peripheral venous insufficiency" EXACT []
+xref: MESH:D014689
+xref: SNOMEDCT_US_2025_09_01:20696009
+xref: UMLS_CUI:C0042485
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:10177
+name: malignant hypertensive renal disease
+xref: SNOMEDCT_US_2025_09_01:65443008
+xref: UMLS_CUI:C0155593
+is_a: DOID:1073 ! renal hypertension
+
+[Term]
+id: DOID:10230
+name: aortic atherosclerosis
+synonym: "Atherosclerosis of aorta" EXACT []
+xref: ICD10CM:I70.0
+xref: SNOMEDCT_US_2025_09_01:81817003
+xref: UMLS_CUI:C0155733
+is_a: DOID:1936 ! atherosclerosis
+
+[Term]
+id: DOID:10234
+name: histoplasmosis pericarditis
+synonym: "Histoplasmosis with pericarditis" EXACT []
+xref: SNOMEDCT_US_2025_09_01:187059008
+xref: UMLS_CUI:C0153279
+is_a: DOID:1787 ! pericarditis
+
+[Term]
+id: DOID:10266
+name: subendocardial infarction acute myocardial infarction
+xref: UMLS_CUI:C0155655
+is_a: DOID:9408 ! acute myocardial infarction
+
+[Term]
+id: DOID:10272
+name: left bundle branch hemiblock
+synonym: "Left bundle branch block" EXACT []
+xref: ICD10CM:I44.60
+xref: SNOMEDCT_US_2025_09_01:266245009
+xref: UMLS_CUI:C0155702
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:10273
+name: heart conduction disease
+synonym: "heart rhythm disease" EXACT []
+xref: SNOMEDCT_US_2025_09_01:195053008
+xref: UMLS_CUI:C0029630
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:10300
+name: Raynaud disease
+synonym: "Raynaud's disease" EXACT []
+synonym: "Raynaud's syndrome" EXACT []
+xref: ICD10CM:I73.0
+xref: MESH:D011928
+xref: SNOMEDCT_US_2025_09_01:195295006
+xref: UMLS_CUI:C0034734
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:10314
+name: endocarditis
+xref: ICD10CM:I33.9
+xref: MESH:D004696
+xref: SNOMEDCT_US_2025_09_01:56819008
+xref: SNOMEDCT_US_2025_09_01:91357005
+xref: UMLS_CUI:C0014118
+xref: UMLS_CUI:C0375268
+is_a: DOID:0050825 ! endocardium disease
+
+[Term]
+id: DOID:10507
+name: Dressler's syndrome
+synonym: "Dressler syndrome" EXACT []
+synonym: "Postmyocardial infarction syndrome" EXACT []
+xref: ICD10CM:I24.1
+xref: SNOMEDCT_US_2025_09_01:66189004
+xref: UMLS_CUI:C0152107
+is_a: DOID:1787 ! pericarditis
+
+[Term]
+id: DOID:10556
+name: supine hypotensive syndrome
+synonym: "antepartum maternal hypotension syndrome" EXACT []
+synonym: "postpartum maternal hypotension syndrome" EXACT []
+xref: UMLS_CUI:C0157456
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:10590
+name: mild pre-eclampsia
+xref: UMLS_CUI:C0156664
+is_a: DOID:10591 ! pre-eclampsia
+
+[Term]
+id: DOID:10591
+name: pre-eclampsia
+synonym: "gestational hypertension" EXACT []
+synonym: "hypertension induced by pregnancy" EXACT []
+synonym: "pre-eclamptic toxaemia" EXACT []
+synonym: "preeclampsia" EXACT []
+synonym: "preeclampsia/eclampsia" EXACT []
+synonym: "pregnancy associated hypertension" EXACT []
+synonym: "pregnancy toxemia" EXACT []
+synonym: "proteinuric hypertension of pregnancy" EXACT []
+synonym: "toxaemia of pregnancy" EXACT []
+xref: ICD10CM:O14
+xref: MESH:D011225
+xref: SNOMEDCT_US_2025_09_01:6758009
+xref: UMLS_CUI:C0032914
+is_a: DOID:10763 ! hypertension
+
+[Term]
+id: DOID:10648
+name: acute inferoposterior infarction
+xref: UMLS_CUI:C0155640
+is_a: DOID:9408 ! acute myocardial infarction
+
+[Term]
+id: DOID:10649
+name: acute inferolateral myocardial infarction
+xref: UMLS_CUI:C0155636
+is_a: DOID:9408 ! acute myocardial infarction
+
+[Term]
+id: DOID:10651
+name: acute anterolateral myocardial infarction
+xref: SNOMEDCT_US_2025_09_01:70211005
+xref: UMLS_CUI:C0155627
+is_a: DOID:9408 ! acute myocardial infarction
+
+[Term]
+id: DOID:10657
+name: colonic lymphangioma
+synonym: "Lymphangioma of colon" EXACT []
+xref: UMLS_CUI:C1333094
+is_a: DOID:235 ! colonic benign neoplasm
+
+[Term]
+id: DOID:1073
+name: renal hypertension
+xref: MESH:D006977
+xref: SNOMEDCT_US_2025_09_01:194775007
+xref: UMLS_CUI:C0020544
+is_a: DOID:11130 ! secondary hypertension
+
+[Term]
+id: DOID:10762
+name: portal hypertension
+xref: ICD10CM:K76.6
+xref: MESH:D006975
+xref: SNOMEDCT_US_2025_09_01:155821005
+xref: UMLS_CUI:C0020541
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:10763
+name: hypertension
+synonym: "HTN" EXACT OMO:0003012 []
+synonym: "hyperpiesia" EXACT []
+synonym: "hypertensive disease" RELATED []
+synonym: "vascular hypertensive disorder" EXACT []
+xref: ICD10CM:I10
+xref: MESH:D006973
+xref: SNOMEDCT_US_2025_09_01:38341003
+xref: UMLS_CUI:C0020538
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:10778
+name: fiedler's myocarditis
+synonym: "fiedler myocarditis" EXACT []
+synonym: "Idiopathic myocarditis" EXACT []
+synonym: "Isolated (Fiedler's) myocarditis" EXACT []
+xref: ICD10CM:I40.1
+xref: SNOMEDCT_US_2025_09_01:194954007
+xref: UMLS_CUI:C0155689
+is_a: DOID:3951 ! acute myocarditis
+
+[Term]
+id: DOID:10779
+name: septic myocarditis
+xref: ICD10CM:I40.0
+xref: SNOMEDCT_US_2025_09_01:64043005
+xref: UMLS_CUI:C0155690
+is_a: DOID:3951 ! acute myocarditis
+
+[Term]
+id: DOID:10823
+name: malignant essential hypertension
+synonym: "Accelerated essential hypertension" EXACT []
+xref: SNOMEDCT_US_2025_09_01:78975002
+xref: UMLS_CUI:C0024588
+is_a: DOID:10825 ! essential hypertension
+
+[Term]
+id: DOID:10824
+name: malignant hypertension
+xref: MESH:D006974
+xref: SNOMEDCT_US_2025_09_01:155301003
+xref: UMLS_CUI:C0020540
+is_a: DOID:10763 ! hypertension
+
+[Term]
+id: DOID:10825
+name: essential hypertension
+synonym: "idiopathic hypertension" EXACT []
+synonym: "primary hypertension" EXACT []
+xref: ICD10CM:I10
+xref: MESH:D000075222
+xref: SNOMEDCT_US_2025_09_01:194757006
+xref: UMLS_CUI:C0085580
+is_a: DOID:10763 ! hypertension
+
+[Term]
+id: DOID:10846
+name: angiodysplasia of intestine
+xref: SNOMEDCT_US_2025_09_01:235853006
+xref: UMLS_CUI:C0267367
+is_a: DOID:2494 ! angiodysplasia
+
+[Term]
+id: DOID:10880
+name: iliac vein thrombophlebitis
+synonym: "Phlebitis and thrombophlebitis of the iliac vein" EXACT []
+xref: ICD10CM:I80.21
+xref: SNOMEDCT_US_2025_09_01:840713005
+xref: UMLS_CUI:C0155772
+is_a: DOID:3875 ! thrombophlebitis
+
+[Term]
+id: DOID:10913
+name: benign essential hypertension
+xref: SNOMEDCT_US_2025_09_01:194758001
+xref: UMLS_CUI:C0155583
+is_a: DOID:10825 ! essential hypertension
+
+[Term]
+id: DOID:10941
+name: intracranial aneurysm
+synonym: "brain aneurysm" EXACT []
+xref: MESH:D002532
+xref: SNOMEDCT_US_2025_09_01:128609009
+xref: UMLS_CUI:C0007766
+is_a: DOID:3527 ! cerebral arterial disease
+
+[Term]
+id: DOID:10991
+name: basal ganglia cerebrovascular disease
+xref: MESH:D020144
+xref: UMLS_CUI:C0751739
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:11130
+name: secondary hypertension
+xref: ICD10CM:I15
+xref: SNOMEDCT_US_2025_09_01:155300002
+xref: UMLS_CUI:C0155616
+is_a: DOID:10763 ! hypertension
+
+[Term]
+id: DOID:112
+name: esophageal varix
+synonym: "Bleeding esophageal varices" EXACT []
+synonym: "Bleeding oesophageal varices" EXACT []
+synonym: "esophageal varices" EXACT []
+synonym: "esophageal varices in disease classified elsewhere, with bleeding" EXACT []
+synonym: "esophageal varices with bleeding" EXACT []
+synonym: "esophageal varices with bleeding in disease EC" EXACT []
+synonym: "esophageal varices without bleeding" EXACT []
+synonym: "esophageal varices without mention of bleeding" EXACT []
+xref: ICD10CM:I85.01
+xref: SNOMEDCT_US_2025_09_01:195475003
+xref: SNOMEDCT_US_2025_09_01:195643006
+xref: SNOMEDCT_US_2025_09_01:236067006
+xref: UMLS_CUI:C0155789
+xref: UMLS_CUI:C0155791
+xref: UMLS_CUI:C0155792
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:11294
+name: arteriovenous malformation
+synonym: "Arteriovenous hemangioma" EXACT []
+synonym: "Cirsoid aneurysm" EXACT []
+synonym: "Racemose aneurysm" EXACT []
+synonym: "Racemose Angioma" EXACT []
+synonym: "Racemose hemangioma" EXACT []
+xref: ICD10CM:I77.0
+xref: SNOMEDCT_US_2025_09_01:403966009
+xref: UMLS_CUI:C0334533
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:11295
+name: retinal microaneurysm
+xref: MESH:D000071071
+xref: SNOMEDCT_US_2025_09_01:34037000
+xref: UMLS_CUI:C0154834
+is_a: DOID:2462 ! retinal vascular disease
+
+[Term]
+id: DOID:11299
+name: vertebral artery occlusion
+synonym: "Occlusion and stenosis of vertebral artery" EXACT []
+xref: ICD10CM:I65.0
+xref: UMLS_CUI:C0155724
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:5976 ! occlusion precerebral artery
+
+[Term]
+id: DOID:11312
+name: Mobitz type II atrioventricular block
+synonym: "Mobitz (type) II atrioventricular block" EXACT []
+synonym: "Mobitz II atrioventricular block" EXACT []
+xref: SNOMEDCT_US_2025_09_01:28189009
+xref: UMLS_CUI:C0155700
+is_a: DOID:0050822 ! second-degree atrioventricular block
+
+[Term]
+id: DOID:11390
+name: cerebral arteritis
+xref: SNOMEDCT_US_2025_09_01:28366008
+xref: UMLS_CUI:C0007773
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:114
+name: heart disease
+xref: ICD10CM:I51.9
+xref: MESH:D006331
+xref: SNOMEDCT_US_2025_09_01:194707003
+xref: UMLS_CUI:C0018799
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:11481
+name: constrictive pericarditis
+xref: MESH:D010494
+xref: SNOMEDCT_US_2025_09_01:155340008
+xref: UMLS_CUI:C0031048
+is_a: DOID:1787 ! pericarditis
+
+[Term]
+id: DOID:11482
+name: hemopericardium
+synonym: "Haemopericardium" EXACT []
+xref: MESH:D010490
+xref: SNOMEDCT_US_2025_09_01:155339006
+xref: UMLS_CUI:C0019064
+is_a: DOID:118 ! pericardial effusion
+
+[Term]
+id: DOID:115
+name: cardiac tamponade
+synonym: "pericardial tamponade" EXACT []
+synonym: "Rose's tamponade" EXACT []
+xref: ICD10CM:I31.4
+xref: MESH:D002305
+xref: SNOMEDCT_US_2025_09_01:266295005
+xref: UMLS_CUI:C0007177
+is_a: DOID:118 ! pericardial effusion
+
+[Term]
+id: DOID:11502
+name: mitral valve insufficiency
+synonym: "Congenital insufficiency of mitral valve" EXACT []
+synonym: "congenital mitral insufficiency" EXACT []
+synonym: "congenital mitral regurgitation" EXACT []
+synonym: "mitral regurgitation" EXACT []
+synonym: "Mitral valve incompetence" EXACT []
+xref: ICD10CM:Q23.3
+xref: MESH:D008944
+xref: SNOMEDCT_US_2025_09_01:194736003
+xref: SNOMEDCT_US_2025_09_01:194977007
+xref: SNOMEDCT_US_2025_09_01:29928006
+xref: UMLS_CUI:C0026266
+xref: UMLS_CUI:C0158619
+xref: UMLS_CUI:C0264774
+is_a: DOID:61 ! mitral valve disease
+
+[Term]
+id: DOID:11512
+name: Budd-Chiari syndrome
+synonym: "hepatic vein thrombosis" EXACT []
+xref: ICD10CM:I82.0
+xref: MESH:D006502
+xref: SNOMEDCT_US_2025_09_01:195436007
+xref: UMLS_CUI:C0019154
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:11516
+name: hypertensive heart disease
+xref: ICD10CM:I11
+xref: SNOMEDCT_US_2025_09_01:155297007
+xref: UMLS_CUI:C0152105
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:11520
+name: benign hypertensive renal disease
+synonym: "hypertensive renal disease, benign" EXACT []
+synonym: "hypertensive renal disease, benign, without mention of renal failure" EXACT []
+xref: SNOMEDCT_US_2025_09_01:193003
+xref: UMLS_CUI:C0155596
+is_a: DOID:1073 ! renal hypertension
+
+[Term]
+id: DOID:11563
+name: retinal vasculitis
+xref: ICD10CM:H35.06
+xref: MESH:D031300
+xref: SNOMEDCT_US_2025_09_01:77628002
+xref: UMLS_CUI:C0152026
+is_a: DOID:2462 ! retinal vascular disease
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:116
+name: pericardium cancer
+synonym: "malignant neoplasm of pericardium" EXACT []
+synonym: "malignant tumor of Pericardium" EXACT []
+synonym: "Pericardial tumor" EXACT []
+xref: ICD10CM:C38.0
+xref: SNOMEDCT_US_2025_09_01:126734005
+xref: SNOMEDCT_US_2025_09_01:93957005
+xref: UMLS_CUI:C0346609
+xref: UMLS_CUI:C0349574
+is_a: DOID:0050829 ! pericardium disease
+is_a: DOID:117 ! heart cancer
+
+[Term]
+id: DOID:11664
+name: nephrosclerosis
+synonym: "renal sclerosis" EXACT []
+xref: ICD10CM:I12
+xref: MESH:D009400
+xref: SNOMEDCT_US_2025_09_01:194773000
+xref: UMLS_CUI:C0027719
+is_a: DOID:1073 ! renal hypertension
+
+[Term]
+id: DOID:11695
+name: portal vein thrombosis
+xref: ICD10CM:I81
+xref: SNOMEDCT_US_2025_09_01:155455003
+xref: UMLS_CUI:C0155773
+is_a: DOID:0060903 ! thrombosis
+is_a: DOID:272 ! hepatic vascular disease
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:117
+name: heart cancer
+synonym: "Cardiac tumor" EXACT []
+synonym: "malignant Cardiac tumor" EXACT []
+synonym: "malignant neoplasm of heart" EXACT []
+synonym: "Tumour of heart" EXACT []
+xref: ICD10CM:C38.0
+xref: MESH:D006338
+xref: SNOMEDCT_US_2025_09_01:126730001
+xref: SNOMEDCT_US_2025_09_01:93825008
+xref: UMLS_CUI:C0018809
+xref: UMLS_CUI:C0153500
+is_a: DOID:114 ! heart disease
+is_a: DOID:176 ! cardiovascular cancer
+
+[Term]
+id: DOID:11713
+name: diabetic angiopathy
+synonym: "diabetic peripheral angiopathy" EXACT []
+synonym: "Diabetic vascular disorder" EXACT []
+xref: MESH:D003925
+xref: SNOMEDCT_US_2025_09_01:127014009
+xref: UMLS_CUI:C0011871
+xref: UMLS_CUI:C0011875
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:118
+name: pericardial effusion
+xref: MESH:D010490
+xref: SNOMEDCT_US_2025_09_01:70370001
+xref: UMLS_CUI:C0031039
+is_a: DOID:0050829 ! pericardium disease
+
+[Term]
+id: DOID:11840
+name: coronary artery vasospasm
+synonym: "Coronary artery spasm" EXACT []
+synonym: "Coronary Vasospasm" EXACT []
+xref: MESH:D003329
+xref: SNOMEDCT_US_2025_09_01:23687008
+xref: UMLS_CUI:C0010073
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:11843
+name: coronary artery anomaly
+synonym: "Congenital anomaly of coronary artery" EXACT []
+synonym: "Coronary artery abnormality" EXACT []
+synonym: "Coronary artery anomaly, congenital" EXACT []
+xref: SNOMEDCT_US_2025_09_01:28574005
+xref: UMLS_CUI:C0158623
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:11847
+name: coronary thrombosis
+synonym: "Coronary artery thrombosis" EXACT []
+xref: ICD10CM:I22
+xref: MESH:D003328
+xref: SNOMEDCT_US_2025_09_01:66514008
+xref: UMLS_CUI:C0010072
+is_a: DOID:0060903 ! thrombosis
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:11984
+name: hypertrophic cardiomyopathy
+synonym: "hypertrophic obstructive cardiomyopathy" EXACT []
+xref: MESH:D002312
+xref: SNOMEDCT_US_2025_09_01:389998005
+xref: UMLS_CUI:C0007194
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:12282
+name: femoral vein thrombophlebitis
+synonym: "Phlebitis and thrombophlebitis of femoral vein" EXACT []
+synonym: "Thrombophlebitis of deep femoral vein" EXACT []
+synonym: "Thrombophlebitis of the femoral vein" EXACT []
+xref: ICD10CM:I80.1
+xref: SNOMEDCT_US_2025_09_01:195410000
+xref: UMLS_CUI:C0265066
+is_a: DOID:3875 ! thrombophlebitis
+
+[Term]
+id: DOID:12325
+name: kyphoscoliotic heart disease
+xref: ICD10CM:I27.1
+xref: SNOMEDCT_US_2025_09_01:194886003
+xref: UMLS_CUI:C0152102
+is_a: DOID:12326 ! chronic pulmonary heart disease
+
+[Term]
+id: DOID:12326
+name: chronic pulmonary heart disease
+xref: SNOMEDCT_US_2025_09_01:194887007
+xref: UMLS_CUI:C0155673
+is_a: DOID:8515 ! Cor pulmonale
+
+[Term]
+id: DOID:12337
+name: varicocele
+synonym: "Scrotal varices" EXACT []
+xref: ICD10CM:I86.1
+xref: MESH:D014646
+xref: SNOMEDCT_US_2025_09_01:195480007
+xref: UMLS_CUI:C0042341
+is_a: DOID:9742 ! pelvic varices
+
+[Term]
+id: DOID:12510
+name: retinal ischemia
+xref: ICD10CM:H35.82
+xref: SNOMEDCT_US_2025_09_01:193427006
+xref: UMLS_CUI:C0162291
+is_a: DOID:2462 ! retinal vascular disease
+is_a: DOID:326 ! ischemia
+
+[Term]
+id: DOID:1270
+name: hereditary hemorrhagic telangiectasia
+synonym: "Osler hemorrhagic telangiectasia syndrome" EXACT []
+synonym: "Osler-Weber-Rendu disease" EXACT []
+synonym: "Rendu-Osler-Weber disease" EXACT []
+xref: ICD10CM:I78.0
+xref: MESH:D013683
+xref: SNOMEDCT_US_2025_09_01:266324004
+xref: UMLS_CUI:C0039445
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:1271
+name: capillary disease
+synonym: "disease of capillaries" EXACT []
+xref: ICD10CM:I78
+xref: SNOMEDCT_US_2025_09_01:58729003
+xref: UMLS_CUI:C0155765
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:1272
+name: telangiectasis
+synonym: "telangiectasia" EXACT []
+xref: MESH:D013684
+xref: SNOMEDCT_US_2025_09_01:112641009
+xref: UMLS_CUI:C0039446
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:12720
+name: cerebral atherosclerosis
+xref: ICD10CM:I67.2
+xref: MESH:D002537
+xref: SNOMEDCT_US_2025_09_01:266258005
+xref: UMLS_CUI:C0007775
+is_a: DOID:1936 ! atherosclerosis
+
+[Term]
+id: DOID:1287
+name: cardiovascular system disease
+synonym: "disease of subdivision of hemolymphoid system" EXACT []
+xref: MESH:D002318
+xref: SNOMEDCT_US_2025_09_01:266275004
+xref: UMLS_CUI:C0007222
+
+[Term]
+id: DOID:12918
+name: thromboangiitis obliterans
+synonym: "Buerger's disease" EXACT []
+synonym: "Presenile gangrene" EXACT []
+xref: ICD10CM:I73.1
+xref: MESH:D013919
+xref: SNOMEDCT_US_2025_09_01:195298008
+xref: UMLS_CUI:C0040021
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:12929
+name: endocardial fibroelastosis
+synonym: "Elastomyofibrosis" EXACT []
+xref: ICD10CM:I42.4
+xref: MESH:D004695
+xref: SNOMEDCT_US_2025_09_01:65457005
+xref: UMLS_CUI:C0014117
+is_a: DOID:0050825 ! endocardium disease
+
+[Term]
+id: DOID:12930
+name: dilated cardiomyopathy
+synonym: "Congestive cardiomyopathy" RELATED []
+synonym: "Familial dilated cardiomyopathy" RELATED [MESH:C536231]
+synonym: "Idiopathic dilation cardiomyopathy" RELATED [MESH:C536277]
+synonym: "primary dilated cardiomyopathy" EXACT []
+xref: ICD10CM:I42.0
+xref: MESH:D002311
+xref: SNOMEDCT_US_2025_09_01:74368002
+xref: UMLS_CUI:C0007193
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:12932
+name: endomyocardial fibrosis
+synonym: "African endomyocardial fibrosis" EXACT []
+synonym: "Becker's disease" EXACT []
+synonym: "Endomyocardial sclerosis" EXACT []
+synonym: "obscure African cardiomyopathy" EXACT []
+xref: MESH:D004719
+xref: SNOMEDCT_US_2025_09_01:111507009
+xref: UMLS_CUI:C0553980
+is_a: DOID:397 ! restrictive cardiomyopathy
+
+[Term]
+id: DOID:12935
+name: alcoholic cardiomyopathy
+synonym: "Alcohol-induced heart muscle disease" EXACT []
+synonym: "Dilated cardiomyopathy secondary to alcohol" EXACT []
+xref: ICD10CM:I42.6
+xref: MESH:D002310
+xref: SNOMEDCT_US_2025_09_01:83521008
+xref: UMLS_CUI:C0007192
+is_a: DOID:3978 ! extrinsic cardiomyopathy
+
+[Term]
+id: DOID:13001
+name: carotid stenosis
+synonym: "Carotid artery stenosis" EXACT []
+synonym: "Stenosis, carotid artery" EXACT []
+xref: MESH:D016893
+xref: SNOMEDCT_US_2025_09_01:195181000
+xref: UMLS_CUI:C0007282
+is_a: DOID:3407 ! carotid artery disease
+
+[Term]
+id: DOID:13003
+name: vertebrobasilar insufficiency
+synonym: "Vertebro-basilar insufficiency" EXACT []
+synonym: "Vertebrobasilar arterial insufficiency" EXACT []
+synonym: "Vertebrobasilar artery syndrome" EXACT []
+xref: ICD10CM:G45.0
+xref: MESH:D014715
+xref: SNOMEDCT_US_2025_09_01:195196001
+xref: UMLS_CUI:C0042568
+is_a: DOID:224 ! transient cerebral ischemia
+
+[Term]
+id: DOID:13042
+name: persistent fetal circulation syndrome
+synonym: "congenital alveolar capillary dysplasia with misalignment of pulmonary veins" EXACT []
+synonym: "Fetal circulation" EXACT []
+synonym: "Persistent fetal circulation" EXACT []
+synonym: "Persistent foetal circulation" EXACT []
+synonym: "persistent foetal circulation syndrome" EXACT []
+synonym: "persistent pulmonary hypertension of the newborn" EXACT []
+xref: ICD10CM:P29.3
+xref: MESH:D010547
+xref: SNOMEDCT_US_2025_09_01:35604006
+xref: UMLS_CUI:C0031190
+is_a: DOID:6432 ! pulmonary hypertension
+
+[Term]
+id: DOID:13081
+name: hemangioma of subcutaneous tissue
+synonym: "Angioma of the Subcutaneous tissue" EXACT []
+synonym: "Subcutaneous haemangioma" EXACT []
+synonym: "Subcutaneous hemangioma" EXACT []
+xref: SNOMEDCT_US_2025_09_01:93473009
+xref: UMLS_CUI:C0685200
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:13089
+name: intracranial arterial disease
+xref: MESH:D020765
+xref: UMLS_CUI:C0752138
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:13094
+name: branch retinal artery occlusion
+synonym: "Arterial retinal branch occlusion" EXACT []
+synonym: "retinal arterial branch occlusion" EXACT []
+xref: ICD10CM:H34.23
+xref: MESH:D015356
+xref: SNOMEDCT_US_2025_09_01:50821009
+xref: UMLS_CUI:C0006123
+is_a: DOID:8483 ! retinal artery occlusion
+
+[Term]
+id: DOID:13095
+name: vertebral artery insufficiency
+synonym: "Vertebral artery syndrome" EXACT []
+xref: MESH:D014715
+xref: UMLS_CUI:C0042560
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:224 ! transient cerebral ischemia
+
+[Term]
+id: DOID:13096
+name: Sneddon syndrome
+synonym: "Idiopathic livedo reticularis with systemic involvement" EXACT []
+xref: MESH:D018860
+xref: SNOMEDCT_US_2025_09_01:716745004
+xref: UMLS_CUI:C0282492
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:13097
+name: intracranial arteriosclerosis
+xref: MESH:D002537
+xref: UMLS_CUI:C0007771
+is_a: DOID:2349 ! arteriosclerosis
+
+[Term]
+id: DOID:13098
+name: central retinal artery occlusion
+xref: ICD10CM:H34.1
+xref: MESH:D015356
+xref: SNOMEDCT_US_2025_09_01:38742007
+xref: UMLS_CUI:C0007688
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:8483 ! retinal artery occlusion
+
+[Term]
+id: DOID:13099
+name: Moyamoya disease
+synonym: "progressive intracranial arterial occlusion" EXACT []
+xref: ICD10CM:I67.5
+xref: MESH:D009072
+xref: SNOMEDCT_US_2025_09_01:69116000
+xref: UMLS_CUI:C0026654
+is_a: DOID:3527 ! cerebral arterial disease
+
+[Term]
+id: DOID:13100
+name: intracranial vasospasm
+xref: MESH:D020301
+xref: UMLS_CUI:C0751895
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:13129
+name: severe pre-eclampsia
+synonym: "antepartum severe pre-eclampsia" EXACT []
+synonym: "postpartum severe pre-eclampsia" EXACT []
+synonym: "Severe pre-eclampsia, with delivery" EXACT []
+synonym: "severe preeclampsia" EXACT []
+xref: UMLS_CUI:C0156669
+is_a: DOID:10591 ! pre-eclampsia
+
+[Term]
+id: DOID:13133
+name: HELLP syndrome
+xref: ICD10CM:O14.2
+xref: MESH:D017359
+xref: SNOMEDCT_US_2025_09_01:95605009
+xref: UMLS_CUI:C0162739
+is_a: DOID:13129 ! severe pre-eclampsia
+
+[Term]
+id: DOID:13143
+name: benign secondary hypertension
+xref: SNOMEDCT_US_2025_09_01:44111003
+xref: UMLS_CUI:C0155620
+is_a: DOID:11130 ! secondary hypertension
+
+[Term]
+id: DOID:13145
+name: benign renovascular hypertension
+xref: UMLS_CUI:C0155621
+is_a: DOID:1073 ! renal hypertension
+is_a: DOID:13143 ! benign secondary hypertension
+
+[Term]
+id: DOID:13207
+name: proliferative diabetic retinopathy
+synonym: "PDR" EXACT OMO:0003012 []
+xref: SNOMEDCT_US_2025_09_01:154679002
+xref: UMLS_CUI:C0154830
+is_a: DOID:8947 ! diabetic retinopathy
+
+[Term]
+id: DOID:13208
+name: background diabetic retinopathy
+synonym: "Non proliferative diabetic retinopathy" EXACT []
+synonym: "Non-Proliferative Diabetic Retinopathy" EXACT []
+xref: SNOMEDCT_US_2025_09_01:390834004
+xref: UMLS_CUI:C0004606
+is_a: DOID:8947 ! diabetic retinopathy
+
+[Term]
+id: DOID:13209
+name: right bundle branch block
+synonym: "Right bundle branch block with left posterior fascicular block" EXACT []
+xref: SNOMEDCT_US_2025_09_01:46319007
+xref: UMLS_CUI:C0155704
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:13241
+name: Behcet's disease
+synonym: "Adamantiades-Behcet disease" EXACT []
+synonym: "Behcet syndrome" EXACT []
+synonym: "Behcet's syndrome" RELATED []
+synonym: "Behet's syndrome" EXACT []
+synonym: "triple symptom complex" EXACT []
+xref: ICD10CM:M35.2
+xref: MESH:D001528
+xref: SNOMEDCT_US_2025_09_01:310701003
+xref: UMLS_CUI:C0004943
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:13252
+name: mesenteric vascular occlusion
+xref: MESH:D008641
+xref: UMLS_CUI:C0025472
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:13375
+name: temporal arteritis
+synonym: "giant cell arteritis" EXACT []
+synonym: "Horton's disease" EXACT []
+xref: MESH:D013700
+xref: SNOMEDCT_US_2025_09_01:195354005
+xref: UMLS_CUI:C0039483
+is_a: DOID:525 ! central nervous system vasculitis
+
+[Term]
+id: DOID:13446
+name: basilar artery occlusion
+xref: ICD10CM:I65.1
+xref: SNOMEDCT_US_2025_09_01:78658006
+xref: UMLS_CUI:C0265098
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:5976 ! occlusion precerebral artery
+
+[Term]
+id: DOID:13514
+name: venous tributary occlusion of retina
+synonym: "Venous tributary (branch) occlusion of retina" EXACT []
+synonym: "Venous tributary branch occlusion of retina" EXACT []
+xref: MESH:D012170
+xref: SNOMEDCT_US_2025_09_01:24596005
+xref: UMLS_CUI:C0339505
+is_a: DOID:1729 ! retinal vascular occlusion
+
+[Term]
+id: DOID:13593
+name: eclampsia
+synonym: "Eclampsia in puerperium" EXACT []
+synonym: "Eclampsia, postpartum" EXACT []
+synonym: "Postpartum eclampsia" EXACT []
+xref: ICD10CM:O15
+xref: MESH:D004461
+xref: SNOMEDCT_US_2025_09_01:156111007
+xref: UMLS_CUI:C0013537
+is_a: DOID:10591 ! pre-eclampsia
+
+[Term]
+id: DOID:13620
+name: patent foramen ovale
+synonym: "Atrial septal defect within oval fossa" EXACT []
+synonym: "Defect, Patent or persistent, ostium secundum" EXACT []
+synonym: "foramen ovale patent" EXACT []
+synonym: "Ostium secundum type atrial septal defect" EXACT []
+synonym: "Persistent ostium secundum" EXACT []
+xref: ICD10CM:Q21.12
+xref: MESH:D054092
+xref: SNOMEDCT_US_2025_09_01:268316001
+xref: UMLS_CUI:C0016522
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:13730
+name: malignant renovascular hypertension
+is_a: DOID:1073 ! renal hypertension
+is_a: DOID:13731 ! malignant secondary hypertension
+
+[Term]
+id: DOID:13731
+name: malignant secondary hypertension
+xref: SNOMEDCT_US_2025_09_01:89242004
+xref: UMLS_CUI:C0155617
+is_a: DOID:11130 ! secondary hypertension
+
+[Term]
+id: DOID:13738
+name: hepatic infarction
+synonym: "infarct of liver" EXACT []
+xref: ICD10CM:K76.3
+xref: MESH:D000081011
+xref: SNOMEDCT_US_2025_09_01:17890003
+xref: UMLS_CUI:C0151731
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:13739
+name: nutmeg liver
+synonym: "chronic passive congestion of liver" EXACT []
+xref: ICD10CM:K76.1
+xref: SNOMEDCT_US_2025_09_01:34736002
+xref: UMLS_CUI:C0156195
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:13832
+name: patent ductus arteriosus
+synonym: "ductus arteriosus, Patent" RELATED []
+synonym: "Patent ductus Botalli" EXACT []
+xref: ICD10CM:Q25.0
+xref: MESH:D004374
+xref: SNOMEDCT_US_2025_09_01:156928009
+xref: UMLS_CUI:C0013274
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:13884
+name: sick sinus syndrome
+synonym: "sinus node infection" EXACT []
+xref: ICD10CM:I49.5
+xref: MESH:D012804
+xref: SNOMEDCT_US_2025_09_01:266307005
+xref: UMLS_CUI:C0037052
+is_a: DOID:0050824 ! sinoatrial node disease
+
+[Term]
+id: DOID:14004
+name: thoracic aortic aneurysm
+xref: MESH:D017545
+xref: SNOMEDCT_US_2025_09_01:155421001
+xref: UMLS_CUI:C0162872
+is_a: DOID:3627 ! aortic aneurysm
+
+[Term]
+id: DOID:14006
+name: splenic artery aneurysm
+xref: SNOMEDCT_US_2025_09_01:70405009
+xref: UMLS_CUI:C0155747
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:14037
+name: aorta atresia
+synonym: "Atresia and stenosis of aorta" EXACT []
+synonym: "Congenital atresia and stenosis of aorta" EXACT []
+xref: SNOMEDCT_US_2025_09_01:204431007
+xref: UMLS_CUI:C0345010
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:14092
+name: renal artery atheroma
+synonym: "Atherosclerosis of renal artery" EXACT []
+synonym: "renal atherosclerosis" EXACT []
+xref: ICD10CM:I70.1
+xref: SNOMEDCT_US_2025_09_01:45281005
+xref: UMLS_CUI:C0155734
+is_a: DOID:1936 ! atherosclerosis
+is_a: DOID:2388 ! renal artery disease
+
+[Term]
+id: DOID:14121
+name: blue toe syndrome
+xref: MESH:D018438
+xref: UMLS_CUI:C0242645
+is_a: DOID:1461 ! cholesterol embolism
+
+[Term]
+id: DOID:14172
+name: rheumatic congestive heart failure
+synonym: "Congestive rheumatic heart failure" EXACT []
+synonym: "Rheumatic heart failure" EXACT []
+xref: ICD10CM:I09.81
+xref: SNOMEDCT_US_2025_09_01:82523003
+xref: UMLS_CUI:C0155582
+is_a: DOID:6000 ! congestive heart failure
+
+[Term]
+id: DOID:14175
+name: von Hippel-Lindau disease
+synonym: "Hippel Lindau syndrome" EXACT []
+synonym: "von Hippel-Lindau syndrome" EXACT []
+xref: ICD10CM:Q85.83
+xref: MESH:D006623
+xref: SNOMEDCT_US_2025_09_01:46659004
+xref: UMLS_CUI:C0019562
+is_a: DOID:5241 ! hemangioblastoma
+
+[Term]
+id: DOID:14265
+name: pulmonary valve insufficiency
+synonym: "pulmonary incompetence" EXACT []
+synonym: "pulmonary incompetence, non-rheumatic" EXACT []
+synonym: "pulmonary insufficiency following trauma and surgery" EXACT []
+synonym: "pulmonary regurg." EXACT []
+synonym: "pulmonary regurgitation" EXACT []
+synonym: "Pulmonic insufficiency" EXACT []
+synonym: "Pulmonic valve regurgitation" EXACT []
+xref: MESH:D011665
+xref: SNOMEDCT_US_2025_09_01:91434003
+xref: UMLS_CUI:C0034088
+is_a: DOID:5749 ! pulmonary valve disease
+
+[Term]
+id: DOID:14289
+name: Ebstein anomaly
+synonym: "Ebstein's anomaly" EXACT []
+synonym: "Ebstein's anomaly of common atrioventricular valve" EXACT []
+synonym: "Ebstein's anomaly of right atrioventricular valve" EXACT []
+synonym: "Ebstein's anomaly of tricuspid valve" EXACT []
+xref: ICD10CM:Q22.5
+xref: MESH:D004437
+xref: SNOMEDCT_US_2025_09_01:1796006
+xref: UMLS_CUI:C0013481
+is_a: DOID:0050826 ! tricuspid valve disease
+
+[Term]
+id: DOID:14308
+name: skin epithelioid hemangioma
+synonym: "Angiolymphoid Cutaneous hyperplasia" EXACT []
+synonym: "epithelioid hemangioma of skin" EXACT []
+xref: MESH:D000796
+xref: SNOMEDCT_US_2025_09_01:254791004
+xref: UMLS_CUI:C0002989
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:14323
+name: Marfan syndrome
+synonym: "Marfan's syndrome" EXACT []
+xref: ICD10CM:Q87.4
+xref: MESH:D008382
+xref: SNOMEDCT_US_2025_09_01:19346006
+xref: UMLS_CUI:C0024796
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:14392
+name: thrombophlebitis migrans
+xref: ICD10CM:I82.1
+xref: SNOMEDCT_US_2025_09_01:155491005
+xref: UMLS_CUI:C0152250
+is_a: DOID:3875 ! thrombophlebitis
+
+[Term]
+id: DOID:14400
+name: capillary leak syndrome
+xref: MESH:D019559
+xref: SNOMEDCT_US_2025_09_01:87730004
+xref: UMLS_CUI:C0343084
+is_a: DOID:1271 ! capillary disease
+
+[Term]
+id: DOID:14522
+name: partial arterial retinal occlusion
+synonym: "partial retinal arterial occlusion" EXACT []
+synonym: "Retinal partial arterial occlusion" EXACT []
+xref: ICD10CM:H34.21
+xref: SNOMEDCT_US_2025_09_01:776009
+xref: UMLS_CUI:C0154839
+is_a: DOID:8483 ! retinal artery occlusion
+
+[Term]
+id: DOID:14535
+name: malignant cardiac germ cell tumor
+synonym: "malignant cardiac germ cell tumour" EXACT []
+synonym: "malignant germ cell tumor of the Heart" EXACT []
+synonym: "malignant germ cell tumour of the Heart" EXACT []
+xref: SNOMEDCT_US_2025_09_01:866080006
+xref: UMLS_CUI:C1334566
+is_a: DOID:117 ! heart cancer
+
+[Term]
+id: DOID:14557
+name: primary pulmonary hypertension
+synonym: "Idiopathic pulmonary arterial hypertension" EXACT []
+xref: ICD10CM:I27.0
+xref: SNOMEDCT_US_2025_09_01:26174007
+xref: UMLS_CUI:C0152171
+is_a: DOID:12326 ! chronic pulmonary heart disease
+
+[Term]
+id: DOID:1460
+name: atheroembolism of kidney
+is_a: DOID:1461 ! cholesterol embolism
+
+[Term]
+id: DOID:1461
+name: cholesterol embolism
+synonym: "atheroembolism" EXACT []
+synonym: "cholesterol crystal embolism" EXACT []
+synonym: "purple toe syndrome" EXACT []
+synonym: "trash foot" EXACT []
+synonym: "warfarin blue toe syndrome" EXACT []
+xref: ICD10CM:I75
+xref: MESH:D017700
+xref: SNOMEDCT_US_2025_09_01:10690002
+xref: UMLS_CUI:C0149649
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:1475
+name: lymphangioma
+synonym: "benign lymphangioma" EXACT []
+synonym: "Congenital lymphangioma" EXACT []
+xref: ICD10CM:D18.1
+xref: MESH:D008202
+xref: SNOMEDCT_US_2025_09_01:154625006
+xref: UMLS_CUI:C0024221
+is_a: DOID:60006 ! benign vascular tumor
+
+[Term]
+id: DOID:1495
+name: cystic echinococcosis
+synonym: "echinococcus granulosus" EXACT []
+synonym: "Echinococcus granulosus infection" EXACT []
+synonym: "Echinococcus granulosus infection of lung" EXACT []
+synonym: "Echinococcus granulosus infection of thyroid" EXACT []
+synonym: "echinococcus granulosus infectious disease" EXACT []
+synonym: "echinococcus granulosus infectious disease of liver" EXACT []
+synonym: "echinococcus granulosus infectious disease of thyroid" EXACT []
+synonym: "Liver echinococcus granulosus" EXACT []
+synonym: "lung echinococcus granulosus" EXACT []
+synonym: "Thyroid echinococcus granulosus" EXACT []
+synonym: "unilocular echinococcosis" EXACT []
+synonym: "unilocular hydatid disease" EXACT []
+xref: ICD10CM:B67.4
+xref: SNOMEDCT_US_2025_09_01:75006000
+xref: UMLS_CUI:C0152068
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:1591
+name: renovascular hypertension
+xref: ICD10CM:I15.0
+xref: MESH:D006978
+xref: SNOMEDCT_US_2025_09_01:123799005
+xref: UMLS_CUI:C0020545
+is_a: DOID:1073 ! renal hypertension
+
+[Term]
+id: DOID:1637
+name: breast angiomatosis
+xref: UMLS_CUI:C1511284
+is_a: DOID:1271 ! capillary disease
+
+[Term]
+id: DOID:1657
+name: ventricular septal defect
+synonym: "Interventricular septal defect" EXACT []
+synonym: "Ventricular septal abnormality" EXACT []
+xref: ICD10CM:Q21.0
+xref: MESH:D006345
+xref: SNOMEDCT_US_2025_09_01:156914003
+xref: UMLS_CUI:C0018818
+is_a: DOID:1681 ! heart septal defect
+
+[Term]
+id: DOID:1681
+name: heart septal defect
+synonym: "Cardiac septal defects" EXACT []
+synonym: "Congenital septal defect of heart" EXACT []
+synonym: "septal defect" EXACT []
+xref: ICD10CM:Q21.9
+xref: MESH:D006343
+xref: SNOMEDCT_US_2025_09_01:59494005
+xref: UMLS_CUI:C0018816
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:1682
+name: congenital heart disease
+synonym: "Congenital anomaly of heart" EXACT []
+synonym: "congenital heart defect" EXACT []
+synonym: "Congenital Heart Defects" EXACT []
+synonym: "heart defect" EXACT []
+synonym: "Heart Malformation" EXACT []
+synonym: "Heart-congenital defect" RELATED []
+xref: ICD10CM:Q24.9
+xref: MESH:D006330
+xref: SNOMEDCT_US_2025_09_01:268315002
+xref: UMLS_CUI:C0018798
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:1712
+name: aortic valve stenosis
+synonym: "Aortic stenosis" EXACT []
+synonym: "Rheumatic aortic stenosis" EXACT []
+synonym: "rheumatic aortic valve stenosis" EXACT []
+xref: ICD10CM:I06.0
+xref: ICD10CM:Q23.0
+xref: MESH:D001024
+xref: SNOMEDCT_US_2025_09_01:155282009
+xref: SNOMEDCT_US_2025_09_01:18546004
+xref: SNOMEDCT_US_2025_09_01:60573004
+xref: UMLS_CUI:C0003507
+xref: UMLS_CUI:C0152417
+xref: UMLS_CUI:C0155567
+is_a: DOID:62 ! aortic valve disease
+
+[Term]
+id: DOID:1726
+name: partial of retinal vein occlusion
+synonym: "Partial occlusion of retinal vein" EXACT []
+synonym: "Partial Retinal Vein Occlusion" EXACT []
+xref: ICD10CM:H34.82
+xref: SNOMEDCT_US_2025_09_01:65593009
+xref: UMLS_CUI:C0271080
+is_a: DOID:1727 ! retinal vein occlusion
+
+[Term]
+id: DOID:1727
+name: retinal vein occlusion
+synonym: "Occlusion, of retinal vein" EXACT []
+xref: MESH:D012170
+xref: SNOMEDCT_US_2025_09_01:46085004
+xref: UMLS_CUI:C0035328
+is_a: DOID:1729 ! retinal vascular occlusion
+
+[Term]
+id: DOID:1729
+name: retinal vascular occlusion
+synonym: "Retinal vasc. occlusion" EXACT []
+xref: ICD10CM:H34
+xref: SNOMEDCT_US_2025_09_01:267717005
+xref: UMLS_CUI:C0035326
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:175
+name: vascular cancer
+synonym: "blood vessel neoplasm" EXACT []
+synonym: "Blood vessel tumor" EXACT []
+synonym: "Blood vessel tumors" EXACT []
+synonym: "Blood vessel tumour disorder" EXACT []
+synonym: "Haemangiomatous tumour" EXACT []
+synonym: "leiomyosarcoma of the renal Vein" EXACT []
+synonym: "malignant great vessel tumor" EXACT []
+synonym: "malignant tumor of pulmonary artery" EXACT []
+synonym: "malignant tumor of pulmonary Vein" EXACT []
+synonym: "malignant vascular neoplasm" EXACT []
+synonym: "malignant vascular tumor" EXACT []
+synonym: "neoplasm of great vessel" EXACT []
+synonym: "pulmonary artery malignant neoplasm" EXACT []
+synonym: "pulmonary vein malignant neoplasm" EXACT []
+synonym: "renal vein leiomyosarcoma" EXACT []
+synonym: "vascular tissue neoplasm" EXACT []
+synonym: "vascular tumors" EXACT []
+xref: MESH:D019043
+xref: SNOMEDCT_US_2025_09_01:126737003
+xref: SNOMEDCT_US_2025_09_01:93817006
+xref: UMLS_CUI:C0282607
+xref: UMLS_CUI:C0346845
+xref: UMLS_CUI:C1290407
+xref: UMLS_CUI:C1334616
+xref: UMLS_CUI:C1334617
+xref: UMLS_CUI:C1334630
+xref: UMLS_CUI:C1335753
+is_a: DOID:176 ! cardiovascular cancer
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:1754
+name: mitral valve stenosis
+synonym: "Mitral stenosis" EXACT []
+xref: MESH:D008946
+xref: SNOMEDCT_US_2025_09_01:79619009
+xref: UMLS_CUI:C0026269
+is_a: DOID:61 ! mitral valve disease
+
+[Term]
+id: DOID:176
+name: cardiovascular cancer
+synonym: "cardiovascular neoplasm" EXACT []
+synonym: "Cardiovascular tumors" EXACT []
+xref: SNOMEDCT_US_2025_09_01:721573003
+xref: UMLS_CUI:C0497243
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:178
+name: vascular disease
+synonym: "vascular tissue disease" EXACT []
+xref: ICD10CM:I72.9
+xref: MESH:D000783
+xref: MESH:D014652
+xref: MESH:D020758
+xref: MESH:D020760
+xref: SNOMEDCT_US_2025_09_01:27550009
+xref: SNOMEDCT_US_2025_09_01:371029002
+xref: SNOMEDCT_US_2025_09_01:432119003
+xref: UMLS_CUI:C0002940
+xref: UMLS_CUI:C0042373
+xref: UMLS_CUI:C0752127
+xref: UMLS_CUI:C0752130
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:1787
+name: pericarditis
+xref: MESH:D010493
+xref: SNOMEDCT_US_2025_09_01:3238004
+xref: UMLS_CUI:C0031046
+is_a: DOID:0050829 ! pericardium disease
+
+[Term]
+id: DOID:1869
+name: chronic rheumatic pericarditis
+xref: ICD10CM:I09.2
+xref: SNOMEDCT_US_2025_09_01:194719006
+xref: UMLS_CUI:C0155561
+is_a: DOID:1787 ! pericarditis
+
+[Term]
+id: DOID:1882
+name: atrial heart septal defect
+synonym: "atrial septal defect" EXACT []
+synonym: "atrioseptal defect" EXACT []
+synonym: "auricular septal defect" EXACT []
+synonym: "congenital atrial septal defect" EXACT []
+synonym: "interatrial septal defect" EXACT []
+synonym: "interauricular septal defect" EXACT []
+xref: ICD10CM:Q21.1
+xref: MESH:D006344
+xref: SNOMEDCT_US_2025_09_01:156915002
+xref: UMLS_CUI:C0018817
+is_a: DOID:1681 ! heart septal defect
+
+[Term]
+id: DOID:1896
+name: sigmoid neoplasm
+synonym: "neoplasm of sigmoid colon" EXACT []
+synonym: "tumor of sigmoid colon" EXACT []
+xref: MESH:D012811
+xref: SNOMEDCT_US_2025_09_01:254581007
+xref: UMLS_CUI:C0037073
+is_a: DOID:235 ! colonic benign neoplasm
+
+[Term]
+id: DOID:1929
+name: supravalvular aortic stenosis
+synonym: "Supra-valvular aortic stenosis" EXACT []
+xref: ICD10CM:Q25.3
+xref: MESH:D021921
+xref: SNOMEDCT_US_2025_09_01:204436002
+xref: UMLS_CUI:C0003499
+is_a: DOID:1712 ! aortic valve stenosis
+
+[Term]
+id: DOID:1936
+name: atherosclerosis
+xref: ICD10CM:I70
+xref: MESH:D050197
+xref: SNOMEDCT_US_2025_09_01:155414001
+xref: UMLS_CUI:C0004153
+is_a: DOID:2348 ! arteriosclerotic cardiovascular disease
+
+[Term]
+id: DOID:1998
+name: Lutembacher's syndrome
+synonym: "Lutembacher syndrome" EXACT []
+synonym: "Lutembacher's anomaly" EXACT []
+xref: MESH:D008185
+xref: SNOMEDCT_US_2025_09_01:204319006
+xref: UMLS_CUI:C0024164
+is_a: DOID:1882 ! atrial heart septal defect
+
+[Term]
+id: DOID:223
+name: basilar artery insufficiency
+synonym: "Basilar artery syndrome" EXACT []
+xref: MESH:D014715
+xref: SNOMEDCT_US_2025_09_01:195197005
+xref: UMLS_CUI:C0004812
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:224 ! transient cerebral ischemia
+
+[Term]
+id: DOID:224
+name: transient cerebral ischemia
+synonym: "TIA" EXACT OMO:0003012 []
+synonym: "TIA - Transient ischaemic attack" EXACT []
+synonym: "Transient cerebral ischaemia" EXACT []
+synonym: "transient ischemic attack" EXACT []
+synonym: "Transient ischemic attacks" EXACT []
+xref: ICD10CM:G45.9
+xref: MESH:D002546
+xref: SNOMEDCT_US_2025_09_01:195196001
+xref: UMLS_CUI:C0007787
+is_a: DOID:2316 ! brain ischemia
+
+[Term]
+id: DOID:2286
+name: capillary lymphangioma
+synonym: "cutaneous lymphangioma" RELATED []
+xref: SNOMEDCT_US_2025_09_01:445492005
+xref: UMLS_CUI:C1333176
+is_a: DOID:1271 ! capillary disease
+is_a: DOID:1475 ! lymphangioma
+
+[Term]
+id: DOID:2316
+name: brain ischemia
+synonym: "cerebral ischemia" EXACT []
+synonym: "Ischaemic encephalopathy" EXACT []
+synonym: "Ischemic encephalopathy" EXACT []
+xref: MESH:D002545
+xref: SNOMEDCT_US_2025_09_01:193049009
+xref: UMLS_CUI:C0007786
+is_a: DOID:326 ! ischemia
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:2347
+name: generalized atherosclerosis
+synonym: "Generalised atherosclerosis" EXACT []
+xref: ICD10CM:I70.91
+xref: SNOMEDCT_US_2025_09_01:367108003
+xref: UMLS_CUI:C0017327
+is_a: DOID:1936 ! atherosclerosis
+
+[Term]
+id: DOID:2348
+name: arteriosclerotic cardiovascular disease
+synonym: "Cardiovascular arteriosclerosis" EXACT []
+is_a: DOID:2349 ! arteriosclerosis
+
+[Term]
+id: DOID:2349
+name: arteriosclerosis
+synonym: "Arteriosclerotic vascular disease" EXACT []
+xref: ICD10CM:I70
+xref: MESH:D001161
+xref: SNOMEDCT_US_2025_09_01:195251000
+xref: UMLS_CUI:C0003850
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:235
+name: colonic benign neoplasm
+synonym: "colon neoplasm" EXACT []
+synonym: "Colonic Mass" EXACT []
+synonym: "Colonic tumor" EXACT []
+synonym: "neoplasm of colon" EXACT []
+xref: MESH:D003110
+xref: SNOMEDCT_US_2025_09_01:126838000
+xref: UMLS_CUI:C0009375
+is_a: DOID:1475 ! lymphangioma
+
+[Term]
+id: DOID:2364
+name: post-thrombotic syndrome
+synonym: "Postphlebetic syndrome with inflammation" EXACT []
+synonym: "Postphlebetic syndrome with ulcer" EXACT []
+synonym: "Postphlebetic syndrome with ulcer and inflammation" EXACT []
+synonym: "postphlebitic syndrome" EXACT []
+synonym: "venous stress disorder" EXACT []
+xref: ICD10CM:I87.0
+xref: MESH:D011186
+xref: SNOMEDCT_US_2025_09_01:155460004
+xref: UMLS_CUI:C0032807
+is_a: DOID:10128 ! venous insufficiency
+
+[Term]
+id: DOID:2388
+name: renal artery disease
+synonym: "renal vascular disease" EXACT []
+synonym: "vascular disorder of kidney" EXACT []
+xref: SNOMEDCT_US_2025_09_01:16934004
+xref: UMLS_CUI:C0268790
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:2430
+name: skin glomus tumor
+synonym: "Glomus skin neoplasm" EXACT []
+synonym: "Glomus tumor of skin" EXACT []
+synonym: "Glomus tumour of skin" EXACT []
+synonym: "skin glomus tumour" EXACT []
+xref: SNOMEDCT_US_2025_09_01:254795008
+xref: UMLS_CUI:C0346083
+is_a: DOID:2431 ! glomus tumor
+
+[Term]
+id: DOID:2431
+name: glomus tumor
+synonym: "Glomus neoplasm" EXACT []
+synonym: "Glomus tumour" EXACT []
+xref: MESH:D005918
+xref: SNOMEDCT_US_2025_09_01:189193002
+xref: UMLS_CUI:C0017653
+is_a: DOID:3850 ! hemangiopericytic tumor
+
+[Term]
+id: DOID:2435
+name: skin glomangioma
+synonym: "Cutaneous Glomangioma" EXACT []
+synonym: "Glomangioma of skin" EXACT []
+xref: SNOMEDCT_US_2025_09_01:403970001
+xref: UMLS_CUI:C1275226
+is_a: DOID:2436 ! glomangioma
+
+[Term]
+id: DOID:2436
+name: glomangioma
+synonym: "Glomuvenous Malformation" EXACT []
+xref: MESH:D005918
+xref: SNOMEDCT_US_2025_09_01:7429002
+xref: UMLS_CUI:C0334421
+is_a: DOID:5238 ! benign perivascular tumor
+
+[Term]
+id: DOID:2450
+name: central retinal vein occlusion
+xref: ICD10CM:H34.81
+xref: MESH:D012170
+xref: SNOMEDCT_US_2025_09_01:193378003
+xref: UMLS_CUI:C0154841
+is_a: DOID:1727 ! retinal vein occlusion
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:2462
+name: retinal vascular disease
+synonym: "retina circulation disorder" EXACT []
+xref: SNOMEDCT_US_2025_09_01:57534004
+xref: UMLS_CUI:C0154833
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:2493
+name: gastric antral vascular ectasia
+synonym: "Watermelon stomach" EXACT []
+xref: MESH:D020252
+xref: SNOMEDCT_US_2025_09_01:412795008
+xref: UMLS_CUI:C0267211
+is_a: DOID:1271 ! capillary disease
+
+[Term]
+id: DOID:2494
+name: angiodysplasia
+synonym: "angiodysplasia of stomach and duodenum with hemorrhage" EXACT []
+xref: MESH:D016888
+xref: SNOMEDCT_US_2025_09_01:71072006
+xref: UMLS_CUI:C0085411
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:2508
+name: Takayasu's arteritis
+synonym: "Aortic arch arteritis" EXACT []
+synonym: "aortic arch syndrome" EXACT []
+synonym: "Idiopathic aortitis" EXACT []
+synonym: "Takayasu arteritis" EXACT []
+synonym: "Takayasu's disease" EXACT []
+xref: ICD10CM:M31.4
+xref: MESH:D001015
+xref: MESH:D013625
+xref: SNOMEDCT_US_2025_09_01:359789008
+xref: SNOMEDCT_US_2025_09_01:42153001
+xref: UMLS_CUI:C0003490
+xref: UMLS_CUI:C0039263
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:2516
+name: intracranial cavernous angioma
+synonym: "intracranial Cavernoma" EXACT []
+xref: SNOMEDCT_US_2025_09_01:445513004
+xref: UMLS_CUI:C1334237
+is_a: DOID:2517 ! intracranial structure hemangioma
+
+[Term]
+id: DOID:2517
+name: intracranial structure hemangioma
+synonym: "Angioma of intracranial Structure" EXACT []
+synonym: "hemangioma of intracranial structure" EXACT []
+synonym: "hemangioma of intracranial structures" EXACT []
+xref: ICD10CM:D18.02
+xref: SNOMEDCT_US_2025_09_01:93468003
+xref: UMLS_CUI:C0154050
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:254
+name: hemangioma of intra-abdominal structure
+synonym: "hemangioma of intra-abdominal structures" EXACT []
+synonym: "hemangioma, Intra-abdominal" EXACT []
+xref: ICD10CM:D18.03
+xref: SNOMEDCT_US_2025_09_01:93467008
+xref: UMLS_CUI:C0154052
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:255
+name: hemangioma
+xref: ICD10CM:D18.0
+xref: MESH:D006391
+xref: SNOMEDCT_US_2025_09_01:154625006
+xref: UMLS_CUI:C0018916
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:2555
+name: granulomatous angiitis
+xref: MESH:D020293
+xref: SNOMEDCT_US_2025_09_01:1260127003
+xref: UMLS_CUI:C0018202
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:2626
+name: choroid plexus papilloma
+synonym: "childhood choroid plexus papilloma" EXACT []
+xref: MESH:D020288
+xref: SNOMEDCT_US_2025_09_01:18021007
+xref: UMLS_CUI:C0205770
+xref: UMLS_CUI:C1332963
+is_a: DOID:60007 ! cerebrovascular benign neoplasm
+
+[Term]
+id: DOID:264
+name: hemangiopericytoma
+synonym: "Haemangiopericytic meningioma" EXACT []
+synonym: "hemangiopericytoma, malignant" EXACT []
+synonym: "malignant hemangiopericytoma" EXACT []
+xref: MESH:D006393
+xref: SNOMEDCT_US_2025_09_01:36060005
+xref: UMLS_CUI:C0018922
+is_a: DOID:3850 ! hemangiopericytic tumor
+
+[Term]
+id: DOID:2643
+name: perivascular epithelioid cell tumor
+synonym: "neoplasm with Perivascular epithelioid cell differentiation" EXACT []
+synonym: "PEComa" EXACT []
+xref: MESH:D054973
+xref: SNOMEDCT_US_2025_09_01:388601000
+xref: UMLS_CUI:C1300127
+is_a: DOID:3316 ! perivascular tumor
+
+[Term]
+id: DOID:265
+name: spleen angiosarcoma
+synonym: "angiosarcoma of spleen" EXACT []
+synonym: "Splenic hemangiosarcoma" EXACT []
+xref: SNOMEDCT_US_2025_09_01:187821001
+xref: UMLS_CUI:C0346424
+is_a: DOID:0001816 ! angiosarcoma
+
+[Term]
+id: DOID:268
+name: liver angiosarcoma
+synonym: "angiosarcoma of liver" EXACT []
+synonym: "hemangiosarcoma of the Liver" EXACT []
+xref: ICD10CM:C22.3
+xref: SNOMEDCT_US_2025_09_01:187770005
+xref: UMLS_CUI:C0345907
+is_a: DOID:0001816 ! angiosarcoma
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:271
+name: hemangioma of liver
+synonym: "Angioma of Liver" EXACT []
+synonym: "hepatic angioma" EXACT []
+xref: SNOMEDCT_US_2025_09_01:93469006
+xref: UMLS_CUI:C0238246
+is_a: DOID:255 ! hemangioma
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:272
+name: hepatic vascular disease
+synonym: "vascular disorder of liver" EXACT []
+xref: SNOMEDCT_US_2025_09_01:235878005
+xref: UMLS_CUI:C0400923
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:2725
+name: capillary hemangioma
+synonym: "Capillary haemangioma" EXACT []
+synonym: "cellular hemangioma of Infancy" EXACT []
+synonym: "Congenital vascular hamartoma" EXACT []
+synonym: "Congenital vascular naevus" EXACT []
+synonym: "Infantile hemangioma" EXACT []
+synonym: "Juvenile hemangioma" EXACT []
+synonym: "Strawberry haemangioma" EXACT []
+synonym: "Strawberry nevus" EXACT []
+synonym: "Strawberry nevus of skin" EXACT []
+xref: ICD10CM:Q82.5
+xref: MESH:D018324
+xref: SNOMEDCT_US_2025_09_01:56975005
+xref: UMLS_CUI:C0206733
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:275
+name: gastric hemangioma
+synonym: "hemangioma of stomach" EXACT []
+xref: UMLS_CUI:C1333770
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:277
+name: chorioangioma
+synonym: "Placental hemangioma" EXACT []
+xref: MESH:D006391
+xref: SNOMEDCT_US_2025_09_01:699948001
+xref: UMLS_CUI:C0677608
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:2780
+name: rectosigmoid junction neoplasm
+synonym: "neoplasm of rectosigmoid junction" EXACT []
+synonym: "rectosigmoid neoplasm" EXACT []
+synonym: "Rectosigmoid tumor" EXACT []
+xref: SNOMEDCT_US_2025_09_01:126848003
+xref: UMLS_CUI:C0345873
+is_a: DOID:1896 ! sigmoid neoplasm
+
+[Term]
+id: DOID:2842
+name: Jervell-Lange Nielsen syndrome
+synonym: "Jervell and Lange-Nielson syndrome" EXACT []
+xref: MESH:D029593
+xref: SNOMEDCT_US_2025_09_01:49518001
+xref: UMLS_CUI:C0022387
+is_a: DOID:2843 ! long QT syndrome
+
+[Term]
+id: DOID:2843
+name: long QT syndrome
+synonym: "long Q-T syndrome" EXACT []
+synonym: "LQT" EXACT OMO:0003012 []
+synonym: "Romano-Ward syndrome" NARROW []
+xref: ICD10CM:I45.81
+xref: MESH:D008133
+xref: SNOMEDCT_US_2025_09_01:9651007
+xref: UMLS_CUI:C0023976
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:2972
+name: renal artery obstruction
+xref: ICD10CM:N28.0
+xref: MESH:D012078
+xref: UMLS_CUI:C0035066
+is_a: DOID:2388 ! renal artery disease
+
+[Term]
+id: DOID:2988
+name: antiphospholipid syndrome
+synonym: "antiphospholipid antibody syndrome" EXACT []
+synonym: "APS" EXACT OMO:0003012 []
+xref: ICD10CM:D68.61
+xref: MESH:D016736
+xref: SNOMEDCT_US_2025_09_01:201450008
+xref: UMLS_CUI:C0085278
+is_a: DOID:0060051 ! autoimmune disease of cardiovascular system
+
+[Term]
+id: DOID:3049
+name: Churg-Strauss syndrome
+synonym: "Allergic granulomatosis angiitis" EXACT []
+synonym: "Allergic Granulomatous Angiitis" EXACT []
+synonym: "Churg-Strauss vasculitis" EXACT []
+xref: ICD10CM:M30.1
+xref: MESH:D015267
+xref: SNOMEDCT_US_2025_09_01:82275008
+xref: UMLS_CUI:C0008728
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:3081
+name: cystic lymphangioma
+synonym: "cystic Hygroma" EXACT []
+xref: MESH:D018191
+xref: SNOMEDCT_US_2025_09_01:40225001
+xref: UMLS_CUI:C0206620
+is_a: DOID:1475 ! lymphangioma
+
+[Term]
+id: DOID:3103
+name: thoracic outlet syndrome
+synonym: "TOS - Thoracic outlet syndrome" EXACT []
+xref: ICD10CM:G54.0
+xref: MESH:D013901
+xref: SNOMEDCT_US_2025_09_01:2040007
+xref: UMLS_CUI:C0039984
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:326
+name: ischemia
+xref: MESH:D007511
+xref: SNOMEDCT_US_2025_09_01:52674009
+xref: UMLS_CUI:C0022116
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:3316
+name: perivascular tumor
+synonym: "malignant perivascular cancer" EXACT []
+xref: UMLS_CUI:C1334611
+xref: UMLS_CUI:C1335392
+is_a: DOID:175 ! vascular cancer
+
+[Term]
+id: DOID:3362
+name: coronary aneurysm
+synonym: "Aneurysm of coronary vessels" EXACT []
+synonym: "Aneurysmal lesion of coronary artery" EXACT []
+synonym: "Arteriovenous aneurysm of coronary vessels" EXACT []
+xref: ICD10CM:I25.41
+xref: MESH:D003323
+xref: SNOMEDCT_US_2025_09_01:50570003
+xref: UMLS_CUI:C0010051
+is_a: DOID:9768 ! heart aneurysm
+
+[Term]
+id: DOID:3393
+name: coronary artery disease
+synonym: "CHD" EXACT OMO:0003012 []
+synonym: "coronary arteriosclerosis" EXACT []
+synonym: "Coronary disease" EXACT []
+synonym: "coronary heart disease" EXACT []
+synonym: "Ischemic Heart Disease" EXACT []
+synonym: "myocardial ischemia" EXACT []
+xref: ICD10CM:I20-I25
+xref: ICD10CM:I25
+xref: ICD10CM:I25.10
+xref: MESH:D003324
+xref: MESH:D003327
+xref: MESH:D017202
+xref: SNOMEDCT_US_2025_09_01:194852007
+xref: SNOMEDCT_US_2025_09_01:233822007
+xref: SNOMEDCT_US_2025_09_01:41702007
+xref: SNOMEDCT_US_2025_09_01:53741008
+xref: UMLS_CUI:C0010054
+xref: UMLS_CUI:C0010068
+xref: UMLS_CUI:C0151744
+xref: UMLS_CUI:C0264694
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:3407
+name: carotid artery disease
+synonym: "disorder of carotid artery" EXACT []
+xref: MESH:D002340
+xref: SNOMEDCT_US_2025_09_01:371160000
+xref: UMLS_CUI:C0007273
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:341
+name: peripheral vascular disease
+synonym: "arterial occlusive disease" EXACT []
+xref: MESH:D001157
+xref: SNOMEDCT_US_2025_09_01:195624006
+xref: SNOMEDCT_US_2025_09_01:2929001
+xref: UMLS_CUI:C0003838
+xref: UMLS_CUI:C0031115
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:3410
+name: carotid artery thrombosis
+xref: MESH:D002341
+xref: SNOMEDCT_US_2025_09_01:195181000
+xref: UMLS_CUI:C0007274
+is_a: DOID:3407 ! carotid artery disease
+is_a: DOID:4193 ! intracranial thrombosis
+
+[Term]
+id: DOID:342
+name: subclavian artery aneurysm
+xref: SNOMEDCT_US_2025_09_01:40136003
+xref: UMLS_CUI:C0155746
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:3454
+name: brain infarction
+xref: MESH:D020520
+xref: UMLS_CUI:C0751955
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:3481
+name: septicemic plague
+xref: ICD10CM:A20.7
+xref: MESH:D010930
+xref: SNOMEDCT_US_2025_09_01:9012003
+xref: UMLS_CUI:C0152936
+is_a: DOID:1287 ! cardiovascular system disease
+
+[Term]
+id: DOID:3522
+name: lateral medullary syndrome
+synonym: "Posterior inferior cerebellar artery syndrome" EXACT []
+synonym: "Wallenberg syndrome" EXACT []
+xref: ICD10CM:G46.3
+xref: MESH:D014854
+xref: SNOMEDCT_US_2025_09_01:78569004
+xref: UMLS_CUI:C0043019
+is_a: DOID:3523 ! brain stem infarction
+
+[Term]
+id: DOID:3523
+name: brain stem infarction
+synonym: "Brainstem infarction" EXACT []
+xref: MESH:D020526
+xref: SNOMEDCT_US_2025_09_01:95457000
+xref: UMLS_CUI:C0521542
+is_a: DOID:3454 ! brain infarction
+
+[Term]
+id: DOID:3525
+name: middle cerebral artery infarction
+xref: MESH:D020244
+xref: UMLS_CUI:C0740392
+is_a: DOID:3526 ! cerebral infarction
+
+[Term]
+id: DOID:3526
+name: cerebral infarction
+synonym: "Cerebral infarct" EXACT []
+xref: ICD10CM:I63
+xref: MESH:D002544
+xref: SNOMEDCT_US_2025_09_01:195188006
+xref: UMLS_CUI:C0007785
+is_a: DOID:3454 ! brain infarction
+
+[Term]
+id: DOID:3527
+name: cerebral arterial disease
+xref: MESH:D002539
+xref: UMLS_CUI:C0007774
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:13089 ! intracranial arterial disease
+
+[Term]
+id: DOID:3528
+name: anterior cerebral artery infarction
+xref: MESH:D020243
+xref: UMLS_CUI:C0751843
+is_a: DOID:3526 ! cerebral infarction
+
+[Term]
+id: DOID:3544
+name: atypical choroid plexus papilloma
+xref: SNOMEDCT_US_2025_09_01:1156470000
+xref: UMLS_CUI:C1266176
+is_a: DOID:60007 ! cerebrovascular benign neoplasm
+
+[Term]
+id: DOID:3572
+name: intracranial sinus thrombosis
+xref: MESH:D012851
+xref: UMLS_CUI:C0037198
+is_a: DOID:4193 ! intracranial thrombosis
+
+[Term]
+id: DOID:3574
+name: lateral sinus thrombosis
+synonym: "Thrombosis of lateral venous sinus" EXACT []
+synonym: "Thrombosis transverse sinus" EXACT []
+xref: MESH:D020227
+xref: SNOMEDCT_US_2025_09_01:21258007
+xref: UMLS_CUI:C0270639
+is_a: DOID:3572 ! intracranial sinus thrombosis
+
+[Term]
+id: DOID:3575
+name: cavernous sinus thrombosis
+synonym: "Thrombosis of cavernous venous sinus" EXACT []
+xref: MESH:D020226
+xref: SNOMEDCT_US_2025_09_01:89980009
+xref: UMLS_CUI:C0238454
+is_a: DOID:3572 ! intracranial sinus thrombosis
+
+[Term]
+id: DOID:3576
+name: sagittal sinus thrombosis
+synonym: "Thrombosis of superior longitudinal sinus" EXACT []
+synonym: "Thrombosis of superior sagittal sinus" EXACT []
+xref: MESH:D020225
+xref: SNOMEDCT_US_2025_09_01:70607008
+xref: UMLS_CUI:C0338575
+is_a: DOID:3572 ! intracranial sinus thrombosis
+
+[Term]
+id: DOID:3627
+name: aortic aneurysm
+synonym: "ruptured aortic aneurysm" EXACT []
+xref: ICD10CM:I71.1
+xref: ICD10CM:I71.3
+xref: ICD10CM:I71.5
+xref: ICD10CM:I71.8
+xref: ICD10CM:I71.9
+xref: MESH:D001014
+xref: MESH:D001019
+xref: SNOMEDCT_US_2025_09_01:14336007
+xref: SNOMEDCT_US_2025_09_01:155419006
+xref: SNOMEDCT_US_2025_09_01:195265003
+xref: SNOMEDCT_US_2025_09_01:34365005
+xref: SNOMEDCT_US_2025_09_01:73067008
+xref: UMLS_CUI:C0003486
+xref: UMLS_CUI:C0265010
+xref: UMLS_CUI:C0265012
+xref: UMLS_CUI:C0741160
+xref: UMLS_CUI:C1305122
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:3669
+name: intermittent claudication
+synonym: "Charcot's syndrome" EXACT []
+xref: ICD10CM:I73.9
+xref: MESH:D007383
+xref: SNOMEDCT_US_2025_09_01:195312007
+xref: UMLS_CUI:C0021775
+is_a: DOID:2349 ! arteriosclerosis
+
+[Term]
+id: DOID:3821
+name: posterior cerebral artery infarction
+xref: MESH:D020762
+xref: UMLS_CUI:C0752132
+is_a: DOID:3526 ! cerebral infarction
+
+[Term]
+id: DOID:3825
+name: Shwartzman phenomenon
+synonym: "Shwartzman reaction" EXACT []
+xref: MESH:D012790
+xref: SNOMEDCT_US_2025_09_01:24453002
+xref: UMLS_CUI:C0037018
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:384
+name: Wolff-Parkinson-White syndrome
+synonym: "Anomalous A-V excitation" EXACT []
+synonym: "anomalous atrioventricular excitation" EXACT []
+synonym: "Wolff-Parkinson-White pattern" EXACT []
+xref: ICD10CM:I45.6
+xref: MESH:D014927
+xref: SNOMEDCT_US_2025_09_01:195057009
+xref: SNOMEDCT_US_2025_09_01:74390002
+xref: UMLS_CUI:C0043202
+xref: UMLS_CUI:C0392470
+is_a: DOID:10273 ! heart conduction disease
+
+[Term]
+id: DOID:3850
+name: hemangiopericytic tumor
+synonym: "Hemangiopericytic neoplasm" EXACT []
+xref: SNOMEDCT_US_2025_09_01:189867006
+xref: UMLS_CUI:C0476144
+is_a: DOID:3316 ! perivascular tumor
+
+[Term]
+id: DOID:3875
+name: thrombophlebitis
+synonym: "Phlebitis and thrombophlebitis of superficial vessels of lower extremities" EXACT []
+synonym: "Superficial thrombophlebitis of leg" EXACT []
+synonym: "Thrombophlebitis of a superficial leg vein" EXACT []
+synonym: "Thrombophlebitis of superficial veins of lower extremity" EXACT []
+xref: ICD10CM:I80.0
+xref: MESH:D013924
+xref: SNOMEDCT_US_2025_09_01:40283005
+xref: SNOMEDCT_US_2025_09_01:64156001
+xref: UMLS_CUI:C0040046
+xref: UMLS_CUI:C0265057
+is_a: DOID:864 ! phlebitis
+
+[Term]
+id: DOID:3933
+name: anterior compartment syndrome
+xref: ICD10CM:M76.81
+xref: MESH:D000868
+xref: UMLS_CUI:C0003152
+is_a: DOID:682 ! compartment syndrome
+
+[Term]
+id: DOID:3951
+name: acute myocarditis
+xref: ICD10CM:I40
+xref: SNOMEDCT_US_2025_09_01:155336004
+xref: UMLS_CUI:C0155686
+is_a: DOID:820 ! myocarditis
+
+[Term]
+id: DOID:396
+name: Loeffler endocarditis
+synonym: "Eosinophilic Endomyocardial disease" EXACT []
+xref: ICD10CM:I42.3
+xref: SNOMEDCT_US_2025_09_01:33258008
+xref: UMLS_CUI:C0264834
+is_a: DOID:397 ! restrictive cardiomyopathy
+
+[Term]
+id: DOID:397
+name: restrictive cardiomyopathy
+synonym: "Cardiomyopathy, constrictive" EXACT []
+synonym: "Familial restrictive cardiomyopathy" RELATED [MIM:115210]
+synonym: "primary restrictive cardiomyopathy" EXACT []
+xref: ICD10CM:I42.5
+xref: MESH:D002313
+xref: SNOMEDCT_US_2025_09_01:389996009
+xref: UMLS_CUI:C0007196
+is_a: DOID:0060036 ! intrinsic cardiomyopathy
+
+[Term]
+id: DOID:3978
+name: extrinsic cardiomyopathy
+xref: SNOMEDCT_US_2025_09_01:195580005
+xref: UMLS_CUI:C0155699
+is_a: DOID:0050700 ! cardiomyopathy
+
+[Term]
+id: DOID:4028
+name: angioma serpiginosum
+synonym: "Angioma serpiginosum of skin" EXACT []
+xref: ICD10CM:L81.7
+xref: SNOMEDCT_US_2025_09_01:49465005
+xref: UMLS_CUI:C0263637
+is_a: DOID:471 ! skin hemangioma
+
+[Term]
+id: DOID:4078
+name: tricuspid valve stenosis
+synonym: "Tricuspid stenosis" EXACT []
+xref: MESH:D014264
+xref: SNOMEDCT_US_2025_09_01:49915006
+xref: UMLS_CUI:C0040963
+is_a: DOID:0050826 ! tricuspid valve disease
+
+[Term]
+id: DOID:4079
+name: heart valve disease
+synonym: "Valvular heart disease" EXACT []
+xref: MESH:D006349
+xref: MESH:D016127
+xref: SNOMEDCT_US_2025_09_01:368009
+xref: SNOMEDCT_US_2025_09_01:398995000
+xref: UMLS_CUI:C0018824
+xref: UMLS_CUI:C0079485
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:4080
+name: tricuspid valve insufficiency
+synonym: "Tricuspid incompetence" EXACT []
+synonym: "Tricuspid regurgitation" EXACT []
+synonym: "Tricuspid valve regurgitation" EXACT []
+xref: MESH:D014262
+xref: SNOMEDCT_US_2025_09_01:111287006
+xref: UMLS_CUI:C0040961
+is_a: DOID:0050826 ! tricuspid valve disease
+
+[Term]
+id: DOID:4118
+name: colon neuroendocrine neoplasm
+synonym: "Colonic neuroendocrine tumor" EXACT []
+xref: SNOMEDCT_US_2025_09_01:1162856006
+xref: UMLS_CUI:C1333097
+is_a: DOID:235 ! colonic benign neoplasm
+
+[Term]
+id: DOID:4193
+name: intracranial thrombosis
+synonym: "cerebral thrombosis" EXACT []
+xref: MESH:D020767
+xref: SNOMEDCT_US_2025_09_01:155401002
+xref: UMLS_CUI:C0079102
+xref: UMLS_CUI:C0752143
+is_a: DOID:0060903 ! thrombosis
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:4247
+name: coronary restenosis
+xref: MESH:D023903
+xref: UMLS_CUI:C0948480
+is_a: DOID:4248 ! coronary stenosis
+
+[Term]
+id: DOID:4248
+name: coronary stenosis
+synonym: "Coronary artery stenosis" EXACT []
+xref: MESH:D023921
+xref: SNOMEDCT_US_2025_09_01:233970002
+xref: UMLS_CUI:C0242231
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:4265
+name: angiomyoma
+synonym: "vascular leiomyoma" EXACT []
+xref: MESH:D018229
+xref: SNOMEDCT_US_2025_09_01:86959002
+xref: UMLS_CUI:C0206653
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:4266
+name: intravascular angioleiomyoma
+xref: UMLS_CUI:C1334267
+is_a: DOID:4265 ! angiomyoma
+
+[Term]
+id: DOID:4297
+name: scimitar syndrome
+synonym: "congenital venolobar syndrome" EXACT []
+synonym: "Halasz syndrome" EXACT []
+synonym: "hypogenetic lung syndrome" EXACT []
+synonym: "mirror-image lung syndrome" EXACT []
+synonym: "pulmonary venolobar syndrome" EXACT []
+synonym: "total anomalous pulmonary venous return" EXACT []
+synonym: "vena cava bronchovascular syndrome" EXACT []
+xref: ICD10CM:Q26.8
+xref: MESH:D012587
+xref: SNOMEDCT_US_2025_09_01:39905002
+xref: UMLS_CUI:C0036400
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:4372
+name: intracranial embolism
+synonym: "cerebral embolism" EXACT []
+synonym: "Cerebral embolism with cerebral infarction" EXACT []
+xref: ICD10CM:I66
+xref: MESH:D020766
+xref: SNOMEDCT_US_2025_09_01:75543006
+xref: UMLS_CUI:C0007780
+xref: UMLS_CUI:C0752140
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:4505
+name: childhood angiosarcoma
+synonym: "paediatric angiosarcoma" EXACT []
+synonym: "paediatric hemangiosarcoma" EXACT []
+synonym: "pediatric angiosarcoma" EXACT []
+synonym: "pediatric hemangiosarcoma" EXACT []
+xref: UMLS_CUI:C0279988
+is_a: DOID:0001816 ! angiosarcoma
+
+[Term]
+id: DOID:4510
+name: aorta angiosarcoma
+synonym: "Aortic hemangiosarcoma" EXACT []
+xref: UMLS_CUI:C1332312
+is_a: DOID:0001816 ! angiosarcoma
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:4512
+name: conventional angiosarcoma
+xref: UMLS_CUI:C1333155
+is_a: DOID:0001816 ! angiosarcoma
+
+[Term]
+id: DOID:4513
+name: gallbladder angiosarcoma
+synonym: "hemangiosarcoma of gallbladder" EXACT []
+xref: UMLS_CUI:C1333742
+is_a: DOID:0001816 ! angiosarcoma
+
+[Term]
+id: DOID:4522
+name: superior vena cava angiosarcoma
+synonym: "angiosarcoma of the Superior Vena Cava" EXACT []
+xref: UMLS_CUI:C1336530
+is_a: DOID:0001816 ! angiosarcoma
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:4525
+name: mediastinum angiosarcoma
+synonym: "hemangiosarcoma of mediastinum" EXACT []
+xref: UMLS_CUI:C1334649
+is_a: DOID:0001816 ! angiosarcoma
+
+[Term]
+id: DOID:4527
+name: ovarian angiosarcoma
+synonym: "hemangiosarcoma of Ovary" EXACT []
+xref: UMLS_CUI:C1335152
+is_a: DOID:0001816 ! angiosarcoma
+
+[Term]
+id: DOID:4562
+name: subacute bacterial endocarditis
+synonym: "Endocarditis lenta" EXACT []
+synonym: "SBE - Subacute bacterial endocarditis" EXACT []
+synonym: "Subacute endocarditis, lenta" EXACT []
+xref: MESH:D004698
+xref: SNOMEDCT_US_2025_09_01:155334001
+xref: UMLS_CUI:C0014122
+is_a: DOID:0060000 ! infective endocarditis
+
+[Term]
+id: DOID:467
+name: venous hemangioma
+xref: SNOMEDCT_US_2025_09_01:56468002
+xref: UMLS_CUI:C0334532
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:468
+name: intramuscular hemangioma
+synonym: "Intramuscular Angioma" EXACT []
+xref: MESH:D006391
+xref: SNOMEDCT_US_2025_09_01:1293139002
+xref: UMLS_CUI:C0205789
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:469
+name: deep angioma
+xref: UMLS_CUI:C1333265
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:4699
+name: epicardium cancer
+synonym: "Epicardial tumor" EXACT []
+synonym: "malignant Epicardial tumor" EXACT []
+synonym: "malignant neoplasm of epicardium" EXACT []
+xref: SNOMEDCT_US_2025_09_01:126733004
+xref: SNOMEDCT_US_2025_09_01:93782004
+xref: UMLS_CUI:C0346610
+xref: UMLS_CUI:C1290403
+is_a: DOID:116 ! pericardium cancer
+
+[Term]
+id: DOID:470
+name: verrucous keratotic hemangioma
+xref: SNOMEDCT_US_2025_09_01:20985003
+xref: UMLS_CUI:C0334540
+is_a: DOID:471 ! skin hemangioma
+
+[Term]
+id: DOID:471
+name: skin hemangioma
+synonym: "Angioma of the skin" EXACT []
+synonym: "Angiomatous naevus of skin" EXACT []
+xref: SNOMEDCT_US_2025_09_01:254773009
+xref: UMLS_CUI:C0687140
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:472
+name: subglottic angioma
+synonym: "hemangioma of the Subglottis" EXACT []
+xref: UMLS_CUI:C1336518
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:474
+name: histiocytoid hemangioma
+synonym: "Angiolymphoid hyperplasia with eosinophilia" EXACT []
+synonym: "epithelioid haemangioma" EXACT []
+synonym: "epithelioid hemangioma" EXACT []
+xref: MESH:D006391
+xref: SNOMEDCT_US_2025_09_01:253054009
+xref: UMLS_CUI:C0205788
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:479
+name: angiokeratoma
+synonym: "Angiokeratoma of skin" EXACT []
+synonym: "Cutaneous Angiokeratoma" EXACT []
+synonym: "skin angiokeratoma" EXACT []
+xref: MESH:D000794
+xref: SNOMEDCT_US_2025_09_01:26810009
+xref: UMLS_CUI:C0002985
+is_a: DOID:471 ! skin hemangioma
+
+[Term]
+id: DOID:482
+name: hemangioma of peripheral nerve
+xref: UMLS_CUI:C1333956
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:486
+name: glomeruloid hemangioma
+xref: SNOMEDCT_US_2025_09_01:403976007
+xref: UMLS_CUI:C1304511
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:490
+name: hemangioma of lung
+synonym: "pulmonary hemangioma" EXACT []
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:492
+name: acquired hemangioma
+xref: UMLS_CUI:C0856897
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:495
+name: sclerosing hemangioma
+synonym: "Sclerosing haemangioma" EXACT []
+xref: SNOMEDCT_US_2025_09_01:134302009
+xref: UMLS_CUI:C1509148
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:4957
+name: meninges hemangiopericytoma
+synonym: "hemangiopericytoma of meninges" EXACT []
+synonym: "Meningeal hemangiopericytoma" EXACT []
+xref: SNOMEDCT_US_2025_09_01:277522009
+xref: UMLS_CUI:C0349622
+is_a: DOID:264 ! hemangiopericytoma
+
+[Term]
+id: DOID:496
+name: spindle cell hemangioma
+synonym: "SCH" EXACT OMO:0003012 []
+xref: SNOMEDCT_US_2025_09_01:128769003
+xref: UMLS_CUI:C1304508
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:4962
+name: pericardial tuberculosis
+synonym: "tuberculous pericarditis" EXACT []
+xref: ICD10CM:A18.84
+xref: MESH:D010495
+xref: SNOMEDCT_US_2025_09_01:67256000
+xref: UMLS_CUI:C0031049
+is_a: DOID:0050829 ! pericardium disease
+
+[Term]
+id: DOID:501
+name: central nervous system hemangioma
+synonym: "hemangioma of CNS" EXACT []
+xref: UMLS_CUI:C1333957
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:5044
+name: cardiac granular cell neoplasm
+synonym: "granular cell tumor of Heart" EXACT []
+xref: UMLS_CUI:C1332845
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+
+[Term]
+id: DOID:505
+name: hobnail hemangioma
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:5137
+name: pericardium leiomyoma
+synonym: "leiomyoma of Pericardium" EXACT []
+xref: UMLS_CUI:C1335380
+is_a: DOID:0050829 ! pericardium disease
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+
+[Term]
+id: DOID:5160
+name: arteriosclerosis obliterans
+xref: MESH:D001162
+xref: SNOMEDCT_US_2025_09_01:60625000
+xref: UMLS_CUI:C0003851
+is_a: DOID:2349 ! arteriosclerosis
+
+[Term]
+id: DOID:5161
+name: Monckeberg arteriosclerosis
+is_a: DOID:2349 ! arteriosclerosis
+
+[Term]
+id: DOID:5162
+name: arteriolosclerosis
+xref: ICD10CM:I70
+xref: MESH:D050379
+xref: SNOMEDCT_US_2025_09_01:17941002
+xref: UMLS_CUI:C0878486
+is_a: DOID:2349 ! arteriosclerosis
+
+[Term]
+id: DOID:519
+name: aortitis
+xref: ICD10CM:I77.6
+xref: MESH:D001025
+xref: SNOMEDCT_US_2025_09_01:195368003
+xref: UMLS_CUI:C0003509
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:520
+name: aortic disease
+synonym: "aortic disorder" EXACT []
+synonym: "disorder of the aorta" EXACT []
+xref: MESH:D001018
+xref: SNOMEDCT_US_2025_09_01:47040006
+xref: UMLS_CUI:C0003493
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:5232
+name: aortic valve prolapse
+xref: MESH:D001023
+xref: UMLS_CUI:C0003505
+is_a: DOID:62 ! aortic valve disease
+
+[Term]
+id: DOID:5233
+name: glomangiosarcoma
+synonym: "malignant Glomus neoplasm" EXACT []
+xref: SNOMEDCT_US_2025_09_01:128908003
+xref: UMLS_CUI:C1266111
+is_a: DOID:2431 ! glomus tumor
+
+[Term]
+id: DOID:5236
+name: subungual glomus tumor
+synonym: "subungual glomus tumour" EXACT []
+xref: SNOMEDCT_US_2025_09_01:403973004
+xref: UMLS_CUI:C1304510
+is_a: DOID:2431 ! glomus tumor
+
+[Term]
+id: DOID:5238
+name: benign perivascular tumor
+xref: UMLS_CUI:C1332532
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+
+[Term]
+id: DOID:5241
+name: hemangioblastoma
+synonym: "Capillary Hemangioblastoma" EXACT []
+xref: MESH:D018325
+xref: SNOMEDCT_US_2025_09_01:81201000
+xref: UMLS_CUI:C0206734
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:525
+name: central nervous system vasculitis
+xref: MESH:D020293
+xref: UMLS_CUI:C0751878
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:5261
+name: heart leiomyosarcoma
+synonym: "leiomyosarcoma of Heart" EXACT []
+xref: UMLS_CUI:C1332848
+is_a: DOID:5262 ! heart sarcoma
+
+[Term]
+id: DOID:5262
+name: heart sarcoma
+synonym: "cardiac sarcoma" EXACT []
+synonym: "sarcoma of Heart" EXACT []
+xref: UMLS_CUI:C0238152
+is_a: DOID:117 ! heart cancer
+
+[Term]
+id: DOID:5373
+name: retroperitoneal hemangiopericytoma
+xref: UMLS_CUI:C1335777
+is_a: DOID:264 ! hemangiopericytoma
+
+[Term]
+id: DOID:5393
+name: brain angioma
+xref: UMLS_CUI:C0238814
+is_a: DOID:255 ! hemangioma
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:5453
+name: pulmonary venoocclusive disease
+synonym: "pulmonary veno-occlusive disease" EXACT []
+xref: MESH:D011668
+xref: SNOMEDCT_US_2025_09_01:89420002
+xref: UMLS_CUI:C0034091
+is_a: DOID:6432 ! pulmonary hypertension
+
+[Term]
+id: DOID:5547
+name: pulmonary artery choriocarcinoma
+synonym: "Syncytioma of pulmonary artery" EXACT []
+xref: UMLS_CUI:C1335571
+is_a: DOID:175 ! vascular cancer
+is_a: DOID:60001 ! pulmonary artery disease
+
+[Term]
+id: DOID:5644
+name: tricuspid valve prolapse
+xref: MESH:D014263
+xref: SNOMEDCT_US_2025_09_01:253383003
+xref: UMLS_CUI:C0040962
+is_a: DOID:0050826 ! tricuspid valve disease
+
+[Term]
+id: DOID:57
+name: aortic valve insufficiency
+synonym: "aortic incompetence" EXACT []
+synonym: "aortic insufficiency" EXACT []
+synonym: "aortic regurgitation" EXACT []
+synonym: "Corrigan's disease" RELATED []
+synonym: "Rheumatic aortic insufficiency" EXACT []
+synonym: "Rheumatic aortic regurgitation" EXACT []
+synonym: "rheumatic aortic valve insufficiency" EXACT []
+synonym: "Rheumatic aortic valve regurgitation" EXACT []
+xref: ICD10CM:I06.1
+xref: MESH:D001022
+xref: SNOMEDCT_US_2025_09_01:155283004
+xref: SNOMEDCT_US_2025_09_01:194736003
+xref: SNOMEDCT_US_2025_09_01:60234000
+xref: UMLS_CUI:C0003504
+xref: UMLS_CUI:C0155568
+xref: UMLS_CUI:C0264774
+is_a: DOID:62 ! aortic valve disease
+
+[Term]
+id: DOID:5729
+name: intravenous leiomyomatosis
+xref: SNOMEDCT_US_2025_09_01:254883003
+xref: UMLS_CUI:C0346200
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:5748
+name: rheumatic pulmonary valve disease
+synonym: "Rheumatic disease of pulmonary valve" EXACT []
+synonym: "Rheumatic pulmonary incompetence" EXACT []
+xref: ICD10CM:I09.89
+xref: SNOMEDCT_US_2025_09_01:18687009
+xref: UMLS_CUI:C0155579
+is_a: DOID:5749 ! pulmonary valve disease
+
+[Term]
+id: DOID:5749
+name: pulmonary valve disease
+synonym: "pulmonary valve disorder" EXACT []
+xref: SNOMEDCT_US_2025_09_01:76267008
+xref: UMLS_CUI:C0034087
+is_a: DOID:4079 ! heart valve disease
+
+[Term]
+id: DOID:5766
+name: pulmonary sclerosing hemangioma
+synonym: "Pneumocytoma" EXACT []
+xref: MESH:D047868
+xref: SNOMEDCT_US_2025_09_01:707365008
+xref: UMLS_CUI:C1334455
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:5804
+name: discrete subaortic stenosis
+xref: MESH:D021922
+xref: UMLS_CUI:C0012628
+is_a: DOID:5805 ! subvalvular aortic stenosis
+
+[Term]
+id: DOID:5805
+name: subvalvular aortic stenosis
+xref: MESH:D001020
+xref: SNOMEDCT_US_2025_09_01:250915007
+xref: UMLS_CUI:C0340375
+is_a: DOID:1712 ! aortic valve stenosis
+
+[Term]
+id: DOID:5806
+name: stork bite
+synonym: "Salmon patch nevus" EXACT []
+synonym: "Unna's nevus" EXACT []
+is_a: DOID:2725 ! capillary hemangioma
+
+[Term]
+id: DOID:5843
+name: posteroinferior myocardial infarction
+xref: UMLS_CUI:C3642318
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5844
+name: myocardial infarction
+synonym: "heart attack" EXACT []
+synonym: "Myocardial infarct" EXACT []
+xref: ICD10CM:I21
+xref: MESH:D009203
+xref: SNOMEDCT_US_2025_09_01:66514008
+xref: UMLS_CUI:C0027051
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:5845
+name: anterolateral myocardial infarction
+xref: MESH:D056988
+xref: UMLS_CUI:C0262564
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5846
+name: septal myocardial infarction
+xref: UMLS_CUI:C0746727
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5847
+name: posterior myocardial infarction
+xref: SNOMEDCT_US_2025_09_01:194800006
+xref: UMLS_CUI:C0340319
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5848
+name: apical myocardial infarction
+xref: UMLS_CUI:C3642319
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5849
+name: subendocardial myocardial infarction
+xref: UMLS_CUI:C3642476
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5850
+name: inferior myocardial infarction
+xref: MESH:D056989
+xref: SNOMEDCT_US_2025_09_01:194804002
+xref: UMLS_CUI:C0340305
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5851
+name: posterolateral myocardial infarction
+xref: UMLS_CUI:C3642463
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5852
+name: inferolateral myocardial infarct
+xref: UMLS_CUI:C3537017
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5853
+name: lateral myocardial infarction
+xref: SNOMEDCT_US_2025_09_01:194801005
+xref: UMLS_CUI:C0340312
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5854
+name: silent myocardial infarction
+xref: SNOMEDCT_US_2025_09_01:194796000
+xref: UMLS_CUI:C0340324
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5855
+name: anteroseptal myocardial infarction
+xref: MESH:D056988
+xref: UMLS_CUI:C0262565
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:5877
+name: endocardium cancer
+synonym: "malignant Endocardial tumor" EXACT []
+synonym: "malignant neoplasm of endocardium" EXACT []
+synonym: "malignant tumor of endocardium" EXACT []
+xref: SNOMEDCT_US_2025_09_01:126731002
+xref: SNOMEDCT_US_2025_09_01:93778001
+xref: UMLS_CUI:C0346612
+xref: UMLS_CUI:C1290401
+is_a: DOID:0050825 ! endocardium disease
+is_a: DOID:117 ! heart cancer
+
+[Term]
+id: DOID:5948
+name: angiokeratoma of mibelli
+xref: SNOMEDCT_US_2025_09_01:62727008
+xref: UMLS_CUI:C0263640
+is_a: DOID:479 ! angiokeratoma
+
+[Term]
+id: DOID:5976
+name: occlusion precerebral artery
+synonym: "Occlusion and stenosis of multiple and bilateral precerebral arteries" RELATED []
+synonym: "occlusion and stenosis of precerebral artery" RELATED []
+xref: ICD10CM:I65.9
+xref: UMLS_CUI:C0155727
+is_a: DOID:6713 ! cerebrovascular disease
+
+[Term]
+id: DOID:6000
+name: congestive heart failure
+synonym: "Cardiac Failure Congestive" EXACT []
+synonym: "CHF" EXACT OMO:0003012 []
+synonym: "Congestive heart disease" EXACT []
+synonym: "Weak heart" EXACT []
+xref: ICD10CM:I50
+xref: ICD10CM:I50.9
+xref: MESH:D006333
+xref: SNOMEDCT_US_2025_09_01:155374007
+xref: SNOMEDCT_US_2025_09_01:195108009
+xref: UMLS_CUI:C0018801
+xref: UMLS_CUI:C0018802
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:60001
+name: pulmonary artery disease
+is_a: DOID:0050828 ! artery disease
+
+[Term]
+id: DOID:60006
+name: benign vascular tumor
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+
+[Term]
+id: DOID:60007
+name: cerebrovascular benign neoplasm
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+
+[Term]
+id: DOID:6033
+name: heart fibrosarcoma
+synonym: "cardiac fibrosarcoma" EXACT []
+synonym: "Fibrosarcoma of the Heart" EXACT []
+xref: UMLS_CUI:C1332844
+is_a: DOID:5262 ! heart sarcoma
+
+[Term]
+id: DOID:6034
+name: heart malignant hemangiopericytoma
+synonym: "malignant hemangiopericytoma of Heart" EXACT []
+xref: UMLS_CUI:C1334567
+is_a: DOID:5262 ! heart sarcoma
+
+[Term]
+id: DOID:6048
+name: telangiectatic glomangioma
+xref: UMLS_CUI:C1336699
+is_a: DOID:2435 ! skin glomangioma
+
+[Term]
+id: DOID:61
+name: mitral valve disease
+synonym: "chronic rheumatic mitral valve" EXACT []
+synonym: "disease of mitral valve" EXACT []
+synonym: "Mitral RH valve dis." EXACT []
+synonym: "rheumatic disease of mitral valve" EXACT []
+synonym: "Rheumatic mitral insufficiency" EXACT []
+synonym: "Rheumatic mitral valve changes" EXACT []
+synonym: "rheumatic mitral valve incompetence" EXACT []
+synonym: "Rheumatic mitral valve regurgitation" EXACT []
+xref: ICD10CM:I05
+xref: ICD10CM:I05.1
+xref: SNOMEDCT_US_2025_09_01:11851006
+xref: SNOMEDCT_US_2025_09_01:155278007
+xref: SNOMEDCT_US_2025_09_01:83898004
+xref: UMLS_CUI:C0026265
+xref: UMLS_CUI:C0155563
+xref: UMLS_CUI:C0264765
+is_a: DOID:4079 ! heart valve disease
+
+[Term]
+id: DOID:6197
+name: conventional malignant hemangiopericytoma
+xref: UMLS_CUI:C1333158
+is_a: DOID:264 ! hemangiopericytoma
+
+[Term]
+id: DOID:62
+name: aortic valve disease
+xref: MESH:D000082862
+xref: SNOMEDCT_US_2025_09_01:8722008
+xref: UMLS_CUI:C1260873
+is_a: DOID:4079 ! heart valve disease
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:6201
+name: pericardial mesothelioma
+synonym: "malignant mesothelioma of pericardium" EXACT []
+synonym: "malignant Pericardial Mesothelioma" EXACT []
+xref: ICD10CM:C45.2
+xref: SNOMEDCT_US_2025_09_01:187885008
+xref: UMLS_CUI:C0346110
+xref: UMLS_CUI:C0854883
+xref: UMLS_CUI:C1335381
+is_a: DOID:116 ! pericardium cancer
+
+[Term]
+id: DOID:6209
+name: malignant mediastinum hemangiopericytoma
+synonym: "malignant hemangiopericytoma of mediastinum" EXACT []
+xref: UMLS_CUI:C1334598
+is_a: DOID:264 ! hemangiopericytoma
+
+[Term]
+id: DOID:6284
+name: epicardium lipoma
+synonym: "Lipoma of Epicardium" EXACT []
+xref: UMLS_CUI:C1333411
+is_a: DOID:6285 ! heart lipoma
+
+[Term]
+id: DOID:6285
+name: heart lipoma
+synonym: "Lipoma of Heart" EXACT []
+xref: UMLS_CUI:C1332849
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:6332
+name: adult malignant hemangiopericytoma
+xref: UMLS_CUI:C0279547
+is_a: DOID:264 ! hemangiopericytoma
+
+[Term]
+id: DOID:6406
+name: double outlet right ventricle
+synonym: "Dextrotransposition of aorta" EXACT []
+synonym: "Double outlet right ventricle with subpulmonary ventricular septal defect" EXACT []
+synonym: "Taussig-Bing syndrome or defect" EXACT []
+xref: ICD10CM:Q20.1
+xref: MESH:D004310
+xref: SNOMEDCT_US_2025_09_01:7484005
+xref: UMLS_CUI:C0013069
+is_a: DOID:1657 ! ventricular septal defect
+
+[Term]
+id: DOID:6419
+name: tetralogy of Fallot
+synonym: "Ventricular septal defect with pulmonary stenosis or atresia, dextraposition of aorta, and hypertrophy of right ventricle" EXACT []
+xref: ICD10CM:Q21.3
+xref: MESH:D013771
+xref: SNOMEDCT_US_2025_09_01:156913009
+xref: UMLS_CUI:C0039685
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:6420
+name: pulmonary valve stenosis
+xref: MESH:D011666
+xref: SNOMEDCT_US_2025_09_01:56786000
+xref: UMLS_CUI:C0034089
+is_a: DOID:5749 ! pulmonary valve disease
+
+[Term]
+id: DOID:6432
+name: pulmonary hypertension
+xref: ICD10CM:I27.20
+xref: MESH:D006976
+xref: SNOMEDCT_US_2025_09_01:155328008
+xref: UMLS_CUI:C0020542
+is_a: DOID:10763 ! hypertension
+
+[Term]
+id: DOID:6547
+name: heart lymphoma
+synonym: "Lymphoma of Heart" EXACT []
+xref: UMLS_CUI:C1332850
+is_a: DOID:117 ! heart cancer
+
+[Term]
+id: DOID:6621
+name: cerebral angioma
+synonym: "hemangioma of Cerebrum" EXACT []
+xref: UMLS_CUI:C0877388
+is_a: DOID:5393 ! brain angioma
+
+[Term]
+id: DOID:663
+name: scrotal angioma
+synonym: "hemangioma of scrotum" EXACT []
+xref: UMLS_CUI:C1335936
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:6713
+name: cerebrovascular disease
+synonym: "cerebrovascular disorder" EXACT []
+xref: ICD10CM:I67.9
+xref: MESH:D002561
+xref: SNOMEDCT_US_2025_09_01:266312006
+xref: UMLS_CUI:C0007820
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:682
+name: compartment syndrome
+synonym: "Compartmental syndrome" EXACT []
+xref: ICD10CM:T79.A0
+xref: MESH:D003161
+xref: SNOMEDCT_US_2025_09_01:212379008
+xref: UMLS_CUI:C0009492
+is_a: DOID:326 ! ischemia
+
+[Term]
+id: DOID:6906
+name: glomangiomatosis
+xref: SNOMEDCT_US_2025_09_01:703603008
+xref: UMLS_CUI:C1333824
+is_a: DOID:5238 ! benign perivascular tumor
+
+[Term]
+id: DOID:7388
+name: pulmonary vein leiomyosarcoma
+synonym: "leiomyosarcoma of the pulmonary Vein" EXACT []
+xref: UMLS_CUI:C1335575
+is_a: DOID:175 ! vascular cancer
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:7389
+name: pulmonary artery leiomyosarcoma
+synonym: "leiomyosarcoma of the pulmonary artery" EXACT []
+xref: UMLS_CUI:C1335572
+is_a: DOID:0050828 ! artery disease
+is_a: DOID:175 ! vascular cancer
+
+[Term]
+id: DOID:7390
+name: superior vena cava leiomyosarcoma
+synonym: "leiomyosarcoma of the Superior Vena Cava" EXACT []
+xref: UMLS_CUI:C1336531
+is_a: DOID:175 ! vascular cancer
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:7437
+name: uterus perivascular epithelioid cell tumor
+synonym: "uterine corpus PEComa" EXACT []
+xref: UMLS_CUI:C1519862
+is_a: DOID:2643 ! perivascular epithelioid cell tumor
+
+[Term]
+id: DOID:7693
+name: abdominal aortic aneurysm
+synonym: "AORTIC ANEURYSM, FAMILIAL ABDOMINAL 1" EXACT []
+xref: MESH:D017544
+xref: SNOMEDCT_US_2025_09_01:155422008
+xref: UMLS_CUI:C0162871
+is_a: DOID:3627 ! aortic aneurysm
+
+[Term]
+id: DOID:7731
+name: childhood malignant hemangiopericytoma
+synonym: "malignant pediatric hemangiopericytoma" EXACT []
+xref: UMLS_CUI:C0279983
+is_a: DOID:264 ! hemangiopericytoma
+
+[Term]
+id: DOID:7736
+name: retinal telangiectasia
+xref: SNOMEDCT_US_2025_09_01:84884003
+xref: UMLS_CUI:C0154835
+is_a: DOID:2462 ! retinal vascular disease
+
+[Term]
+id: DOID:7765
+name: Coats disease
+synonym: "Coats' disease" EXACT []
+synonym: "Coats' syndrome" EXACT []
+synonym: "Exudative retinopathy" EXACT []
+xref: ICD10CM:H35.02
+xref: SNOMEDCT_US_2025_09_01:193359003
+xref: UMLS_CUI:C0154832
+is_a: DOID:7736 ! retinal telangiectasia
+
+[Term]
+id: DOID:799
+name: varicose veins
+synonym: "varices" EXACT []
+synonym: "Varix" EXACT []
+synonym: "Venous ectasia" EXACT []
+synonym: "Venous varices" EXACT []
+xref: ICD10CM:I83.90
+xref: MESH:D014648
+xref: SNOMEDCT_US_2025_09_01:276504003
+xref: UMLS_CUI:C0042345
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:7996
+name: familial glomangioma
+xref: UMLS_CUI:C1333987
+is_a: DOID:2436 ! glomangioma
+
+[Term]
+id: DOID:8012
+name: benign pericardial teratoma
+synonym: "Mature teratoma of Pericardium" EXACT []
+xref: UMLS_CUI:C1334638
+is_a: DOID:0050829 ! pericardium disease
+is_a: DOID:0060091 ! cardiovascular organ benign neoplasm
+
+[Term]
+id: DOID:8020
+name: glomangiomyoma
+xref: SNOMEDCT_US_2025_09_01:34550005
+xref: UMLS_CUI:C0334422
+is_a: DOID:5238 ! benign perivascular tumor
+
+[Term]
+id: DOID:807
+name: carotid artery occlusion
+synonym: "Occlusion and stenosis of carotid artery" EXACT []
+xref: UMLS_CUI:C0375275
+is_a: DOID:3407 ! carotid artery disease
+is_a: DOID:5976 ! occlusion precerebral artery
+
+[Term]
+id: DOID:817
+name: interstitial myocarditis
+xref: SNOMEDCT_US_2025_09_01:37925008
+xref: UMLS_CUI:C0027060
+is_a: DOID:820 ! myocarditis
+
+[Term]
+id: DOID:820
+name: myocarditis
+synonym: "Myocardial inflammation" EXACT []
+xref: ICD10CM:I51.4
+xref: MESH:D009205
+xref: SNOMEDCT_US_2025_09_01:50920009
+xref: UMLS_CUI:C0027059
+is_a: DOID:3978 ! extrinsic cardiomyopathy
+
+[Term]
+id: DOID:8274
+name: synovial angioma
+synonym: "hemangioma of Synovium" EXACT []
+xref: UMLS_CUI:C1336546
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:8331
+name: perineural angioma
+xref: UMLS_CUI:C1335382
+is_a: DOID:255 ! hemangioma
+
+[Term]
+id: DOID:8352
+name: aortic malignant tumor
+synonym: "aortic malignant neoplasm" EXACT []
+xref: UMLS_CUI:C1334560
+is_a: DOID:175 ! vascular cancer
+is_a: DOID:520 ! aortic disease
+
+[Term]
+id: DOID:8481
+name: rheumatic myocarditis
+synonym: "active rheumatic fever with myocarditis" EXACT []
+synonym: "acute rheumatic carditis" EXACT []
+synonym: "acute rheumatic myocarditis" EXACT []
+synonym: "Rheumatic degeneration of myocardium" EXACT []
+synonym: "Rheumatic fever with myocarditis" EXACT []
+synonym: "Rheumatoid myocarditis" EXACT []
+xref: ICD10CM:I01.9
+xref: ICD10CM:M05.3
+xref: SNOMEDCT_US_2025_09_01:195136004
+xref: SNOMEDCT_US_2025_09_01:8805001
+xref: UMLS_CUI:C0035440
+xref: UMLS_CUI:C0489959
+is_a: DOID:820 ! myocarditis
+
+[Term]
+id: DOID:8482
+name: transient retinal arterial occlusion
+synonym: "Retinal transient arterial occlusion" EXACT []
+synonym: "Transient arterial retinal occlusion" EXACT []
+xref: ICD10CM:H34.0
+xref: SNOMEDCT_US_2025_09_01:87224000
+xref: UMLS_CUI:C0154840
+is_a: DOID:8483 ! retinal artery occlusion
+
+[Term]
+id: DOID:8483
+name: retinal artery occlusion
+xref: MESH:D015356
+xref: SNOMEDCT_US_2025_09_01:232035005
+xref: UMLS_CUI:C0035302
+is_a: DOID:1729 ! retinal vascular occlusion
+
+[Term]
+id: DOID:8512
+name: puerperal pulmonary embolism
+xref: ICD10CM:O88.21
+xref: SNOMEDCT_US_2025_09_01:237341004
+xref: UMLS_CUI:C0157540
+is_a: DOID:9477 ! pulmonary embolism
+
+[Term]
+id: DOID:8514
+name: acute pulmonary heart disease
+xref: ICD10CM:I26.09
+xref: SNOMEDCT_US_2025_09_01:155324005
+xref: UMLS_CUI:C0155671
+is_a: DOID:8515 ! Cor pulmonale
+
+[Term]
+id: DOID:8515
+name: Cor pulmonale
+synonym: "cardiopulmonary disease" EXACT []
+synonym: "pulmonary heart disease" EXACT []
+xref: ICD10CM:I27.81
+xref: MESH:D011660
+xref: SNOMEDCT_US_2025_09_01:83291003
+xref: UMLS_CUI:C0034072
+is_a: DOID:6000 ! congestive heart failure
+
+[Term]
+id: DOID:8516
+name: pulmonary embolism and infarction
+xref: SNOMEDCT_US_2025_09_01:1001000119102
+xref: UMLS_CUI:C0034066
+is_a: DOID:8514 ! acute pulmonary heart disease
+
+[Term]
+id: DOID:8517
+name: acute cor pulmonale
+xref: ICD10CM:I26.09
+xref: SNOMEDCT_US_2025_09_01:155324005
+xref: UMLS_CUI:C0155671
+is_a: DOID:8514 ! acute pulmonary heart disease
+
+[Term]
+id: DOID:864
+name: phlebitis
+xref: ICD10CM:I80
+xref: MESH:D010689
+xref: SNOMEDCT_US_2025_09_01:61599003
+xref: UMLS_CUI:C0031542
+is_a: DOID:866 ! vein disease
+
+[Term]
+id: DOID:865
+name: vasculitis
+synonym: "Angiitis" EXACT []
+xref: MESH:D014657
+xref: SNOMEDCT_US_2025_09_01:195375002
+xref: UMLS_CUI:C0042384
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:866
+name: vein disease
+xref: ICD10CM:I82
+xref: SNOMEDCT_US_2025_09_01:195435006
+xref: UMLS_CUI:C0155774
+is_a: DOID:178 ! vascular disease
+
+[Term]
+id: DOID:8731
+name: carotid body cancer
+synonym: "cancer of carotid body" RELATED []
+synonym: "malignant Carotid body Paraganglioma" EXACT []
+synonym: "malignant carotid body tumor" EXACT []
+xref: ICD10CM:C75.4
+xref: SNOMEDCT_US_2025_09_01:93740003
+xref: UMLS_CUI:C0153656
+is_a: DOID:175 ! vascular cancer
+
+[Term]
+id: DOID:8805
+name: intermediate coronary syndrome
+synonym: "Angina at rest" EXACT []
+synonym: "Anginal chest pain at rest" EXACT []
+synonym: "Impending infarction" EXACT []
+synonym: "Preinfarction angina" EXACT []
+synonym: "Unstable angina" EXACT []
+synonym: "Worsening angina" EXACT []
+xref: ICD10CM:I20.0
+xref: MESH:D000789
+xref: SNOMEDCT_US_2025_09_01:155308009
+xref: UMLS_CUI:C0002965
+is_a: DOID:3393 ! coronary artery disease
+
+[Term]
+id: DOID:882
+name: heterophyiasis
+synonym: "heterophyes infectious disease" EXACT []
+xref: ICD10CM:B66.8
+xref: SNOMEDCT_US_2025_09_01:22905009
+xref: UMLS_CUI:C0152071
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:8861
+name: pulmonary subvalvular stenosis
+synonym: "Congenital Infundibular Stenosis" EXACT []
+synonym: "Infundibular pulmonic stenosis" EXACT []
+synonym: "Infundibular pulmonic stenosis, congenital" EXACT []
+synonym: "pulmonary infundibular stenosis" EXACT []
+synonym: "Subvalvular pulmonic stenosis" EXACT []
+xref: ICD10CM:Q24.3
+xref: MESH:D011662
+xref: SNOMEDCT_US_2025_09_01:204370002
+xref: UMLS_CUI:C0034084
+is_a: DOID:6420 ! pulmonary valve stenosis
+
+[Term]
+id: DOID:8946
+name: severe nonproliferative diabetic retinopathy
+synonym: "High risk non proliferative diabetic retinopathy" EXACT []
+synonym: "Severe NPDR" EXACT []
+xref: SNOMEDCT_US_2025_09_01:312905005
+xref: UMLS_CUI:C0730278
+is_a: DOID:8947 ! diabetic retinopathy
+
+[Term]
+id: DOID:8947
+name: diabetic retinopathy
+synonym: "Retinal abnormality - diabetes-related" EXACT []
+xref: MESH:D003930
+xref: SNOMEDCT_US_2025_09_01:154678005
+xref: UMLS_CUI:C0011884
+is_a: DOID:2462 ! retinal vascular disease
+
+[Term]
+id: DOID:914
+name: peliosis hepatis
+synonym: "hepatic peliosis" EXACT []
+xref: ICD10CM:K76.4
+xref: MESH:D010382
+xref: SNOMEDCT_US_2025_09_01:197366003
+xref: UMLS_CUI:C0030781
+is_a: DOID:272 ! hepatic vascular disease
+
+[Term]
+id: DOID:9191
+name: diabetic macular edema
+xref: SNOMEDCT_US_2025_09_01:312912001
+xref: UMLS_CUI:C0730285
+is_a: DOID:8947 ! diabetic retinopathy
+
+[Term]
+id: DOID:9286
+name: priapism
+synonym: "Mentulagra" EXACT []
+xref: ICD10CM:N48.3
+xref: MESH:D011317
+xref: SNOMEDCT_US_2025_09_01:155930001
+xref: UMLS_CUI:C0033117
+is_a: DOID:341 ! peripheral vascular disease
+
+[Term]
+id: DOID:9299
+name: myocardium cancer
+synonym: "malignant Myocardial tumor" EXACT []
+synonym: "malignant neoplasm of myocardium" EXACT []
+synonym: "tumor of Myocardium" EXACT []
+xref: SNOMEDCT_US_2025_09_01:126732009
+xref: SNOMEDCT_US_2025_09_01:93914000
+xref: UMLS_CUI:C0346611
+xref: UMLS_CUI:C1290402
+is_a: DOID:117 ! heart cancer
+
+[Term]
+id: DOID:9348
+name: carotid artery dissection
+synonym: "Dissection of carotid artery" EXACT []
+xref: ICD10CM:I77.71
+xref: SNOMEDCT_US_2025_09_01:230729006
+xref: UMLS_CUI:C0338585
+is_a: DOID:3407 ! carotid artery disease
+
+[Term]
+id: DOID:9407
+name: strictly posterior acute myocardial infarction
+xref: UMLS_CUI:C0155652
+is_a: DOID:9408 ! acute myocardial infarction
+
+[Term]
+id: DOID:9408
+name: acute myocardial infarction
+xref: ICD10CM:I21
+xref: SNOMEDCT_US_2025_09_01:155304006
+xref: UMLS_CUI:C0155626
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:9477
+name: pulmonary embolism
+synonym: "pulmonary artery embolism" EXACT []
+synonym: "pulmonary embolus" EXACT []
+xref: ICD10CM:I26
+xref: MESH:D011655
+xref: SNOMEDCT_US_2025_09_01:194882001
+xref: UMLS_CUI:C0034065
+is_a: DOID:60001 ! pulmonary artery disease
+
+[Term]
+id: DOID:9565
+name: dextrocardia
+synonym: "Heart predominantly in right hemithorax" EXACT []
+xref: ICD10CM:Q24.0
+xref: MESH:D003914
+xref: SNOMEDCT_US_2025_09_01:27637000
+xref: UMLS_CUI:C0011813
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:9651
+name: systolic heart failure
+xref: ICD10CM:I50.20
+xref: MESH:D054143
+xref: SNOMEDCT_US_2025_09_01:417996009
+xref: UMLS_CUI:C1135191
+is_a: DOID:6000 ! congestive heart failure
+
+[Term]
+id: DOID:9694
+name: toxic myocarditis
+xref: SNOMEDCT_US_2025_09_01:31993003
+xref: UMLS_CUI:C0155691
+is_a: DOID:3951 ! acute myocarditis
+
+[Term]
+id: DOID:9742
+name: pelvic varices
+xref: ICD10CM:I86.2
+xref: SNOMEDCT_US_2025_09_01:17406005
+xref: UMLS_CUI:C0155795
+is_a: DOID:799 ! varicose veins
+
+[Term]
+id: DOID:9745
+name: perianal hematoma
+synonym: "External thrombosed haemorrhoids" EXACT []
+synonym: "Thrombosed external hemorrhoids" EXACT []
+xref: ICD10CM:K64.5
+xref: SNOMEDCT_US_2025_09_01:26373009
+xref: UMLS_CUI:C0155784
+is_a: DOID:9746 ! hemorrhoid
+
+[Term]
+id: DOID:9746
+name: hemorrhoid
+synonym: "hemorrhoidal disease" EXACT []
+xref: ICD10CM:K64
+xref: MESH:D006484
+xref: SNOMEDCT_US_2025_09_01:70153002
+xref: UMLS_CUI:C0019112
+is_a: DOID:9742 ! pelvic varices
+
+[Term]
+id: DOID:9749
+name: internal hemorrhoid
+xref: SNOMEDCT_US_2025_09_01:82985000
+xref: UMLS_CUI:C0041844
+is_a: DOID:9746 ! hemorrhoid
+
+[Term]
+id: DOID:9767
+name: myocardial stunning
+xref: MESH:D017682
+xref: UMLS_CUI:C0206146
+is_a: DOID:5844 ! myocardial infarction
+
+[Term]
+id: DOID:9768
+name: heart aneurysm
+synonym: "cardiac aneurysm" EXACT []
+xref: ICD10CM:I25.3
+xref: MESH:D006322
+xref: SNOMEDCT_US_2025_09_01:155317009
+xref: UMLS_CUI:C0018789
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:9775
+name: diastolic heart failure
+xref: ICD10CM:I50.30
+xref: MESH:D054144
+xref: SNOMEDCT_US_2025_09_01:418304008
+xref: UMLS_CUI:C1135196
+is_a: DOID:6000 ! congestive heart failure
+
+[Term]
+id: DOID:9790
+name: toxocariasis
+synonym: "Infection by Toxascaris" EXACT []
+synonym: "Toxocara infection" EXACT []
+synonym: "visceral larva migrans" EXACT []
+xref: ICD10CM:B83.0
+xref: MESH:D007816
+xref: SNOMEDCT_US_2025_09_01:87121004
+xref: UMLS_CUI:C0023049
+is_a: DOID:114 ! heart disease
+
+[Term]
+id: DOID:9810
+name: polyarteritis nodosa
+xref: ICD10CM:M30.0
+xref: MESH:D010488
+xref: SNOMEDCT_US_2025_09_01:195347004
+xref: UMLS_CUI:C0031036
+is_a: DOID:865 ! vasculitis
+
+[Term]
+id: DOID:988
+name: mitral valve prolapse
+synonym: "Barlow's syndrome" EXACT []
+synonym: "floppy mitral valve" EXACT []
+synonym: "mitral leaflet syndrome" RELATED []
+synonym: "myxomatous mitral valve prolapse" RELATED []
+synonym: "systolic click-murmur syndrome" RELATED []
+xref: MESH:D008945
+xref: SNOMEDCT_US_2025_09_01:8074002
+xref: UMLS_CUI:C0026267
+is_a: DOID:61 ! mitral valve disease
+
+[Term]
+id: DOID:990
+name: congenital heart block
+xref: ICD10CM:Q24.6
+xref: MESH:C535758
+xref: SNOMEDCT_US_2025_09_01:156924006
+xref: UMLS_CUI:C0149530
+is_a: DOID:0050820 ! atrioventricular block
+
+[Term]
+id: DOID:9955
+name: hypoplastic left heart syndrome
+xref: ICD10CM:Q23.4
+xref: MESH:D018636
+xref: SNOMEDCT_US_2025_09_01:62067003
+xref: UMLS_CUI:C0152101
+is_a: DOID:1682 ! congenital heart disease
+
+[Term]
+id: DOID:9997
+name: peripartum cardiomyopathy
+synonym: "antepartum peripartum cardiomyopathy" EXACT []
+synonym: "postpartum peripartum cardiomyopathy" EXACT []
+xref: ICD10CM:O90.3
+xref: MESH:D000099088
+xref: UMLS_CUI:C0877208
+is_a: DOID:12930 ! dilated cardiomyopathy
+

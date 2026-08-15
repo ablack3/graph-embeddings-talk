@@ -1,0 +1,283 @@
+# Evaluating and choosing {#sec-eval}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+```
+
+An embedding has no intrinsic quality. It is only good *for something*, and the
+main way people fool themselves is by never checking which something.
+
+## Link prediction
+
+The standard intrinsic benchmark, because it needs no labels. Hide a fraction
+of the edges, embed what is left, and check whether the hidden edges score
+higher than random non-edges.
+
+The critical detail --- and the most common bug in hand-rolled evaluation ---
+is that **the held-out edges must be removed before embedding**. Embed the full
+graph and then "predict" edges the embedder already saw and you will report an
+AUC near 1.0 and be very pleased with yourself.
+
+```{r}
+edge_split
+```
+
+```{r}
+link_pred_auc
+```
+
+```{r}
+auc
+```
+
+We use a random geometric graph: points in the unit square joined when close.
+It has a genuine latent structure to recover, unlike an SBM where edges are
+conditionally independent given community and the achievable AUC is capped well
+below 1.
+
+```{r}
+#| label: linkpred
+gg <- geo_graph(n = 300, radius = 0.115, seed = 7)
+sp <- edge_split(gg, frac = 0.15, seed = 3)
+A_tr <- as_adj_dense(sp$g_train)
+
+c(nodes = vcount(gg), edges = ecount(gg), held_out = nrow(sp$pos))
+```
+
+Now compare methods --- including, importantly, two baselines that involve no
+embedding at all.
+
+```{r}
+#| label: linkpred-compare
+common_neighbours <- function(A, e) rowSums(A[e[, 1], ] * A[e[, 2], ])
+
+adamic_adar <- function(A, e) {
+  w <- 1 / log(pmax(rowSums(A), 2))
+  rowSums(A[e[, 1], ] * A[e[, 2], ] * rep(w, each = nrow(e)))
+}
+
+heuristic_auc <- function(f) {
+  s <- c(f(A_tr, sp$pos), f(A_tr, sp$neg))
+  auc(s, c(rep(1, nrow(sp$pos)), rep(0, nrow(sp$neg))))
+}
+
+results <- data.frame(
+  method = c("Common neighbours", "Adamic–Adar", "Spectral (d=16)",
+             "NetMF (d=32)", "DeepWalk (d=32)"),
+  auc = round(c(
+    heuristic_auc(common_neighbours),
+    heuristic_auc(adamic_adar),
+    link_pred_auc(spectral_embedding(A_tr, d = 16), sp$pos, sp$neg),
+    link_pred_auc(netmf(A_tr, dim = 32), sp$pos, sp$neg),
+    link_pred_auc(deepwalk(A_tr, dim = 32, num_walks = 5, walk_length = 30,
+                           epochs = 5, seed = 2), sp$pos, sp$neg)
+  ), 3)
+)
+results[order(-results$auc), ]
+```
+
+::: {.callout-important appearance="simple"}
+## Always run the heuristic baseline
+
+Common neighbours is one line of code, has no hyperparameters, and takes
+microseconds. On this graph it is competitive with every embedding method.
+
+That is not an artefact of the toy size --- it is a real and frequently
+reproduced result on link prediction benchmarks. If your embedding pipeline
+cannot beat "count the mutual friends", the pipeline is not earning its
+complexity. Run the baseline first, every time.
+:::
+
+The embeddings do have one advantage the heuristics do not: they produce a
+fixed-width vector per node that you can feed to anything. Adamic–Adar gives
+you a score for a *pair*, and nothing else.
+
+## Node classification
+
+If you have labels, the question is whether the embedding makes them
+recoverable. Use a deliberately weak classifier --- the point is to measure the
+representation, not to win a leaderboard.
+
+```{r}
+knn_accuracy
+```
+
+```{r}
+#| label: nodeclass
+gs <- sbm_graph(n_per = 40, k = 3, p_in = 0.10, p_out = 0.015, seed = 5)
+As <- as_adj_dense(gs)
+ls <- V(gs)$label
+
+data.frame(
+  method = c("Spectral (d=8)", "NetMF (d=32)", "DeepWalk (d=32)",
+             "Random GCN (2 layers)"),
+  knn_accuracy = round(c(
+    knn_accuracy(spectral_embedding(As, d = 8), ls, k = 5),
+    knn_accuracy(netmf(As, dim = 32), ls, k = 5),
+    knn_accuracy(deepwalk(As, dim = 32, epochs = 5, seed = 1), ls, k = 5),
+    knn_accuracy(gcn_forward(As, diag(nrow(As)),
+                             gcn_random_weights(c(nrow(As), 32, 8), seed = 2)),
+                 ls, k = 5)
+  ), 3)
+)
+```
+
+This graph is deliberately harder than the one in @sec-spectral --- sparser
+communities, more cross-edges --- so the methods separate instead of all
+saturating at 1.0.
+
+## The evaluation traps
+
+Five ways to get a number that does not mean what you think.
+
+**1. Leakage through the graph.** Covered above, and worth repeating because it
+is the one that silently produces publishable-looking results.
+
+**2. Degree as a confounder.** Both link prediction and classification are
+easier for high-degree nodes. A method that only learned degree can look
+respectable. Check by stratifying:
+
+```{r}
+#| label: degree-strat
+Z <- netmf(A_tr, dim = 32)
+deg <- rowSums(A_tr)
+pos_deg <- rowMeans(cbind(deg[sp$pos[, 1]], deg[sp$pos[, 2]]))
+grp <- cut(pos_deg, quantile(pos_deg, c(0, 1/3, 2/3, 1)),
+           labels = c("low", "mid", "high"), include.lowest = TRUE)
+
+sapply(levels(grp), function(gl) {
+  keep <- grp == gl
+  round(link_pred_auc(Z, sp$pos[keep, , drop = FALSE], sp$neg), 3)
+})
+```
+
+If performance were driven entirely by degree, the low-degree stratum would
+collapse. Here it holds up, which is the reassuring outcome.
+
+**3. Negative sampling that is too easy.** Uniformly sampled non-edges are
+usually far apart in the graph and trivial to reject. Harder and more
+informative: sample negatives at distance exactly 2.
+
+```{r}
+#| label: hard-negatives
+D_tr <- distances(sp$g_train)
+cand <- which(D_tr == 2, arr.ind = TRUE)
+cand <- cand[cand[, 1] < cand[, 2], ]
+set.seed(4)
+hard_neg <- cand[sample.int(nrow(cand), nrow(sp$pos)), ]
+
+c(easy_negatives = round(link_pred_auc(Z, sp$pos, sp$neg), 3),
+  hard_negatives = round(link_pred_auc(Z, sp$pos, hard_neg), 3))
+```
+
+The AUC drops sharply. Both numbers are "correct"; they answer different
+questions, and only the second resembles a deployed ranking problem, where
+you are choosing among plausible candidates rather than against random noise.
+
+**4. Comparing at unequal dimension.** A $d = 128$ embedding against a $d = 16$
+one is not a comparison of methods. Match $d$, or sweep it.
+
+**5. Single runs of stochastic methods.** DeepWalk depends on walk sampling,
+SGD ordering, and initialisation. Report a spread:
+
+```{r}
+#| label: variance
+set.seed(1)
+accs <- sapply(1:5, function(s) {
+  knn_accuracy(deepwalk(As, dim = 32, epochs = 5, seed = s), ls, k = 5)
+})
+c(round(accs, 3), mean = round(mean(accs), 3), sd = round(sd(accs), 3))
+```
+
+If two methods differ by less than this spread, they do not differ.
+
+## Choosing a method
+
+```{r}
+#| label: fig-decision
+#| echo: false
+#| fig-cap: "A rough decision procedure. Start at the top."
+#| fig-width: 7.5
+#| fig-height: 4.6
+par(mar = c(0, 0, 0, 0))
+plot.new(); plot.window(c(0, 10), c(0, 10))
+bx <- function(x, y, w, h, txt, fill) {
+  rect(x - w/2, y - h/2, x + w/2, y + h/2, col = fill, border = "grey40")
+  text(x, y, txt, cex = 0.78)
+}
+ar <- function(x0, y0, x1, y1, lab = NULL) {
+  arrows(x0, y0, x1, y1, length = 0.08, col = "grey40")
+  if (!is.null(lab)) text((x0 + x1)/2, (y0 + y1)/2, lab, cex = 0.68,
+                          col = "grey25", pos = 4, offset = 0.2)
+}
+bx(5, 9.3, 5.2, 1.0, "Do nodes have features\nthat matter?", "#EAF0F7")
+bx(2, 6.9, 3.4, 1.0, "Does the graph\nchange?", "#EAF0F7")
+bx(8, 6.9, 3.4, 1.0, "GNN\n(GCN / GraphSAGE)", "#DDEBD8")
+ar(3.6, 9.0, 2.6, 7.5, "no"); ar(6.4, 9.0, 7.4, 7.5, "yes")
+bx(2, 4.4, 3.4, 1.0, "GNN or\nre-embed on a schedule", "#DDEBD8")
+bx(6, 4.4, 3.6, 1.0, "n < ~20k ?", "#EAF0F7")
+ar(1.4, 6.3, 1.4, 5.0, "yes"); ar(2.9, 6.4, 5.2, 4.9, "no")
+bx(4.2, 1.9, 3.2, 1.0, "NetMF\n(closed form)", "#DDEBD8")
+bx(8.2, 1.9, 3.2, 1.0, "DeepWalk / node2vec\n(sampled)", "#DDEBD8")
+ar(5.3, 3.9, 4.4, 2.5, "yes"); ar(6.9, 3.9, 7.9, 2.5, "no")
+```
+
+Written out, with the caveats that matter:
+
+| Situation | Use | Why |
+|---|---|---|
+| First thing you try, any graph | **Spectral** | Deterministic, no tuning, tells you the number of communities |
+| Fixed graph, no features, $n \lesssim$ 20k | **NetMF** | Closed form, matches DeepWalk, milliseconds |
+| Fixed graph, no features, large $n$ | **DeepWalk / node2vec** | Sampling is what scales |
+| Need control over proximity radius | **node2vec** | $p, q$ tune reach --- but see @sec-walks on what they do *not* do |
+| Node features matter | **GCN / GraphSAGE** | Only family that uses them |
+| Graph grows, new nodes need embedding | **GraphSAGE** | Inductive; shallow methods cannot do this at all |
+| Graph *is* the model input, $n$ small | **Graph transformer** | Global receptive field, no over-smoothing |
+| Large graph, long-range interactions | **GraphGPS hybrid** | $O(\|E\|)$ locally, attention globally |
+
+And the honest addendum: **try the heuristic first**. Common neighbours,
+Adamic–Adar, personalised PageRank, and plain degree/triangle features solve a
+surprising number of graph problems, and they give you the number your
+embedding has to beat.
+
+## Practical notes for R
+
+**Sparse matrices.** Use **Matrix**. Everything in this book used dense
+matrices for readability, which is fine to about 10,000 nodes and catastrophic
+beyond.
+
+**Eigendecomposition.** **RSpectra**'s `eigs_sym()` for the few smallest
+eigenvalues; **irlba** for truncated SVD. Never `eigen()` or `svd()` on
+anything large --- they compute the full decomposition.
+
+**Graph manipulation.** **igraph** for essentially everything.
+
+**Existing implementations.** R has no equivalent of PyTorch Geometric.
+Realistically: implement the shallow methods yourself (they are short, as this
+book demonstrates), use **word2vec** or **rsparse** for the SGNS step if you
+want a compiled trainer, and use **torch** or **reticulate** onto PyG/DGL for
+GNNs and graph transformers.
+
+**Visualisation.** **uwot** (UMAP) or **Rtsne** to get from $d = 128$ down to 2
+for plotting. Do not use the 2D projection as your embedding --- project for
+your eyes, model on the full-dimensional vectors.
+
+```{r}
+#| eval: false
+library(uwot)
+Z <- netmf(A, dim = 128)
+emb2d <- umap(Z, n_neighbors = 15, min_dist = 0.1)
+plot(emb2d, col = factor(labels), pch = 19, cex = 0.5)
+```
+
+## What to remember
+
+1.  Hold out edges **before** embedding.
+2.  Run the heuristic baseline.
+3.  Match dimensions when comparing.
+4.  Report a spread over seeds for anything stochastic.
+5.  Stratify by degree, or you may just be measuring degree.
+6.  Choose the evaluation that matches your actual task --- and if you have a
+    downstream task, evaluate on *it*, not on link prediction.

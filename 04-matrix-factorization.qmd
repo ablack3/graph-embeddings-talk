@@ -1,0 +1,276 @@
+# DeepWalk is a matrix factorisation {#sec-mf}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+g <- karate_graph()
+A <- as_adj_dense(g)
+lab <- V(g)$label
+```
+
+This is my favourite result in the area, and the one I would keep if the talk
+were three minutes instead of seven.
+
+We just spent a chapter sampling random walks and running stochastic gradient
+descent to learn embeddings. It worked. It was also, in a precise sense,
+unnecessary: the thing that procedure converges to has a closed form, and you
+can compute it with an SVD in milliseconds.
+
+## Part 1: skip-gram is factorising a PMI matrix
+
+@levy2014neural proved this for word2vec. Fix the model: we are learning
+$\mathbf{w}_u$ and $\mathbf{c}_v$ and scoring pairs by
+$s_{uv} = \mathbf{w}_u^\top \mathbf{c}_v$. Forget the low-rank constraint for a
+moment and ask: if each $s_{uv}$ could take any value independently, what value
+minimises the SGNS loss?
+
+The expected loss contributed by the pair $(u,v)$, over observed
+co-occurrences and sampled negatives, is
+
+$$
+\mathcal{L}_{uv} = -\,\#(u,v)\,\log\sigma(s_{uv})
+\;-\; K \cdot \#(u)\,\frac{\#(v)}{|\mathcal{D}|}\,\log\sigma(-s_{uv}),
+$$
+
+where $\#(u,v)$ counts co-occurrences, $\#(u)$ and $\#(v)$ are marginals, and
+$|\mathcal{D}|$ is the total number of pairs. Differentiate with respect to
+$s_{uv}$, set to zero, and using $\sigma'(x) = \sigma(x)\sigma(-x)$ you get
+
+$$
+s_{uv} = \log\!\left(\frac{\#(u,v)\,|\mathcal{D}|}{\#(u)\,\#(v)}\right) - \log K .
+$$
+
+The first term is the **pointwise mutual information** of the pair. So the
+optimal score is
+
+$$
+\mathbf{w}_u^\top \mathbf{c}_v = \mathrm{PMI}(u,v) - \log K .
+$$
+
+Skip-gram with negative sampling is performing an implicit low-rank
+factorisation of a shifted PMI matrix. The neural framing is a way of computing
+it by sampling; it is not where the representational power comes from.
+
+We can check the claim directly. Fit SGNS, then compare the learned dot
+products against the empirical shifted PMI computed from the very same pairs:
+
+```{r}
+#| label: verify-pmi
+W <- random_walks(A, num_walks = 40, walk_length = 40, seed = 1)
+P <- walks_to_pairs(W, window = 5, seed = 1)
+n <- nrow(A)
+K <- 5
+
+fit <- skipgram_sgns(P, n_nodes = n, dim = 32, epochs = 12, neg = K, seed = 1)
+
+# empirical co-occurrence counts and marginals from the same corpus
+Cnt <- matrix(0, n, n)
+tab <- table(P[, 1], P[, 2])
+Cnt[cbind(as.integer(rownames(tab))[row(tab)],
+          as.integer(colnames(tab))[col(tab)])] <- as.vector(tab)
+
+Dtot <- sum(Cnt)
+pmi <- log((Cnt * Dtot) / outer(rowSums(Cnt), colSums(Cnt))) - log(K)
+
+learned <- fit$W %*% t(fit$C)
+keep <- is.finite(pmi) & Cnt > 20      # ignore pairs seen too rarely to estimate
+
+cor(learned[keep], pmi[keep])
+```
+
+```{r}
+#| label: fig-pmi
+#| fig-cap: "Learned dot products against empirical shifted PMI, for node pairs observed at least 20 times. SGNS is fitting the PMI matrix, up to the error of a rank-32 approximation."
+#| fig-width: 6.5
+#| fig-height: 4.5
+par(mar = c(4.2, 4.2, 1, 1))
+plot(pmi[keep], learned[keep], pch = 19, cex = 0.35,
+     col = adjustcolor("#4C72B0", 0.4),
+     xlab = "empirical shifted PMI", ylab = expression(w[u] %*% c[v]))
+abline(0, 1, col = "#DD8452", lwd = 2)
+```
+
+A correlation of `r round(cor(learned[keep], pmi[keep]), 2)` with the identity
+line drawn on top. It is not exact --- rank 32 cannot reproduce a full-rank
+matrix, and the rarer pairs are noisily estimated --- but the relationship is
+unmistakable. The neural network is fitting the statistic the theory says it
+should.
+
+## Part 2: the co-occurrence counts have a closed form
+
+Now the graph-specific half, from @qiu2018network.
+
+Why sample walks at all? A random walk's transition matrix is
+$P = D^{-1}A$. The probability of being at $j$ exactly $r$ steps after starting
+at $i$ is $[P^r]_{ij}$ --- no sampling required. Averaging over window offsets
+$r = 1, \dots, T$ and folding in the marginals gives, in expectation over an
+infinite corpus of walks,
+
+$$
+M = \frac{\mathrm{vol}(G)}{bT}\left(\sum_{r=1}^{T} P^r\right) D^{-1},
+\qquad \mathrm{vol}(G) = \sum_{ij} A_{ij},
+$$
+
+and DeepWalk's target is $\log \max(M, 1)$ --- the truncation replacing
+$\log$ of anything below 1 with zero, which is the same "positive PMI" trick
+used throughout the word-vector literature.
+
+This is **NetMF**. Two functions:
+
+```{r}
+netmf_matrix
+```
+
+```{r}
+netmf
+```
+
+That is the whole algorithm. No walks, no SGD, no epochs, no learning rate.
+
+## Do they agree?
+
+The claim is that sampled DeepWalk and closed-form NetMF estimate the same
+object, so the sampled version should converge to the analytic one as we draw
+more walks.
+
+One subtlety has to be dealt with first, and it is the kind of thing that
+quietly ruins a comparison. The formula above weights every walk offset
+$r = 1, \dots, T$ **equally**. Word2vec's shrinking window does not: an offset
+$r$ pair survives with probability $(T - r + 1)/T$, so near context is
+up-weighted. That is a different estimand, and it shows up as a bias that no
+amount of extra sampling removes. For the comparison we therefore switch the
+shrinking off, which is what `shrink = FALSE` is for.
+
+```{r}
+#| label: converge
+M_exact <- netmf_matrix(A, T_window = 5, b = 1, truncate = FALSE)
+
+empirical_pmi <- function(r, shrink) {
+  Wr <- random_walks(A, num_walks = r, walk_length = 40, seed = 2)
+  Pr <- walks_to_pairs(Wr, window = 5, shrink = shrink, seed = 2)
+  Cr <- matrix(0, n, n)
+  tb <- table(Pr[, 1], Pr[, 2])
+  Cr[cbind(as.integer(rownames(tb))[row(tb)],
+           as.integer(colnames(tb))[col(tb)])] <- as.vector(tb)
+  log((Cr * sum(Cr)) / outer(rowSums(Cr), colSums(Cr)))
+}
+
+# Freeze the set of pairs we score on, so the comparison is like-for-like:
+# well-observed, and seen at least once in the sparsest run of either setting
+# (an unobserved pair has empirical PMI of -Inf and would poison the mean).
+keep2 <- Cnt > 20 & is.finite(M_exact) &
+  empirical_pmi(5, FALSE) > -Inf & empirical_pmi(5, TRUE) > -Inf
+
+walks <- c(5, 20, 80, 320)
+res <- sapply(walks, function(r) {
+  pm <- empirical_pmi(r, shrink = FALSE)
+  c(rmse = sqrt(mean((M_exact[keep2] - pm[keep2])^2)),
+    cor  = cor(M_exact[keep2], pm[keep2]))
+})
+colnames(res) <- paste0(walks, " walks/node")
+round(res, 4)
+```
+
+The error falls and the correlation climbs to `r round(max(res["cor", ]), 3)`.
+The walks really were estimating this matrix, and the gap is Monte Carlo error.
+
+Run the same sweep with the shrinking window and the bias is plain:
+
+```{r}
+round(sapply(walks, function(r) {
+  pm <- empirical_pmi(r, shrink = TRUE)
+  sqrt(mean((M_exact[keep2] - pm[keep2])^2))
+}), 4)
+```
+
+It improves, then stalls around 0.26 --- three times the uniform-window error,
+and still falling far more slowly. It is converging, just to a different
+matrix. If you want NetMF and your DeepWalk implementation to agree, they have
+to agree about the window first.
+
+The residual floor in the uniform case (about 0.08) is not sampling noise
+either: our walks are 40 steps long and start from a uniform distribution over
+nodes, while the derivation assumes the walk is in its stationary distribution.
+Short walks under-represent long-range co-occurrence. Lengthen the walks and it
+shrinks further.
+
+## Which is better in practice?
+
+```{r}
+#| label: compare
+t_dw <- system.time(Z_dw <- deepwalk(A, dim = 32, epochs = 5, seed = 1))[["elapsed"]]
+t_nm <- system.time(Z_nm <- netmf(A, dim = 32, T_window = 5))[["elapsed"]]
+t_sp <- system.time(Z_sp <- spectral_embedding(A, d = 8))[["elapsed"]]
+
+data.frame(
+  method = c("DeepWalk (sampled + SGD)", "NetMF (closed form)", "Spectral"),
+  seconds = round(c(t_dw, t_nm, t_sp), 3),
+  knn_accuracy = round(c(knn_accuracy(Z_dw, lab, 5),
+                         knn_accuracy(Z_nm, lab, 5),
+                         knn_accuracy(Z_sp, lab, 5)), 3)
+)
+```
+
+DeepWalk and NetMF tie at perfect faction recovery, spectral is a fraction
+behind, and NetMF gets there roughly a thousand times faster than the sampled
+version --- microseconds against seconds.
+
+## The point, and the catch
+
+::: {.callout-important appearance="simple"}
+## What this buys you
+
+Before you reach for a "graph representation learning" library, try an SVD of
+$\log \max(M, 1)$. It is deterministic, has one meaningful hyperparameter
+($T$), gives you a reproducible answer, and on many benchmarks matches the
+sampled methods. When it is not good enough, you have a strong baseline that
+tells you how much the complexity is buying.
+:::
+
+The catch is right there in the code: `netmf_matrix` builds a **dense $n \times
+n$ matrix** and multiplies it $T$ times. That is $O(n^3)$ time and $O(n^2)$
+memory. At $n = 10^5$ the matrix alone is 80 GB. DeepWalk's sampling is
+"unnecessary" only in the sense that it approximates something exact --- the
+approximation is the entire reason it scales.
+
+Qiu et al. addressed this with NetMF's large-window variant, which never forms
+$M$: eigendecompose $D^{-1/2} A D^{-1/2}$, apply the polynomial
+$\sum_r \lambda^r$ to the eigenvalues, and reconstruct in low rank. Their
+follow-up, NetSMF, sparsifies the matrix instead. Both keep the closed-form
+character while avoiding the dense product.
+
+So the honest summary:
+
+| Graph size | Reach for |
+|---|---|
+| Up to ~20k nodes | NetMF, exactly as written here |
+| 20k – 1M | Sparse spectral (RSpectra) or NetMF's large-window variant |
+| Beyond that | Sampled walks + SGNS, or a GNN |
+
+## The unification
+
+Step back and every method so far collapses into one recipe.
+
+$$
+\underbrace{Z}_{\text{embedding}}
+\;\approx\;
+\text{low-rank factorisation of}
+\;\underbrace{f(A)}_{\substack{\text{a matrix of} \\ \text{node similarities}}}
+$$
+
+| Method | $f(A)$ |
+|---|---|
+| Spectral | $I - D^{-1/2}AD^{-1/2}$ (bottom eigenvectors) |
+| Graph factorisation | $A$ |
+| DeepWalk / NetMF | $\log\max\!\big(\tfrac{\mathrm{vol}(G)}{bT}(\sum_r P^r)D^{-1},\,1\big)$ |
+| node2vec | the same, with $P$ replaced by a second-order transition operator |
+| LINE [@tang2015line] | the $T = 1$ case of NetMF |
+
+They differ in one place: **which matrix**. Everything else --- SGD versus SVD,
+neural versus not --- is implementation.
+
+That framing also shows the ceiling. Every row of that table is a function of
+$A$ alone. None of them can use the fact that a node is a 34-year-old who
+joined in March, and none can embed a node that was not in the matrix when you
+factorised it. Breaking through that is the next chapter.

@@ -1,0 +1,492 @@
+# Graph embeddings in a transformer {#sec-transformers}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+```
+
+## The problem with attention
+
+Self-attention [@vaswani2017attention] computes, for a set of $n$ input vectors
+stacked as $X$:
+
+$$
+\mathrm{Attn}(X) = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_h}}\right)V,
+\qquad Q = XW_Q,\; K = XW_K,\; V = XW_V .
+$$
+
+Look for where position enters. It does not. Permute the rows of $X$ and the
+output rows permute identically: attention is a function on **sets**, not
+sequences. That is a feature --- it is why transformers handle long-range
+dependencies so well --- and it is why every transformer needs positional
+encodings bolted on. Text uses sine waves or learned position vectors because
+text has an obvious order.
+
+A graph does not. There is no node 1, node 2, node 3 --- only structure. So:
+
+> How do you tell a permutation-invariant architecture about a structure that
+> has no canonical ordering?
+
+That question is exactly what graph embeddings answer, and it is the reason
+this chapter exists.
+
+Here is the layer we will use, written out. It is short enough to read:
+
+```{r}
+mha
+```
+
+```{r}
+softmax_rows
+```
+
+## Three places structure can enter
+
+There are exactly three, and they are not alternatives --- production models use
+two or three at once.
+
+| | Where | What goes in | Cost |
+|---|---|---|---|
+| **1** | Input embeddings | A pretrained vector per token/entity | Free at train time |
+| **2** | Positional encodings | A structural descriptor per node, concatenated or added to $X$ | Cheap preprocessing |
+| **3** | Attention bias | A term added to the attention logits, computed from the pair $(i,j)$ | $O(n^2)$ memory |
+
+### 1. Graph embeddings as input vectors
+
+The simplest and by far the most common. You have a transformer over sequences
+of *entities*, and those entities also sit in a graph. Embed the graph offline,
+use the vectors to initialise the token embedding table, fine-tune or freeze.
+
+The clinical case makes it concrete. Patient records are sequences of coded
+events --- diagnoses, drugs, procedures --- which is exactly what a transformer
+wants. But the codes also form a graph: the OMOP/SNOMED vocabulary, with "is
+a", "maps to", and anatomical relations linking a few million concepts.
+
+Train a randomly initialised embedding table and the model must learn that
+*acute myocardial infarction* and *acute coronary syndrome* are related, from
+co-occurrence alone, for every one of a million codes --- most of which appear a
+handful of times. Initialise from a graph embedding of the vocabulary hierarchy
+and that relatedness is there on step zero. The rare codes benefit most,
+because their vectors are determined by their position in the hierarchy rather
+than by data you do not have.
+
+This is the highest-value, lowest-effort option, and it needs no changes to the
+transformer at all.
+
+### 2. Structural positional encodings
+
+Now the case where the graph *is* the input: the tokens are nodes, and we need
+to tell attention where each one sits.
+
+**Laplacian positional encoding** [@dwivedi2021generalization] uses the $k$
+smallest non-trivial eigenvectors of $L_{\mathrm{sym}}$ --- exactly the
+spectral embedding of @sec-spectral --- as a per-node feature vector. It is the
+graph analogue of sinusoidal position encodings, and the analogy is precise:
+sine waves are the eigenvectors of the Laplacian of a path graph.
+
+```{r}
+lap_pe
+```
+
+**Random-walk structural encoding** (RWSE, used in GraphGPS by
+@rampasek2022recipe) instead records return probabilities:
+$[\,P^1_{ii}, P^2_{ii}, \dots, P^K_{ii}\,]$ --- how likely a walk from node $i$
+is to be back at $i$ after $k$ steps.
+
+```{r}
+rwse
+```
+
+The two capture genuinely different things:
+
+```{r}
+#| label: pe-compare
+g <- karate_graph()
+A <- as_adj_dense(g)
+
+pe <- lap_pe(A, k = 4)
+rw <- rwse(A, ks = 1:6)
+
+round(head(data.frame(
+  node = 1:6, degree = rowSums(A)[1:6],
+  lap1 = pe[1:6, 1], lap2 = pe[1:6, 2],
+  rw2 = rw[1:6, 2], rw3 = rw[1:6, 3], rw4 = rw[1:6, 4]
+)), 3)
+```
+
+Column `rw3` is the probability of returning in exactly three steps, which
+requires a triangle --- so it senses local clustering. But it is not a
+*normalised* clustering coefficient, and the difference trips people up:
+
+```{r}
+round(c(
+  `vs triangle count` = cor(rw[, 3], count_triangles(g)),
+  `vs degree` = cor(rw[, 3], degree(g)),
+  `vs transitivity` = cor(rw[, 3], transitivity(g, type = "local", isolates = "zero"))
+), 3)
+```
+
+Positively correlated with raw triangle count, and *negatively* with the
+degree-normalised transitivity. The reason is in the arithmetic: returning in
+three steps has probability
+$\sum_{a,b} A_{ia}A_{ab}A_{bi} / (d_i d_a d_b)$, so it is discounted not only
+by your own degree but by your neighbours'. Look at six nodes that all have
+degree 4:
+
+```{r}
+i4 <- which(degree(g) == 4)
+data.frame(
+  node = i4,
+  triangles = count_triangles(g)[i4],
+  transitivity = round(transitivity(g, type = "local", isolates = "zero")[i4], 3),
+  rw3 = round(rwse(A, 1:3)[i4, 3], 4)
+)
+```
+
+Node 8 sits in six triangles and node 6 in three, yet node 6 scores higher ---
+because node 8's triangles run through hubs, and a walk that wanders into a
+hub is unlikely to come straight back. RWSE encodes "am I in a tight, *quiet*
+neighbourhood", which is a genuinely different and often more useful signal
+than the clustering coefficient. Just do not read it as one.
+
+Laplacian PE says **where you are globally**; RWSE says **what your
+neighbourhood looks like locally**. They are complementary, and GraphGPS uses
+both.
+
+::: {.callout-warning appearance="simple"}
+## The sign problem
+
+Eigenvectors are only defined up to sign: if $\mathbf{v}$ is an eigenvector so
+is $-\mathbf{v}$. Nothing in the eigendecomposition picks one, so the same
+graph can yield $2^k$ different Laplacian PEs, and a model that memorises one
+will fail on another.
+
+The standard fix is to randomly flip signs during training as an augmentation
+(`sign_flip = TRUE` above), forcing sign-invariance. RWSE has no such ambiguity,
+which is a real practical advantage.
+:::
+
+### 3. Attention bias --- the interesting one
+
+The first two inject structure into $X$ and hope attention picks it up.
+Graphormer [@ying2021transformers] modifies attention itself:
+
+$$
+S_{ij} = \frac{\mathbf{q}_i^\top \mathbf{k}_j}{\sqrt{d_h}} + b_{\phi(i,j)}
+$$
+
+where $\phi(i,j)$ is the shortest-path distance and $b$ is a **learnable scalar
+per distance**. Add it before the softmax and every attention head sees the
+graph's metric directly.
+
+```{r}
+spd_bias
+```
+
+Three things to appreciate about this:
+
+-   It is $n^2$ terms of information --- far more than the $n \times k$ that
+    positional encodings supply.
+-   Attention stays **global**: unlike a GNN, node $i$ can attend to a node ten
+    hops away if that is useful. The bias shapes the distribution rather than
+    masking it. This sidesteps over-smoothing entirely, because there is no
+    repeated local averaging.
+-   Setting $b_{\phi} = 0$ for $\phi = 1$ and $-\infty$ otherwise recovers a
+    GAT exactly. Graphormer is the soft version of a GNN's hard mask.
+
+## Making it work
+
+Here is the experiment. A planted-partition graph with three communities. We
+reveal the true community label for 40% of nodes as an input feature and zero
+out the rest; the model must infer the hidden labels by looking at the graph.
+
+```{r}
+#| label: task-setup
+gs <- sbm_graph(n_per = 30, k = 3, p_in = 0.16, p_out = 0.01, seed = 11)
+As <- as_adj_dense(gs)
+n <- vcount(gs)
+y <- as.integer(V(gs)$label)
+K <- 3
+
+# shortest-path distances, capped
+maxd <- 5
+D <- distances(gs)
+D[is.infinite(D)] <- maxd
+D <- pmin(D, maxd)
+Didx <- as.integer(D) + 1L
+
+set.seed(3)
+revealed <- sample(n, round(0.4 * n))
+hidden <- setdiff(seq_len(n), revealed)
+train <- sample(hidden, round(length(hidden) / 2))
+test <- setdiff(hidden, train)
+
+Xlab <- matrix(0, n, K)
+Xlab[cbind(revealed, y[revealed])] <- 1
+X <- cbind(Xlab, lap_pe(As, 4), rwse(As, 1:4))
+d <- ncol(X)
+
+c(nodes = n, features = d, revealed = length(revealed),
+  train = length(train), test = length(test))
+```
+
+The content-based part of attention is a random projection, and deliberately
+uninformative — the label channels are zero for the majority of nodes, and
+the structural channels do not encode community identity. The only route to
+the answer is the graph.
+
+```{r}
+#| label: content-attn
+set.seed(5)
+Wq <- matrix(rnorm(d * d, sd = sqrt(1 / d)), d, d)
+Wk <- matrix(rnorm(d * d, sd = sqrt(1 / d)), d, d)
+S_content <- (X %*% Wq) %*% t(X %*% Wk) / sqrt(d)
+```
+
+### What the bias does to attention
+
+Add $b_\phi = -\lambda \phi$ --- a simple linear decay in graph distance --- and
+watch where attention goes. $\lambda = 0$ is the graph-blind transformer.
+
+```{r}
+#| label: lambda-sweep
+same_comm <- outer(y, y, "==")
+is_nbr <- As > 0
+
+sweep_lambda <- function(lambda) {
+  b <- -lambda * (0:maxd)
+  Aw <- softmax_rows(S_content + matrix(b[Didx], n, n))
+  c(`same community` = mean(rowSums(Aw * same_comm)),
+    `direct neighbours` = mean(rowSums(Aw * is_nbr)),
+    `entropy` = mean(-rowSums(Aw * log(Aw + 1e-12))))
+}
+
+round(t(sapply(c(0, 1, 2, 3), sweep_lambda)), 3)
+```
+
+Read the first column. With no bias, `r round(sweep_lambda(0)[1], 3)` of
+attention mass lands on same-community nodes --- which is exactly chance, since
+one third of the graph is your community. The transformer is blind. At
+$\lambda = 2$ it is `r round(sweep_lambda(2)[1], 3)`. The row entropy falls from
+`r round(sweep_lambda(0)[3], 2)` (against a maximum of
+`r round(log(n), 2)` --- perfectly uniform) to
+`r round(sweep_lambda(2)[3], 2)`.
+
+One scalar per distance, added before the softmax, turned a set function into a
+graph function.
+
+```{r}
+#| label: fig-attn
+#| fig-cap: "Attention matrices, nodes ordered by community, self-attention removed and rows renormalised. Left: no bias — uniformly flat. Right: with a distance bias — the three communities appear as blocks on the diagonal."
+#| fig-width: 8.5
+#| fig-height: 4.3
+plot_attention(
+  list(softmax_rows(S_content),
+       softmax_rows(S_content + matrix((-2 * (0:maxd))[Didx], n, n))),
+  group = y,
+  titles = c(expression(lambda == 0 ~ " (no graph)"),
+             expression(lambda == 2 ~ " (distance bias)"))
+)
+```
+
+The left panel is the whole problem in one image: every entry the same shade,
+because a graph-blind transformer has no reason to prefer any node over any
+other. The right panel is the fix.
+
+### Does it help the task?
+
+Attention mass is a means, not an end. Train a linear readout on top --- this
+part has an exact gradient, so it is ordinary softmax regression:
+
+```{r}
+#| label: readout
+fit_readout <- function(H, steps = 400, lr = 0.5) {
+  Wo <- matrix(rnorm(ncol(H) * K, sd = 0.1), ncol(H), K)
+  for (s in seq_len(steps)) {
+    P <- softmax_rows(H %*% Wo)
+    G <- P
+    G[cbind(train, y[train])] <- G[cbind(train, y[train])] - 1
+    G[-train, ] <- 0
+    Wo <- Wo - lr * (t(H) %*% G) / length(train)
+  }
+  Wo
+}
+
+set.seed(9)
+H_bias <- softmax_rows(S_content + matrix((-2 * (0:maxd))[Didx], n, n)) %*% X
+H_none <- softmax_rows(S_content) %*% X
+
+acc <- function(H, Wo, idx) mean(max.col(H %*% Wo)[idx] == y[idx])
+
+Wb <- fit_readout(H_bias)
+Wn <- fit_readout(H_none)
+
+data.frame(
+  model = c("attention + graph distance bias", "attention only (graph-blind)"),
+  train = round(c(acc(H_bias, Wb, train), acc(H_none, Wn, train)), 3),
+  test  = round(c(acc(H_bias, Wb, test),  acc(H_none, Wn, test)), 3)
+)
+```
+
+`r round(acc(H_bias, Wb, test), 2)` against `r round(acc(H_none, Wn, test), 2)`.
+Same architecture, same features, same readout, same number of parameters. The
+only difference is one scalar per distance added to the attention logits.
+
+That is the slide. Everything else in this book is the explanation of why that
+number moves.
+
+## Learning the bias
+
+Graphormer does not hand-set $b$; it learns it. Ours has only
+`r 6` parameters, so we can fit them by finite differences and skip autodiff
+entirely --- perturb each parameter, see what happens to the loss.
+
+```{r}
+#| label: learn-bias
+loss_fn <- function(par) {
+  b <- par[1:(maxd + 1)]
+  Wo <- matrix(par[-(1:(maxd + 1))], d, K)
+  H <- softmax_rows(S_content + matrix(b[Didx], n, n)) %*% X
+  P <- softmax_rows(H %*% Wo)
+  -mean(log(pmax(P[cbind(train, y[train])], 1e-12)))
+}
+
+test_acc <- function(par) {
+  b <- par[1:(maxd + 1)]
+  Wo <- matrix(par[-(1:(maxd + 1))], d, K)
+  H <- softmax_rows(S_content + matrix(b[Didx], n, n)) %*% X
+  mean(max.col(H %*% Wo)[test] == y[test])
+}
+
+set.seed(9)
+par <- c(rep(0, maxd + 1), rnorm(d * K, sd = 0.1))
+eps <- 1e-4
+trace <- numeric(200)
+
+for (s in seq_len(200)) {
+  gr <- numeric(length(par))
+  for (j in seq_along(par)) {
+    pp <- par; pp[j] <- pp[j] + eps
+    pm <- par; pm[j] <- pm[j] - eps
+    gr[j] <- (loss_fn(pp) - loss_fn(pm)) / (2 * eps)
+  }
+  par <- par - 1.0 * gr
+  trace[s] <- loss_fn(par)
+}
+
+c(loss_start = round(trace[1], 3),
+  loss_end = round(tail(trace, 1), 3),
+  test_accuracy = round(test_acc(par), 3))
+```
+
+It learns --- the bias parameters started at zero, meaning graph-blind, and
+gradient descent found its way to a working model.
+
+Now look at *what* it learned:
+
+```{r}
+#| label: learned-bias
+setNames(round(par[1:(maxd + 1)], 2), paste0("dist ", 0:maxd))
+```
+
+Not the smooth decay we hand-set. It is negative for distances 1–3 and then
+strongly **positive** at distance 4.
+
+This is not a bug, and it is worth sitting with. In a graph with three blocks,
+a node four hops away is almost certainly in a *different* community --- and
+"I am definitely not in that community" is, with three choices, nearly as
+informative as "I am in this one". The readout has signed weights and can
+happily invert the signal. The model found a strategy we did not anticipate,
+and it is a correct one for this graph.
+
+```{r}
+Aw_learned <- softmax_rows(S_content + matrix(par[1:(maxd + 1)][Didx], n, n))
+c(`same-community mass` = round(mean(rowSums(Aw_learned * same_comm)), 3),
+  `chance` = round(1 / K, 3))
+```
+
+Confirmed: it attends *away* from its own community, well below chance.
+
+The general lesson is the argument for learning the bias rather than fixing it:
+the right shape depends on the graph and the task. On molecules, where
+Graphormer was developed, chemistry is local and a decaying profile is the
+sensible prior. On a block-structured social graph it is not. Leaving $b$
+learnable lets the data decide, which is precisely why Graphormer parameterises
+it that way.
+
+::: {.callout-note appearance="simple"}
+## What this demo is not
+
+Finite differences cost two forward passes per parameter, which is fine for
+`r 6 + 11 * 3` parameters and hopeless for a real model. The frozen random
+$W_Q, W_K$ are doing no work here. A real graph transformer trains everything
+jointly with backpropagation. The point of this version is that you can read
+every line of it.
+:::
+
+## Doing it for real, in R
+
+The R route to actual graph transformers is the `torch` package --- a direct
+binding to libtorch, no Python involved. The pieces we built map over
+one-for-one:
+
+```{r}
+#| eval: false
+library(torch)
+
+graph_attention_bias <- nn_module(
+  "graph_attention_bias",
+  initialize = function(d_model, n_heads, max_dist = 8) {
+    self$n_heads <- n_heads
+    self$max_dist <- max_dist
+    self$attn <- nn_multihead_attention(d_model, n_heads, batch_first = TRUE)
+    # one learnable scalar per (head, distance) -- Graphormer's spatial encoding
+    self$spatial <- nn_embedding(max_dist + 1, n_heads)
+  },
+  forward = function(x, dist) {
+    # x: (batch, n, d_model);  dist: (batch, n, n) integer hop distances
+    d <- torch_clamp(dist, max = self$max_dist)
+    bias <- self$spatial(d)$permute(c(1, 4, 2, 3))   # (batch, heads, n, n)
+    b <- bias$reshape(c(-1, dist$size(2), dist$size(3)))
+    self$attn(x, x, x, attn_mask = b)[[1]]
+  }
+)
+```
+
+Precompute `dist` once per graph with `igraph::distances()` and cache it; it is
+static, and recomputing all-pairs shortest paths every batch will dominate your
+training time.
+
+For the input-embedding route (option 1), no custom module is needed at all:
+
+```{r}
+#| eval: false
+Z <- netmf(A, dim = 128)                     # embed the entity graph offline
+emb <- nn_embedding(nrow(Z), 128)
+emb$weight <- nn_parameter(torch_tensor(Z))  # initialise, then fine-tune
+```
+
+## The catch
+
+Graph transformers have a hard limit that GNNs do not: the attention matrix is
+$n \times n$. A GNN costs $O(|E|)$ per layer; a graph transformer costs
+$O(n^2)$. For molecules (tens of atoms) that is nothing. For a social network
+with a million nodes it is a trillion entries.
+
+Hence the dominant architecture is hybrid --- **GraphGPS**
+[@rampasek2022recipe] runs a message-passing layer and an attention layer in
+parallel at each block, summing the outputs. The MPNN handles local structure
+cheaply over edges; attention handles long-range interactions; positional
+encodings glue them together. If you build a graph transformer today, start
+there.
+
+## Summary
+
+| Approach | Use when | Cost |
+|---|---|---|
+| Pretrained embeddings as input vectors | Tokens are entities in a side graph | Free |
+| Laplacian PE | Global position matters; watch the sign ambiguity | $O(n k)$ |
+| RWSE | Local structure matters; no sign issues | $O(nK)$ dense, cheap sparse |
+| Attention bias | The graph *is* the input, $n$ is small | $O(n^2)$ |
+| Hybrid (GraphGPS) | Large graphs, long-range interactions | $O(|E| + n^2)$ per block |

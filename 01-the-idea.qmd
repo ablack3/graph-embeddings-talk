@@ -1,0 +1,282 @@
+# The idea {#sec-idea}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+```
+
+## The problem
+
+Here is a graph. Zachary's karate club [@zachary1977information]: 34 members of
+a 1970s university club, 78 friendships, and --- famously --- a schism that
+split the club in two after a dispute between the instructor (node 1) and the
+president (node 34).
+
+```{r}
+#| label: fig-karate
+#| fig-cap: "Zachary's karate club, coloured by the faction each member joined after the split. Nobody told the layout algorithm about the factions."
+#| fig-width: 7
+#| fig-height: 5
+g <- karate_graph()
+A <- as_adj_dense(g)
+lab <- V(g)$label
+
+set.seed(4)
+coords <- layout_with_fr(g)
+par(mar = c(0, 0, 0, 0))
+plot(g,
+  layout = coords,
+  vertex.color = ifelse(lab == "Mr Hi", "#4C72B0", "#DD8452"),
+  vertex.label.color = "white", vertex.size = 15,
+  vertex.label.cex = 0.7, edge.color = "grey75"
+)
+legend("topleft", legend = c("Mr Hi", "Officer"), pch = 21,
+       pt.bg = c("#4C72B0", "#DD8452"), bty = "n", pt.cex = 1.6)
+```
+
+Now suppose you want to do something ordinary with this: cluster the members,
+predict who will befriend whom next, or feed the club into a model that also
+uses age and attendance. Every one of those tasks wants a data frame with one
+row per member and a fixed number of numeric columns.
+
+What do you have instead? A $34 \times 34$ adjacency matrix:
+
+```{r}
+A[1:8, 1:8]
+```
+
+You could use it directly --- one column per node --- and people do. It fails
+in three ways at once:
+
+1.  **It is the wrong width.** The number of features equals the number of
+    nodes. Add a member, and every model you fitted has the wrong input shape.
+2.  **It is almost all zeros.** Real graphs have average degree in the tens
+    while $n$ is in the millions. Here, `r round(100 * mean(A > 0), 1)`% of
+    entries are non-zero, and that is a *dense* graph by real standards.
+3.  **It has no useful geometry.** Rows 1 and 34 --- the two faction leaders,
+    with 16 and 17 friends each --- share
+    `r sum(A[1, ] > 0 & A[34, ] > 0)` common neighbours. But
+    `sum(A[1,] * A[34,])` treats "friend in common" as the *only* kind of
+    similarity. Two nodes three hops apart in the same tight community look
+    exactly as unrelated as two nodes in different components.
+
+Point 3 is the real problem, and it does not go away by being clever with
+sparse storage. The adjacency matrix records edges. What you want is a notion of
+*similarity* --- and in a graph, similarity is a global property that emerges
+from paths, not a local one you can read off a single entry.
+
+## The idea
+
+::: {.callout-note appearance="simple"}
+## Graph embedding
+
+A **graph embedding** is a map $f: V \to \mathbb{R}^d$ from nodes to short
+vectors, chosen so that **geometric closeness in $\mathbb{R}^d$ approximates
+structural closeness in $G$**.
+:::
+
+That is the entire concept. $d$ is typically 16 to 256 --- small, dense, and
+fixed regardless of $n$. The vectors are usually meaningless individually
+(dimension 7 does not "mean" anything) and meaningful in relation to each
+other.
+
+To see what "good" looks like, here is the karate club embedded into two
+dimensions by the very first algorithm we will study. No labels were used:
+
+```{r}
+#| label: fig-karate-embed
+#| fig-cap: "The karate club embedded in 2D by a Laplacian eigenmap. Colour is the true faction, which the algorithm never saw."
+#| fig-width: 7
+#| fig-height: 4.5
+Z <- spectral_embedding(A, d = 2)
+
+par(mar = c(4, 4, 1, 1))
+plot(Z[, 1], Z[, 2], type = "n", xlab = "dimension 1", ylab = "dimension 2")
+abline(v = 0, col = "grey85", lty = 2)
+text(Z[, 1], Z[, 2], labels = seq_len(nrow(Z)), cex = 0.8,
+     col = ifelse(lab == "Mr Hi", "#4C72B0", "#DD8452"))
+```
+
+The first dimension alone separates the factions almost perfectly: thresholding
+it at zero recovers the true split for 33 of the 34 members. The two leaders,
+1 and 34, land on opposite sides of zero. Node 9 --- a genuinely ambiguous
+case, who joined the Officer faction despite being better connected to Mr Hi's
+group --- comes out ranked 17th of 34 along that axis, dead in the middle,
+which is exactly where an honest method should put it.
+
+Note who is *not* at the extremes: the ends of the axis are held by peripheral
+members like 17 and 30, not by the two hubs. Laplacian eigenmaps push
+loosely-attached nodes outward, because moving them is cheap. That is a real
+property of the method, and @sec-spectral explains where it comes from.
+
+Two sentences of arithmetic did that, and the rest of this book is about what
+those two sentences can be.
+
+## The encoder–decoder framing
+
+Almost every method in the literature fits one template [@hamilton2020]. It is
+worth internalising, because it turns a zoo of algorithms into three choices.
+
+You pick:
+
+1.  An **encoder** $\textsc{enc}(i) = \mathbf{z}_i$, producing the vector for
+    node $i$.
+2.  A **decoder** $\textsc{dec}(\mathbf{z}_i, \mathbf{z}_j)$, reconstructing
+    some quantity from a pair of vectors --- usually a dot product
+    $\mathbf{z}_i^\top \mathbf{z}_j$.
+3.  A **target similarity** $S_{ij}$: the ground truth the decoder is trying to
+    match.
+
+Then you minimise
+
+$$
+\mathcal{L} = \sum_{(i,j)} \ell\bigl(\textsc{dec}(\mathbf{z}_i, \mathbf{z}_j),\; S_{ij}\bigr).
+$$
+
+Everything is a choice of $S$ and $\ell$:
+
+| Method | Target similarity $S_{ij}$ | Loss |
+|---|---|---|
+| Laplacian eigenmaps | $A_{ij}$ | weighted squared distance |
+| Graph factorisation | $A_{ij}$ | squared error on dot product |
+| DeepWalk / node2vec | probability of visiting $j$ from $i$ in a short random walk | cross-entropy (with negative sampling) |
+| NetMF | log of that same walk probability, in closed form | squared error |
+| GCN / GraphSAGE | task-dependent | task-dependent |
+
+Two things follow immediately.
+
+**The interesting choice is $S$, not the optimiser.** The reason DeepWalk beats
+plain adjacency factorisation is not that it uses a neural network --- we will
+see in @sec-mf that it barely does. It is that random walks define a
+similarity that reaches beyond immediate neighbours.
+
+**Most encoders are just a lookup table.** For everything in @sec-spectral
+through @sec-mf, $\textsc{enc}$ is literally "row $i$ of a matrix $Z$", with
+$Z$ the free parameter. These are called **shallow** embeddings, and they have
+a serious consequence covered next.
+
+## Shallow vs. deep, transductive vs. inductive
+
+If your encoder is a lookup table with $n \times d$ free parameters, then:
+
+-   You cannot embed a node you did not train on. A new member joins the club;
+    you have no row for them. The only fix is to retrain.
+-   You cannot use node attributes. If members have an age and an attendance
+    record, a lookup table has nowhere to put them.
+-   Parameters grow linearly with $n$. A hundred million nodes at $d = 128$ is
+    51 GB of embedding table.
+
+This is the **transductive** setting: you embed a fixed, known graph. It is
+fine for a citation network you analyse once, and useless for a product
+catalogue that gains items hourly.
+
+The alternative is an encoder that is a *function of a node's neighbourhood and
+features* rather than its identity:
+
+$$
+\mathbf{z}_i = f_\theta(\mathbf{x}_i, \{\mathbf{x}_j : j \in \mathcal{N}(i)\}).
+$$
+
+Now the parameters $\theta$ are shared across all nodes, the count does not
+grow with $n$, and a brand-new node gets an embedding by running $f_\theta$ on
+its neighbourhood. That is the **inductive** setting, and it is what graph
+neural networks buy you (@sec-gnn).
+
+## The distinction that decides everything
+
+There are two completely different things people mean by "these two nodes are
+similar", and choosing the wrong one is the most common way to get a bad
+embedding.
+
+**Homophily / proximity.** Nodes are similar if they are close --- same
+community, short paths between them. Two friends in the same club. This is what
+you want for recommendation, community detection, and most link prediction.
+
+**Structural equivalence / role.** Nodes are similar if they play the same
+*role*, regardless of where they sit. Two bridges between communities are
+similar even if they are on opposite sides of the graph and share no
+neighbours. This is what you want for anomaly detection, or for asking "which
+of my users behave like influencers?".
+
+The barbell graph makes the conflict concrete: two cliques joined by a path.
+
+```{r}
+#| label: fig-barbell
+#| fig-cap: "A barbell. Nodes 1 and 7 (the clique attachment points) are far apart but structurally identical. Nodes 14, 15, 16 are close together and also structurally identical."
+#| fig-width: 7
+#| fig-height: 3.4
+gb <- barbell_graph(clique = 6, path = 5)
+set.seed(2)
+par(mar = c(0, 0, 0, 0))
+plot(gb, layout = layout_with_kk(gb), vertex.size = 20,
+     vertex.color = "#4C72B0", vertex.label.color = "white",
+     vertex.label.cex = 0.8, edge.color = "grey70")
+```
+
+Node 1 and node 7 are the two attachment points. A proximity-based embedding
+puts them far apart --- correctly, they are 6 hops away. A role-based embedding
+puts them on top of each other --- also correctly, they are indistinguishable
+if you relabel the graph.
+
+Neither is wrong. They answer different questions. node2vec (@sec-walks) is
+famous precisely because it exposes a knob that interpolates between the two,
+and we will turn that knob and watch this graph respond.
+
+## Why bother, concretely
+
+Three places this pays off, to keep the abstraction honest.
+
+**Recommendation.** Users and items form a bipartite graph. Embed both into the
+same space; recommend by nearest neighbour. This is roughly what every
+large-scale recommender did before, and often still inside, deep models.
+
+**Medical vocabularies.** The OMOP/SNOMED concept hierarchy is a graph of a few
+million clinical concepts joined by "is a", "maps to", and anatomical
+relations. Embedding it gives you a similarity between diagnoses that respects
+clinical structure rather than string edit distance --- so "myocardial
+infarction" lands near "acute coronary syndrome" and nowhere near
+"myocardial bridge". Those vectors then become the token embeddings for a model
+over patient event sequences, which is exactly the hand-off in
+@sec-transformers.
+
+**Fraud and abuse.** Accounts, devices, payment instruments, and IPs form a
+heterogeneous graph. Rings of collusion are dense subgraphs; embedding turns
+"is part of a suspicious cluster" into "is near these other vectors", which a
+downstream classifier can use alongside ordinary tabular features.
+
+## What makes an embedding good
+
+We need to be able to answer this, so here is the short version; @sec-eval does
+it properly.
+
+-   **Link prediction.** Hide 15% of edges, embed the rest, score every
+    candidate pair by $\mathbf{z}_i^\top \mathbf{z}_j$, and check that the
+    held-out edges outrank random non-edges. Reported as AUC.
+-   **Node classification.** If you have labels, do they become linearly
+    separable --- or at least k-NN-separable --- in embedding space?
+-   **Do the neighbourhoods look right?** The oldest and most underrated
+    method: pick a few nodes, list their nearest neighbours, and see whether a
+    domain expert nods.
+
+Here is that last check on the embedding from earlier, using more dimensions:
+
+```{r}
+Z8 <- spectral_embedding(A, d = 8)
+S <- cosine_sim(Z8)
+diag(S) <- -Inf
+
+for (i in c(1, 34, 9)) {
+  nb <- order(S[i, ], decreasing = TRUE)[1:5]
+  cat(sprintf(
+    "node %2d (%-7s): %s\n", i, lab[i],
+    paste(sprintf("%d(%s)", nb, substr(lab[nb], 1, 2)), collapse = "  ")
+  ))
+}
+```
+
+Nodes 1 and 34 retrieve neighbours from their own faction. Node 9 --- the
+defector --- retrieves a mix, which is the correct answer for a genuinely
+in-between node.
+
+Now let us build these things.

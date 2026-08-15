@@ -1,0 +1,288 @@
+# Graph neural networks {#sec-gnn}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+g <- karate_graph()
+A <- as_adj_dense(g)
+lab <- V(g)$label
+```
+
+Everything so far factorises a matrix built from $A$. That ceiling has two
+consequences we keep bumping into: node attributes cannot be used, and a node
+absent at training time cannot be embedded at all.
+
+Graph neural networks break both by replacing the lookup table with a
+**function of a node's neighbourhood**.
+
+## Message passing
+
+One layer, in three steps. For every node $i$:
+
+1.  **Message.** Each neighbour $j \in \mathcal{N}(i)$ emits a message computed
+    from its current representation $\mathbf{h}_j$.
+2.  **Aggregate.** Combine the messages with a permutation-invariant operator
+    --- sum, mean, or max. It *must* be permutation-invariant, because a
+    node's neighbours have no canonical order.
+3.  **Update.** Combine the aggregate with $\mathbf{h}_i$ to get
+    $\mathbf{h}_i'$.
+
+$$
+\mathbf{h}_i^{(l+1)} = \phi\left(\mathbf{h}_i^{(l)},\;
+\bigoplus_{j \in \mathcal{N}(i)} \psi\!\left(\mathbf{h}_j^{(l)}\right)\right)
+$$
+
+Stack $L$ layers and information travels $L$ hops. That is the whole framework;
+GCN, GraphSAGE, GAT and the rest are choices of $\psi$, $\bigoplus$ and $\phi$.
+
+## The GCN layer
+
+@kipf2017semi made the simplest choice that works, and it is still the default
+baseline. Written for all nodes at once:
+
+$$
+H^{(l+1)} = \sigma\!\left(\hat{A}\, H^{(l)}\, W^{(l)}\right),
+\qquad
+\hat{A} = \tilde{D}^{-1/2}(A + I)\tilde{D}^{-1/2},
+\quad \tilde{D} = \mathrm{diag}(A + I)\mathbf{1}.
+$$
+
+Three ideas compressed into one line:
+
+-   **$A + I$** adds a self-loop, so a node keeps its own features instead of
+    being replaced by its neighbourhood.
+-   **$\tilde{D}^{-1/2} \cdot \tilde{D}^{-1/2}$** normalises symmetrically.
+    Without it, high-degree nodes produce huge activations and training
+    diverges. This is not the same as the row-normalisation $\tilde D^{-1}(A+I)$
+    used by a mean-aggregator: the symmetric version down-weights messages
+    *from* high-degree neighbours as well as *into* high-degree nodes.
+-   **$W^{(l)}$** is shared by every node. That is what makes the model
+    inductive: the parameter count depends on feature width, not on $n$.
+
+```{r}
+gcn_normalize
+```
+
+```{r}
+gcn_forward
+```
+
+Note what $\hat A H$ actually does: it replaces each node's feature vector with
+a weighted average of its neighbourhood. **A GCN layer is a learned smoother on
+the graph.** That framing explains most of its behaviour, good and bad.
+
+## Message passing works before any training
+
+A striking property: even with *random* weights, a GCN produces useful
+embeddings, because the smoothing is doing the work. Here is a two-layer GCN
+with random weights on the karate club, given no features at all --- the input
+is the identity matrix, i.e. a one-hot per node.
+
+```{r}
+#| label: fig-gcn-random
+#| fig-cap: "A two-layer GCN with random, untrained weights, applied to one-hot node inputs. The factions separate anyway: neighbourhood averaging is doing the work."
+#| fig-width: 7
+#| fig-height: 4.5
+n <- nrow(A)
+Ws <- gcn_random_weights(c(n, 32, 2), seed = 3)
+H <- gcn_forward(A, diag(n), Ws)
+
+par(mar = c(4, 4, 1, 1))
+plot(H, type = "n", xlab = "unit 1", ylab = "unit 2")
+text(H[, 1], H[, 2], labels = seq_len(n), cex = 0.8,
+     col = ifelse(lab == "Mr Hi", "#4C72B0", "#DD8452"))
+```
+
+```{r}
+knn_accuracy(H, lab, k = 5)
+```
+
+A randomly initialised network recovers most of the faction split. But one seed
+proves nothing, so run several:
+
+```{r}
+sapply(1:8, function(s) {
+  Wr <- gcn_random_weights(c(n, 32, 2), seed = s)
+  round(knn_accuracy(gcn_forward(A, diag(n), Wr), lab, k = 5), 3)
+})
+```
+
+Mostly 0.88–0.94, with the occasional bad draw down near chance. Two lessons,
+and the second is the important one:
+
+-   A good chunk of GNN performance comes from the **graph operator**, not from
+    learning. When you read a GNN paper, look for an untrained baseline; when
+    you write one, include it.
+-   Projecting to two dimensions with random weights is lossy, and sometimes
+    the draw is unlucky. Single-seed results from randomly initialised networks
+    are not results.
+
+## Over-smoothing: the failure mode
+
+If one layer averages over neighbours, what do twenty do? They average over the
+whole graph. Every node converges to the same vector and all information is
+destroyed. This is **over-smoothing**, and it is why GCNs are almost always
+2–3 layers deep --- unusually shallow for a neural network.
+
+We can watch it happen. Measure how distinguishable the representations remain
+after each layer:
+
+```{r}
+#| label: oversmooth
+X <- diag(n)
+Ahat <- gcn_normalize(A)
+
+spread <- numeric(12)
+Hl <- X
+for (l in 1:12) {
+  Hl <- Ahat %*% Hl
+  Hn <- normalize_rows(Hl)
+  # mean pairwise cosine distance: 1 means all directions differ, 0 means identical
+  spread[l] <- 1 - mean(Hn %*% t(Hn))
+}
+round(spread, 4)
+```
+
+```{r}
+#| label: fig-oversmooth
+#| fig-cap: "Representation diversity after repeated neighbourhood averaging, on a log scale. The straight-line decay is the signature of a power iteration."
+#| fig-width: 6.5
+#| fig-height: 4
+par(mar = c(4.2, 4.2, 1, 1))
+plot(spread, type = "b", pch = 19, col = "#4C72B0", log = "y",
+     xlab = "propagation steps", ylab = "mean pairwise cosine distance")
+abline(v = 3, lty = 2, col = "grey60")
+text(3, max(spread) / 2, " typical GCN depth", pos = 4, cex = 0.8, col = "grey40")
+```
+
+Diversity falls from `r round(spread[1], 2)` to `r round(spread[12], 3)` --- a
+factor of `r round(spread[1] / spread[12])` --- and the log-scale plot is close
+to a straight line, which is the tell: the decay is geometric, not gradual.
+
+The reason is that repeated multiplication by $\hat A$ is a power iteration.
+Everything converges towards $\hat A$'s top eigenvector at a rate set by the
+gap to the second, so a deep GCN does not gently blur its representations, it
+collapses them exponentially fast. Twelve layers here would leave every node
+holding essentially the same vector, scaled.
+
+## GraphSAGE and the inductive payoff
+
+@hamilton2017inductive made the inductive property explicit and practical.
+GraphSAGE differs from GCN in two ways:
+
+$$
+\mathbf{h}_i^{(l+1)} = \sigma\!\left(W^{(l)} \cdot
+\mathrm{concat}\!\left(\mathbf{h}_i^{(l)},\;
+\mathrm{agg}\{\mathbf{h}_j^{(l)} : j \in \mathcal{N}_s(i)\}\right)\right)
+$$
+
+-   **Concatenate rather than mix.** A node's own representation is kept in
+    separate coordinates from its neighbourhood aggregate, so the layer can
+    tell "me" from "around me".
+-   **Sample a fixed-size neighbourhood** $\mathcal{N}_s(i)$. This bounds the
+    cost per node regardless of degree, which is what makes minibatching over a
+    billion-edge graph feasible.
+
+The payoff is the thing shallow embeddings cannot do at all: embed a node that
+did not exist at training time. Since the weights are shared, this is just a
+forward pass.
+
+```{r}
+#| label: inductive
+# train-time graph: drop node 34 entirely
+keep <- setdiff(seq_len(n), 34)
+g_sub <- induced_subgraph(g, keep)
+A_sub <- as_adj_dense(g_sub)
+
+# node features that exist for any node, old or new: simple structural stats
+node_features <- function(gr) {
+  cbind(deg = log1p(degree(gr)),
+        clust = transitivity(gr, type = "local", isolates = "zero"),
+        core = coreness(gr))
+}
+
+X_sub <- scale(node_features(g_sub))
+Ws2 <- gcn_random_weights(c(ncol(X_sub), 16, 2), seed = 5)
+H_sub <- gcn_forward(A_sub, X_sub, Ws2)
+
+# now node 34 arrives. Same weights, no retraining -- just run the forward pass
+# on the full graph, using the training set's scaling.
+X_full <- scale(node_features(g),
+                center = attr(X_sub, "scaled:center"),
+                scale = attr(X_sub, "scaled:scale"))
+H_full <- gcn_forward(A, X_full, Ws2)
+
+round(H_full[34, ], 3)
+```
+
+Node 34 got an embedding without any parameter ever being refitted. Compare
+with a shallow method: `deepwalk()` returns a matrix with `nrow(A_sub)` rows,
+and there is simply no row for a node it never saw.
+
+The embeddings for the pre-existing nodes also stay broadly stable, which is
+what you need if downstream models are already using them:
+
+```{r}
+round(cor(H_sub[, 1], H_full[keep, 1]), 3)
+```
+
+A correlation of `r round(cor(H_sub[, 1], H_full[keep, 1]), 2)`. Not identical
+--- node 34 has degree 17, so its arrival genuinely changes a third of the
+graph's neighbourhoods and the smoother propagates that --- but consistent
+enough that downstream models built on the old embeddings do not fall over.
+
+## Graph attention
+
+@velickovic2018graph replaced fixed normalisation weights with learned ones.
+Instead of weighting neighbour $j$ by $1/\sqrt{d_i d_j}$, compute
+
+$$
+\alpha_{ij} = \frac{\exp\!\big(e_{ij}\big)}{\sum_{k \in \mathcal{N}(i)} \exp(e_{ik})},
+\qquad
+e_{ij} = \mathrm{LeakyReLU}\!\left(\mathbf{a}^\top [W\mathbf{h}_i \,\|\, W\mathbf{h}_j]\right),
+$$
+
+then aggregate with $\sum_j \alpha_{ij} W \mathbf{h}_j$.
+
+This matters for the next chapter, so it is worth stating precisely what
+changed: **the aggregation weights now depend on the content of the two
+endpoints**, not only on the graph's shape. A node can learn to listen to some
+neighbours and ignore others.
+
+And now notice the shape of that expression. A softmax over a set, weighting a
+sum of transformed values, with weights computed from pairs of items --- that
+is self-attention, restricted to the graph's edges. GAT is a transformer whose
+attention mask is the adjacency matrix.
+
+Which raises the obvious question. What if you removed the mask?
+
+## Where GNNs stand
+
+**Use one when** you have node features that matter, the graph changes, or the
+task is genuinely semi-supervised and you want to train end-to-end.
+
+**Do not bother when** you have no features and a fixed graph. On plain
+structural tasks, a well-tuned NetMF or node2vec is a hard baseline to beat,
+and it has no training loop to debug.
+
+**Be aware:**
+
+-   *Over-smoothing* caps depth at 2–3 layers, so the receptive field is small.
+    A node cannot be influenced by anything more than $L$ hops away.
+-   *Limited expressive power.* Standard message passing is at most as
+    discriminative as the 1-Weisfeiler–Lehman graph isomorphism test
+    [@xu2019powerful] --- there
+    are non-isomorphic graphs it provably cannot tell apart, including some
+    simple regular graphs.
+-   *Neighbourhood explosion.* Without sampling, an $L$-layer model needs the
+    $L$-hop neighbourhood of every node in a batch, which on a graph with hubs
+    is most of the graph.
+
+**In R:** there is no mature native GNN stack. The practical routes are the
+`torch` package (a full libtorch binding, no Python required) for hand-rolled
+layers, or `reticulate` onto PyTorch Geometric or DGL when you want the
+optimised kernels and standard datasets.
+
+The next chapter takes the observation that ended the attention section --- that
+a GAT is masked self-attention --- and runs it in the other direction.

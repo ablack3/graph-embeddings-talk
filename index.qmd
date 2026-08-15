@@ -1,0 +1,77 @@
+# Preface {.unnumbered}
+
+This little book is the long version of a seven-minute lightning talk. The talk
+has to skip almost everything; this has room for the parts worth keeping.
+
+The question is simple to ask and surprisingly deep to answer:
+
+> A graph is a set of things and the connections between them. Almost every
+> model we like to fit wants a rectangle of numbers. **How do you turn one into
+> the other without throwing away the thing that made it a graph?**
+
+That translation is called a *graph embedding*: a map from each node to a short
+vector, chosen so that geometry in the vector space reflects structure in the
+graph. Nodes that sit in the same tight community end up near each other; nodes
+on opposite sides of a bottleneck end up far apart. Once you have that, a graph
+becomes usable by every tool that eats a matrix --- k-means, glmnet, xgboost,
+and, as of the last few years, transformers.
+
+## What is in here
+
+| Chapter | What it covers |
+|---|---|
+| @sec-idea | What an embedding *is*, the encoder–decoder framing, and the one distinction that decides everything: proximity vs. structural role |
+| @sec-spectral | Laplacian eigenmaps. The oldest method, still the one to beat, and it is four lines of R |
+| @sec-walks | DeepWalk and node2vec: random walks plus skip-gram with negative sampling, trained from scratch with hand-written SGD |
+| @sec-mf | The punchline --- DeepWalk is secretly factorising a matrix you can write down (NetMF), and computing it directly takes milliseconds |
+| @sec-gnn | Graph neural networks: message passing, why a GCN is a learned smoother, and what "inductive" buys you |
+| @sec-transformers | The part that motivated the talk: three places graph structure can enter a transformer, and a working demo where it moves accuracy from 0.11 to 0.96 |
+| @sec-eval | How to tell whether an embedding is any good, and which method to reach for |
+| @sec-talk | The seven-minute script itself, with timings |
+
+Everything is implemented from scratch in base R plus **Matrix** and
+**igraph**. Nothing is downloaded at runtime; every dataset is generated or
+ships with igraph. The implementations live in a single readable file,
+`R/graphemb.R`, which every chapter loads:
+
+```{r}
+#| eval: false
+source("R/graphemb.R")
+```
+
+The point of writing it from scratch is not that you should ship this code. It
+is that all of these algorithms are small. DeepWalk sounds like a neural
+method; it is 60 lines of matrix arithmetic. Seeing that is the whole lesson.
+
+## Running it
+
+You need R (≥ 4.1) and Quarto.
+
+```{r}
+#| eval: false
+install.packages(c("Matrix", "igraph", "ggplot2"))
+```
+
+```bash
+quarto render                      # build the book into _book/
+quarto render slides/lightning-talk.qmd   # build the 10-slide deck
+```
+
+The slide deck in `slides/` is the actual talk. It reuses the same
+`R/graphemb.R`, so the numbers on the slides and the numbers in the book cannot
+drift apart.
+
+## A note on scale
+
+Every example here is tiny --- 34 to 300 nodes --- and every implementation
+uses dense matrices and interpreted loops. That is a deliberate choice for
+readability, and it is the wrong choice for a real graph. @sec-eval says what
+to use instead once your graph stops fitting in a laptop's RAM.
+
+## Conventions
+
+$G = (V, E)$ is a graph with $n = |V|$ nodes. $A$ is its $n \times n$ adjacency
+matrix, $D = \mathrm{diag}(d_1, \dots, d_n)$ the degree matrix with
+$d_i = \sum_j A_{ij}$. An embedding is $Z \in \mathbb{R}^{n \times d}$, with
+$\mathbf{z}_i$ the row for node $i$ and $d \ll n$. Graphs are undirected and
+unweighted unless said otherwise.

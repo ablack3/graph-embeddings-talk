@@ -1,0 +1,363 @@
+---
+title: "Graph Embeddings in R"
+subtitle: "From Laplacians to transformers, in 7 minutes"
+author: "Adam Black"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: c/t
+    incremental: false
+    code-line-numbers: false
+    fig-align: center
+    width: 1280
+    height: 760
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+source(if (file.exists("R/graphemb.R")) "R/graphemb.R" else "../R/graphemb.R")
+set.seed(1)
+
+g <- karate_graph()
+A <- as_adj_dense(g)
+lab <- V(g)$label
+blue <- "#4C72B0"; orange <- "#DD8452"; green <- "#55A868"
+fac_col <- ifelse(lab == "Mr Hi", blue, orange)
+```
+
+## The problem {.smaller}
+
+::: {.columns}
+::: {.column width="52%"}
+```{r}
+#| fig-width: 5.4
+#| fig-height: 5
+set.seed(4)
+par(mar = c(0, 0, 0, 0))
+plot(g, layout = layout_with_fr(g), vertex.color = fac_col,
+     vertex.label.color = "white", vertex.size = 16,
+     vertex.label.cex = 0.75, edge.color = "grey75")
+```
+:::
+::: {.column width="48%"}
+A graph: 34 people, 78 friendships, and a club that split in two.
+
+Every model you want to fit needs **a table**. You have **an adjacency matrix**.
+
+It is the wrong shape in three ways:
+
+- 34 columns wide --- changes when someone joins
+- `r round(100 * mean(A == 0))`% zeros
+- **no geometry** --- 3 hops away in the same clique looks as unrelated as a different continent
+
+::: {.fragment}
+An adjacency matrix records *edges*. You want *similarity* --- and in a graph that comes from **paths**.
+:::
+:::
+:::
+
+## The idea {.smaller}
+
+::: {.columns}
+::: {.column width="46%"}
+A map $f: V \to \mathbb{R}^d$ from nodes to short vectors, so that
+
+> **close in the vector space**
+> = **structurally close in the graph**
+
+$d$ is 16–256. Fixed, dense, independent of $n$.
+
+::: {.fragment}
+Colour = the faction they actually joined.
+The algorithm **never saw the labels**.
+
+Axis 1 alone gets **33 of 34** right.
+
+Node 9 --- who joined the officers despite being better connected to the instructor --- lands in the middle. The honest answer.
+:::
+:::
+::: {.column width="54%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 4.8
+Z <- spectral_embedding(A, d = 2)
+par(mar = c(4, 4, 1, 1))
+plot(Z[, 1], Z[, 2], type = "n", xlab = "dimension 1", ylab = "dimension 2")
+abline(v = 0, col = "grey85", lty = 2)
+text(Z[, 1], Z[, 2], labels = seq_len(nrow(Z)), cex = 0.9, col = fac_col)
+```
+:::
+:::
+
+## 1. Spectral --- four lines {.smaller}
+
+Want connected nodes close? Penalise every edge by the gap it stretches:
+
+$$
+\tfrac{1}{2}\sum_{i,j} A_{ij}(f_i - f_j)^2 \;=\; \mathbf{f}^\top \underbrace{(D - A)}_{\text{Laplacian } L} \mathbf{f}
+$$
+
+::: {.fragment}
+Minimise, constrain so it can't collapse → **eigenvectors of $L$ with the smallest eigenvalues.**
+The smoothest non-constant functions on the graph.
+
+```r
+L  <- diag(rowSums(A)) - A
+ev <- eigen(L, symmetric = TRUE)
+Z  <- ev$vectors[, (n-1):(n-d)]     # drop the trivial constant vector
+```
+:::
+
+::: {.fragment}
+**Free bonus:** a gap in the eigenvalues tells you how many communities there are.
+
+```{r}
+#| echo: false
+g3 <- sbm_graph(n_per = 40, k = 3, p_in = 0.14, p_out = 0.01, seed = 42)
+round(sort(eigen(graph_laplacian(as_adj_dense(g3), "sym"), symmetric = TRUE)$values)[1:6], 3)
+```
+
+Three near zero, then a jump. Three communities.
+:::
+
+## 2. Random walks --- DeepWalk {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+2014: word2vec learns word vectors from *"words that appear near each other are related"*.
+
+**A random walk on a graph is a sentence.**
+
+```r
+walks <- random_walks(A, num_walks = 10,
+                      walk_length = 40)
+pairs <- walks_to_pairs(walks, window = 5)
+fit   <- skipgram_sgns(pairs, n, dim = 32)
+```
+
+Skip-gram with negative sampling:
+
+$$
+-\log \sigma(\mathbf{w}_u^\top \mathbf{c}_v) - \sum_{k=1}^{K} \log \sigma(-\mathbf{w}_u^\top \mathbf{c}_{v'_k})
+$$
+
+Real pairs score high, random pairs low. **~60 lines of base R, no autodiff.**
+:::
+::: {.column width="45%"}
+```{r}
+#| fig-width: 5
+#| fig-height: 4.3
+Z_dw <- deepwalk(A, dim = 32, epochs = 5, seed = 1)
+px <- prcomp(Z_dw)$x[, 1:2]
+par(mar = c(4, 4, 2, 1))
+plot(px, type = "n", xlab = "PC1", ylab = "PC2",
+     main = sprintf("5-NN accuracy: %.2f", knn_accuracy(Z_dw, lab, 5)))
+text(px[, 1], px[, 2], labels = seq_len(nrow(A)), cex = 0.85, col = fac_col)
+```
+
+Nothing is $O(n^2)$ → this is the family that scaled to **billions of edges**.
+:::
+:::
+
+## 3. They're all the same algorithm {.smaller}
+
+::: {.callout-important appearance="minimal"}
+**DeepWalk is not really a neural method.** Skip-gram provably converges to a factorisation of a PMI matrix (Levy & Goldberg 2014), and for random walks that matrix is closed-form (Qiu et al. 2018):
+
+$$
+M = \frac{\mathrm{vol}(G)}{bT}\Big(\sum_{r=1}^{T} P^r\Big) D^{-1}, \qquad P = D^{-1}A
+$$
+:::
+
+::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| echo: false
+tab <- data.frame(
+  Method = c("Spectral", "DeepWalk / NetMF", "node2vec", "LINE"),
+  `Factorises` = c("$I - D^{-1/2}AD^{-1/2}$",
+                   "$\\log\\max(M, 1)$",
+                   "$M$ with 2nd-order $P$",
+                   "$M$ with $T = 1$"),
+  check.names = FALSE
+)
+knitr::kable(tab)
+```
+
+Every method: **a low-rank factorisation of a matrix built from $A$.**
+They differ in *which matrix*.
+:::
+::: {.column width="50%"}
+```{r}
+#| echo: false
+t_dw <- system.time(Zd <- deepwalk(A, dim = 32, epochs = 5, seed = 1))[["elapsed"]]
+t_nm <- system.time(Zn <- netmf(A, dim = 32))[["elapsed"]]
+knitr::kable(data.frame(
+  ` ` = c("DeepWalk (sampled)", "NetMF (SVD)"),
+  seconds = signif(c(t_dw, t_nm), 3),
+  `5-NN acc` = c(knn_accuracy(Zd, lab, 5), knn_accuracy(Zn, lab, 5)),
+  check.names = FALSE
+))
+```
+
+::: {.fragment}
+Same answer. **~1000× faster.**
+
+Before you reach for a library: **try an SVD.**
+:::
+:::
+:::
+
+## 4. GNNs --- when $A$ isn't enough {.smaller}
+
+Everything above is a function of $A$ **alone**. So it cannot use node features, and cannot embed a node that wasn't there.
+
+::: {.fragment}
+GNNs replace the lookup table with a **function of the neighbourhood**:
+
+$$
+H^{(l+1)} = \sigma\big(\hat{A}\,H^{(l)}\,W^{(l)}\big), \qquad \hat{A} = \tilde D^{-1/2}(A+I)\tilde D^{-1/2}
+$$
+
+Weights are **shared**, so a new node is just a forward pass.
+:::
+
+::: {.fragment}
+Two things to know:
+
+- A GCN layer is a **learned smoother**. Stack 20 and every node converges to the same vector → GNNs are 2–3 layers deep.
+- **GAT = self-attention masked by the adjacency matrix.**
+:::
+
+::: {.fragment .highlight}
+So what happens if you take the mask *off*?
+:::
+
+## Into a transformer: three doors {.smaller}
+
+Self-attention is **permutation-invariant** --- permute the inputs, the outputs permute too. That's why transformers need positional encodings. Text has an order. **A graph doesn't.**
+
+::: {.columns}
+::: {.column width="33%"}
+### 1. Input vectors
+Tokens that are entities in a side graph --- clinical codes, products, users.
+
+Embed the graph offline, initialise the embedding table.
+
+**Zero architecture change.**
+:::
+::: {.column width="33%"}
+### 2. Positional encodings
+Give each node its Laplacian eigenvectors --- *literally slide 4*.
+
+Sine waves are the eigenvectors of the Laplacian of a line graph. The analogy is exact.
+:::
+::: {.column width="33%"}
+### 3. Attention bias
+Put the graph **inside** the attention computation.
+
+$$
+S_{ij} = \frac{\mathbf{q}_i^\top\mathbf{k}_j}{\sqrt{d_h}} + b_{\phi(i,j)}
+$$
+
+$\phi$ = shortest-path distance.
+:::
+:::
+
+## The result {.smaller}
+
+```{r}
+#| label: demo
+#| include: false
+gs <- sbm_graph(n_per = 30, k = 3, p_in = 0.16, p_out = 0.01, seed = 11)
+As <- as_adj_dense(gs); n <- vcount(gs); y <- as.integer(V(gs)$label); K <- 3
+maxd <- 5
+D <- distances(gs); D[is.infinite(D)] <- maxd; D <- pmin(D, maxd)
+Didx <- as.integer(D) + 1L
+set.seed(3)
+revealed <- sample(n, round(0.4 * n)); hidden <- setdiff(seq_len(n), revealed)
+train <- sample(hidden, round(length(hidden) / 2)); test <- setdiff(hidden, train)
+Xlab <- matrix(0, n, K); Xlab[cbind(revealed, y[revealed])] <- 1
+X <- cbind(Xlab, lap_pe(As, 4), rwse(As, 1:4)); d <- ncol(X)
+set.seed(5)
+Wq <- matrix(rnorm(d * d, sd = sqrt(1 / d)), d, d)
+Wk <- matrix(rnorm(d * d, sd = sqrt(1 / d)), d, d)
+Sc <- (X %*% Wq) %*% t(X %*% Wk) / sqrt(d)
+same <- outer(y, y, "==")
+
+fit_readout <- function(H, steps = 400, lr = 0.5) {
+  Wo <- matrix(rnorm(ncol(H) * K, sd = 0.1), ncol(H), K)
+  for (s in seq_len(steps)) {
+    P <- softmax_rows(H %*% Wo); G <- P
+    G[cbind(train, y[train])] <- G[cbind(train, y[train])] - 1
+    G[-train, ] <- 0
+    Wo <- Wo - lr * (t(H) %*% G) / length(train)
+  }
+  Wo
+}
+set.seed(9)
+Aw0 <- softmax_rows(Sc)
+Aw2 <- softmax_rows(Sc + matrix((-2 * (0:maxd))[Didx], n, n))
+H0 <- Aw0 %*% X; H2 <- Aw2 %*% X
+W0 <- fit_readout(H0); W2 <- fit_readout(H2)
+acc <- function(H, W) mean(max.col(H %*% W)[test] == y[test])
+a0 <- acc(H0, W0); a2 <- acc(H2, W2)
+m0 <- mean(rowSums(Aw0 * same)); m2 <- mean(rowSums(Aw2 * same))
+```
+
+::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-width: 7
+#| fig-height: 3.9
+plot_attention(list(Aw0, Aw2), group = y,
+               titles = c("no graph", "+ distance bias"))
+```
+
+90 nodes, 3 communities. Reveal 40% of labels, infer the rest.
+The content part of attention is deliberately uninformative --- **the only route is the graph.**
+:::
+::: {.column width="42%"}
+Attention mass on your **own community**:
+
+| | |
+|---|---|
+| no graph | `r sprintf("%.0f%%", 100 * m0)` *(= chance)* |
+| + bias | **`r sprintf("%.0f%%", 100 * m2)`** |
+
+::: {.fragment}
+Downstream **test accuracy**:
+
+| | |
+|---|---|
+| no graph | `r sprintf("%.0f%%", 100 * a0)` |
+| + bias | **`r sprintf("%.0f%%", 100 * a2)`** |
+
+Same architecture. Same features. Same parameter count.
+
+**One scalar per distance, added before the softmax.**
+:::
+:::
+:::
+
+## Takeaways
+
+::: {.incremental}
+1. **Graph embeddings turn structure into geometry.** Small vectors, ordinary models downstream --- and the algorithms are *short*. All four here are base R.
+
+2. **They're all the same algorithm:** a low-rank factorisation of a matrix built from $A$. Try an SVD before a library --- and always run *"count the mutual friends"* as a baseline. It wins more often than anyone admits.
+
+3. **If a transformer is near your graph, the structure has to get in somewhere.** Input vectors, positional encodings, or attention bias. Pick at least one.
+:::
+
+::: {.fragment}
+::: {.callout-note appearance="minimal"}
+Book, code, and every number on these slides:
+**github.com/ablack3033/graph-embeddings-talk**
+:::
+:::

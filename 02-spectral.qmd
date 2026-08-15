@@ -1,0 +1,298 @@
+# Spectral embeddings {#sec-spectral}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+g <- karate_graph()
+A <- as_adj_dense(g)
+lab <- V(g)$label
+```
+
+The oldest family, and the one everything else should be measured against. It
+has no hyperparameters worth tuning, no randomness, a closed-form solution, and
+in a lot of published comparisons it is within noise of the neural methods.
+Start here.
+
+## The objective
+
+We want an embedding where connected nodes end up close. Write that down
+literally. For a one-dimensional embedding $\mathbf{f} \in \mathbb{R}^n$,
+penalise every edge by the squared gap it has to stretch:
+
+$$
+\mathcal{L}(\mathbf{f}) = \tfrac{1}{2}\sum_{i,j} A_{ij}\,(f_i - f_j)^2 .
+$$
+
+This is small when every edge connects nodes with similar coordinates. Now the
+identity that makes the whole field work: expand the square.
+
+$$
+\begin{aligned}
+\tfrac{1}{2}\sum_{i,j} A_{ij}(f_i - f_j)^2
+&= \tfrac{1}{2}\sum_{i,j} A_{ij}(f_i^2 - 2f_if_j + f_j^2) \\
+&= \sum_i d_i f_i^2 - \sum_{i,j} A_{ij} f_i f_j \\
+&= \mathbf{f}^\top D \mathbf{f} - \mathbf{f}^\top A \mathbf{f}
+ \;=\; \mathbf{f}^\top (D - A) \mathbf{f} .
+\end{aligned}
+$$
+
+The matrix in the middle,
+
+$$
+L = D - A,
+$$
+
+is the **graph Laplacian**. The sum-over-edges objective *is* a quadratic form
+in $L$. Minimising smoothness over a graph and doing linear algebra with $L$
+are the same activity.
+
+Let us confirm that identity numerically rather than take it on faith:
+
+```{r}
+L <- graph_laplacian(A, "comb")
+f <- rnorm(nrow(A))
+
+edge_sum <- 0.5 * sum(outer(f, f, "-")^2 * A)
+quad_form <- as.numeric(t(f) %*% L %*% f)
+
+c(edge_sum = edge_sum, quadratic_form = quad_form)
+```
+
+Identical, as promised.
+
+## Why we need constraints
+
+Minimising $\mathbf{f}^\top L \mathbf{f}$ without constraints gives
+$\mathbf{f} = \mathbf{0}$: perfectly smooth, perfectly useless. Two constraints
+fix this.
+
+**Scale.** Require $\mathbf{f}^\top D \mathbf{f} = 1$ so the embedding cannot
+collapse. (Using $D$ rather than $I$ weights nodes by degree, which turns out to
+be the right choice --- see below.)
+
+**Non-triviality.** The constant vector $\mathbf{f} = \mathbf{1}$ has
+$L\mathbf{1} = \mathbf{0}$: it costs nothing because it stretches no edge. It
+is the trivial solution and we must exclude it, so require
+$\mathbf{f}^\top D \mathbf{1} = 0$.
+
+With those, the minimiser is the eigenvector of the generalised problem
+
+$$
+L \mathbf{f} = \lambda D \mathbf{f}
+$$
+
+with the **smallest non-zero** eigenvalue. For a $d$-dimensional embedding, take
+the next $d$ eigenvectors. This is the **Laplacian eigenmap** of
+@belkin2003laplacian.
+
+::: {.callout-tip appearance="simple"}
+## The one-line summary
+
+A spectral embedding is the set of **smoothest non-constant functions on the
+graph** --- the coordinates that change least as you walk along an edge.
+:::
+
+## Three Laplacians
+
+You will meet three, and mixing them up is a common source of confusion.
+
+| Name | Definition | Note |
+|---|---|---|
+| Combinatorial | $L = D - A$ | Unnormalised. Sensitive to degree; hubs dominate |
+| Symmetric | $L_{\mathrm{sym}} = I - D^{-1/2} A D^{-1/2}$ | Symmetric, eigenvalues in $[0, 2]$. What you compute with |
+| Random-walk | $L_{\mathrm{rw}} = I - D^{-1} A$ | $D^{-1}A$ is the walk transition matrix. What you interpret with |
+
+The last two share eigenvalues, and their eigenvectors are related by
+$\mathbf{f}_{\mathrm{rw}} = D^{-1/2}\mathbf{f}_{\mathrm{sym}}$. So the standard
+recipe is: compute with $L_{\mathrm{sym}}$ because it is symmetric and
+eigensolvers like symmetric matrices, then multiply by $D^{-1/2}$ to get the
+vectors you actually want. Here is that, in full:
+
+```{r}
+graph_laplacian
+```
+
+## The implementation
+
+The whole algorithm:
+
+```{r}
+spectral_embedding
+```
+
+Four things worth pointing at:
+
+-   `eigen(..., symmetric = TRUE)` returns eigenvalues in **decreasing** order,
+    so we reverse to get the smallest.
+-   `drop_first` discards the trivial constant eigenvector. Forgetting this is
+    the single most common bug in hand-rolled spectral code: your first
+    embedding dimension comes out as a constant and every downstream model
+    silently ignores it.
+-   The `type == "sym"` branch does the $D^{-1/2}$ correction described above.
+-   The eigenvalues come back as an attribute, because they are diagnostic.
+
+## The eigenvalues tell you the community structure
+
+$\lambda_2$, the smallest non-zero eigenvalue, is the **Fiedler value** or
+algebraic connectivity. It measures how hard the graph is to cut in two: near
+zero means there is a good bottleneck, and its eigenvector tells you where to
+cut.
+
+More usefully, a *gap* in the eigenvalue sequence tells you how many
+communities there are. If the graph has $k$ well-separated clusters, the first
+$k$ eigenvalues sit near zero and then there is a jump.
+
+```{r}
+#| label: fig-eigengap
+#| fig-cap: "Eigenvalues of the symmetric Laplacian. Left: the karate club, with one clear near-zero eigenvalue after the trivial one, matching its two factions. Right: a planted-partition graph with three communities, showing three."
+#| fig-width: 8
+#| fig-height: 3.6
+g3 <- sbm_graph(n_per = 40, k = 3, p_in = 0.14, p_out = 0.01, seed = 42)
+A3 <- as_adj_dense(g3)
+
+ev_karate <- sort(eigen(graph_laplacian(A, "sym"), symmetric = TRUE)$values)
+ev_sbm <- sort(eigen(graph_laplacian(A3, "sym"), symmetric = TRUE)$values)
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2.5, 1))
+plot(ev_karate[1:10], type = "b", pch = 19, col = "#4C72B0",
+     xlab = "index", ylab = expression(lambda), main = "karate club (2 factions)")
+abline(h = 0, col = "grey85")
+plot(ev_sbm[1:10], type = "b", pch = 19, col = "#DD8452",
+     xlab = "index", ylab = expression(lambda), main = "planted partition (3 blocks)")
+abline(h = 0, col = "grey85")
+```
+
+```{r}
+round(ev_sbm[1:6], 4)
+```
+
+Three eigenvalues near zero, then a jump. The graph told us how many
+communities it has without being asked. This is the basis of **spectral
+clustering**: embed with the first $k$ eigenvectors, then run k-means.
+
+```{r}
+set.seed(1)
+Z3 <- spectral_embedding(A3, d = 3)
+km <- kmeans(normalize_rows(Z3), centers = 3, nstart = 20)
+table(cluster = km$cluster, truth = V(g3)$label)
+```
+
+A near-perfect recovery of the planted communities from three eigenvectors and
+k-means.
+
+## Where the axis extremes come from
+
+In @sec-idea we noticed that the karate club's most extreme nodes along
+dimension 1 were peripheral members, not the two hubs. Now we can say why.
+
+The constraint is $\mathbf{f}^\top D \mathbf{f} = \sum_i d_i f_i^2 = 1$. A node
+with large degree pays a large price for a large coordinate, so the optimiser
+keeps hubs near the origin and spends its budget moving low-degree nodes. The
+degree weighting is doing exactly what it was designed to do; it just means
+"extreme along the Fiedler vector" reads as "loosely attached", not "important".
+
+```{r}
+d1 <- spectral_embedding(A, d = 1)[, 1]
+deg <- rowSums(A)
+data.frame(
+  node = seq_along(d1), degree = deg, dim1 = round(d1, 3)
+)[order(abs(d1), decreasing = TRUE)[1:6], ]
+```
+
+The six most extreme nodes have degrees of
+`r paste(sort(deg[order(abs(d1), decreasing = TRUE)[1:6]]), collapse = ", ")`,
+against a graph median of `r median(deg)` and a maximum of `r max(deg)`. The
+axis is ranking attachment strength, not importance.
+
+## It recovers real geometry
+
+The sharpest demonstration: build a graph from points in the plane, joining
+pairs that are close. Throw the coordinates away, keep only the edges, and ask
+the embedding to reconstruct them.
+
+```{r}
+#| label: fig-geo
+#| fig-cap: "Left: a random geometric graph drawn at its true coordinates. Right: the 2D spectral embedding, which never saw those coordinates. Colour is the true x-position."
+#| fig-width: 8.5
+#| fig-height: 4.2
+gg <- geo_graph(n = 300, radius = 0.115, seed = 7)
+Ag <- as_adj_dense(gg)
+xy <- cbind(V(gg)$x, V(gg)$y)
+Zg <- spectral_embedding(Ag, d = 2)
+
+pal <- colorRampPalette(c("#4C72B0", "#F2F2F2", "#DD8452"))(100)
+col <- pal[cut(xy[, 1], 100, labels = FALSE)]
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2.5, 1))
+plot(xy, pch = 19, cex = 0.7, col = col, xlab = "x", ylab = "y",
+     main = "true coordinates")
+plot(Zg, pch = 19, cex = 0.7, col = col, xlab = "dim 1", ylab = "dim 2",
+     main = "spectral embedding")
+```
+
+The embedding is stretched and rotated --- eigenvectors carry no canonical
+orientation or scale --- so comparing axis to axis understates the match:
+
+```{r}
+round(abs(cor(Zg, xy)), 3)
+```
+
+Every entry is middling, because embedding dimension 1 is a *mixture* of true
+$x$ and $y$. The rotation-invariant question is whether the two-dimensional
+subspaces agree, which is what canonical correlation measures:
+
+```{r}
+round(cancor(Zg, xy)$cor, 3)
+```
+
+`r round(cancor(Zg, xy)$cor[1], 2)` and `r round(cancor(Zg, xy)$cor[2], 2)`.
+The embedding recovered the latent plane the graph was generated from, given
+nothing but a list of edges.
+
+## Cost, and when it stops working
+
+`eigen()` is $O(n^3)$ and needs the dense matrix in memory. At $n = 10{,}000$
+that is 800 MB and a few minutes; at $n = 10^6$ it is impossible.
+
+The fix is that you never want all $n$ eigenvectors, only the first few, and
+iterative solvers get those from sparse matrix–vector products alone. In R,
+**RSpectra** is the right tool:
+
+```{r}
+#| eval: false
+library(RSpectra)
+library(Matrix)
+
+A_sp <- as(A, "dgCMatrix")
+d <- rowSums(A_sp)
+L_sym <- Diagonal(nrow(A_sp)) - Diagonal(x = 1 / sqrt(d)) %*% A_sp %*% Diagonal(x = 1 / sqrt(d))
+
+# 'SM' = smallest magnitude; ask for d+1 and drop the trivial one
+res <- eigs_sym(L_sym, k = 9, which = "SM")
+Z <- res$vectors[, ncol(res$vectors):1][, -1] / sqrt(d)
+```
+
+In practice, shift-and-invert (`sigma = 0`) converges far faster than `"SM"`
+for Laplacians, because the smallest eigenvalues are tightly clustered.
+
+## Strengths and limits
+
+**Good:** deterministic, no tuning, fast on moderate graphs, gives you the
+number of communities for free, and has a genuine theory --- it is a relaxation
+of normalised cut, with bounds relating $\lambda_2$ to the quality of the best
+partition.
+
+**Bad:**
+
+-   *Global and rigid.* Every dimension is a global function of the whole
+    graph. You cannot say "embed this subgraph well and don't worry about the
+    rest".
+-   *Purely proximity-based.* It has no way to express structural roles.
+-   *Transductive.* Add a node and you re-run the eigendecomposition.
+-   *No node features.*
+-   *Degree-dominated extremes*, as we saw.
+
+The next chapter attacks the first two by replacing "smooth over edges" with
+"co-occurs in a random walk", which reaches beyond immediate neighbours and
+comes with a knob for proximity vs. role.

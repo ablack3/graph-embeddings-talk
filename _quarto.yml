@@ -1,0 +1,70 @@
+project:
+  type: book
+  output-dir: _book
+  execute-dir: project
+  render:
+    - "*.qmd"
+    - "!slides/"
+
+book:
+  title: "Graph Embeddings in R"
+  subtitle: "From Laplacians to Transformers, in code you can read"
+  author: "Adam Black"
+  date: today
+  search: true
+  repo-url: https://github.com/ablack3033/graph-embeddings-talk
+  repo-actions: [source, issue]
+  sidebar:
+    style: docked
+  chapters:
+    - index.qmd
+    - part: "The idea"
+      chapters:
+        - 01-the-idea.qmd
+    - part: "The algorithms"
+      chapters:
+        - 02-spectral.qmd
+        - 03-random-walks.qmd
+        - 04-matrix-factorization.qmd
+        - 05-gnn.qmd
+    - part: "Putting them to work"
+      chapters:
+        - 06-transformers.qmd
+        - 07-evaluation.qmd
+    - part: "The talk"
+      chapters:
+        - 08-talk-script.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+execute:
+  freeze: auto
+  warning: false
+  message: false
+
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: true
+    fig-align: center
+    dpi: 150
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    code-link: false
+    code-overflow: wrap
+    toc: true
+    fig-width: 7
+    fig-height: 4.5
+
+# To also build a PDF you need a LaTeX install (`quarto install tinytex`).
+# Add back under `format:` and put `downloads: [pdf]` under `book:`:
+#
+#   pdf:
+#     documentclass: scrbook
+#     fig-width: 6
+#     fig-height: 4

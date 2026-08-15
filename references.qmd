@@ -1,0 +1,22 @@
+# References {.unnumbered}
+
+## Where to go next
+
+**If you read one thing**, read @hamilton2020 --- *Graph Representation
+Learning*. It is short, free online, and the encoder–decoder framing in
+@sec-idea is taken from it.
+
+**For the spectral side**, @vonluxburg2007tutorial is the clearest treatment of
+spectral clustering anywhere, and everything in @sec-spectral is a special case
+of it.
+
+**For the unification result** in @sec-mf, read @levy2014neural first (skip-gram
+as implicit matrix factorisation) and then @qiu2018network (the graph version).
+That is the pair that makes the field click.
+
+**For graph transformers**, @rampasek2022recipe is the most practical starting
+point --- it is explicitly written as a recipe, and its ablations tell you which
+positional encodings actually earn their place.
+
+::: {#refs}
+:::

@@ -1,0 +1,64 @@
+/*-- scss:defaults --*/
+
+$font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$presentation-heading-font: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+
+$body-color: #22303f !default;
+$link-color: #4C72B0 !default;
+$presentation-heading-color: #1b2733 !default;
+
+$presentation-font-size-root: 30px !default;
+
+/*-- scss:rules --*/
+
+.reveal h1,
+.reveal h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.reveal h2 {
+  border-bottom: 3px solid #4C72B0;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.55em;
+}
+
+.reveal h3 {
+  color: #4C72B0;
+  font-size: 1.05em;
+  font-weight: 600;
+  margin-bottom: 0.35em;
+}
+
+.reveal .slides section .fragment.highlight {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: #DD8452;
+  text-align: center;
+  margin-top: 0.6em;
+}
+
+.reveal pre code {
+  font-size: 0.78em;
+  line-height: 1.35;
+}
+
+.reveal table {
+  font-size: 0.82em;
+}
+
+.reveal blockquote {
+  border-left: 4px solid #4C72B0;
+  background: #f4f7fb;
+  font-style: normal;
+  padding: 0.5em 0.9em;
+}
+
+.reveal .callout {
+  font-size: 0.95em;
+}
+
+/* keep two-column slides from colliding */
+.reveal .columns {
+  gap: 1.2em;
+}

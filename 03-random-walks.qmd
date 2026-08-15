@@ -1,0 +1,377 @@
+# Random-walk embeddings {#sec-walks}
+
+```{r}
+#| label: setup
+source("R/graphemb.R")
+set.seed(1)
+g <- karate_graph()
+A <- as_adj_dense(g)
+lab <- V(g)$label
+```
+
+In 2014, @perozzi2014deepwalk noticed something that reframed the field.
+
+Word2vec [@mikolov2013distributed] had just shown that you could learn good word
+vectors from nothing but "words that appear near each other in sentences are
+related". DeepWalk's
+observation was that **a random walk on a graph is a sentence**, and the nodes
+it visits are the words. So: generate a corpus of walks, run word2vec on it,
+and you have node embeddings.
+
+It sounds like a hack. It works extremely well, and @sec-mf explains why in
+terms that have nothing to do with neural networks.
+
+## Step 1: turn the graph into sentences
+
+A walk starts at a node and repeatedly steps to a uniformly random neighbour.
+
+The naive implementation loops over walkers. The fast one notices that at each
+time step *every* walker needs the same operation, so we can advance all of
+them at once with a single vectorised gather. That needs the adjacency in
+compressed sparse row form:
+
+```{r}
+build_csr
+```
+
+`ptr[i]` is the number of edges appearing before row `i`, so node `i`'s
+neighbours live in `nbr[(ptr[i]+1):(ptr[i+1])]`. Picking a uniform neighbour is
+then an offset computation --- no loop over nodes:
+
+```{r}
+walk_step
+```
+
+And a walk is that, iterated:
+
+```{r}
+random_walks
+```
+
+Let us look at what comes out:
+
+```{r}
+W <- random_walks(A, num_walks = 10, walk_length = 40, seed = 1)
+dim(W)
+W[1:3, 1:12]
+```
+
+`r nrow(W)` walks (10 per node) of 40 steps each. Reading the first row: the
+walker bounces around a neighbourhood, revisiting nodes often. That
+revisiting is the point --- it is what encodes "these nodes are mutually
+reachable".
+
+The walks are strongly biased by degree. In a long uniform walk the stationary
+probability of node $i$ is $d_i / 2|E|$, so hubs appear far more often:
+
+```{r}
+visits <- tabulate(as.vector(W), nbins = nrow(A))
+head(data.frame(
+  node = seq_len(nrow(A)),
+  degree = rowSums(A),
+  visits = visits,
+  expected = round(sum(visits) * rowSums(A) / sum(A))
+)[order(-visits), ], 5)
+```
+
+Observed visit counts track $d_i/2|E|$ closely, which is a good sanity check on
+the walk code.
+
+## Step 2: walks become training pairs
+
+Take a sliding window over each walk. Every node within `window` steps of a
+centre node becomes a positive "context" for it.
+
+Word2vec shrinks the window uniformly at random for each centre, which
+effectively weights nearby context more heavily than distant context --- a
+detail that matters more than it looks, and which we reproduce:
+
+```{r}
+walks_to_pairs
+```
+
+```{r}
+P <- walks_to_pairs(W, window = 5, seed = 1)
+nrow(P)
+head(P, 4)
+```
+
+From 78 edges we have manufactured `r format(nrow(P), big.mark = ",")`
+co-occurrence observations. That expansion is where the method gets its
+signal: pairs at graph distance 2, 3, 4 now appear in the training data,
+weighted by how easy they are to reach.
+
+## Step 3: skip-gram with negative sampling
+
+Now the learning. We want vectors such that nodes co-occurring in walks have
+large dot products, and random pairs do not.
+
+Every node gets **two** vectors: $\mathbf{w}_u$ for when it is the centre, and
+$\mathbf{c}_v$ for when it is the context. For an observed pair $(u,v)$ we draw
+$K$ negatives $v'_k$ from a noise distribution and minimise
+
+$$
+\ell(u,v) = -\log \sigma(\mathbf{w}_u^\top \mathbf{c}_v)
+            \;-\; \sum_{k=1}^{K} \log \sigma(-\mathbf{w}_u^\top \mathbf{c}_{v'_k}),
+$$
+
+with $\sigma$ the logistic function. In words: **make real pairs score high and
+random pairs score low.** This is logistic regression distinguishing observed
+co-occurrences from noise, which is why it is called negative sampling rather
+than a softmax --- the true softmax over $n$ nodes would cost $O(n)$ per
+example, and this costs $O(K)$.
+
+The gradients are one line each. With $s = \mathbf{w}_u^\top \mathbf{c}_v$ and
+label $y \in \{0,1\}$:
+
+$$
+\frac{\partial \ell}{\partial s} = \sigma(s) - y,
+\qquad
+\frac{\partial \ell}{\partial \mathbf{w}_u} = (\sigma(s) - y)\,\mathbf{c}_v,
+\qquad
+\frac{\partial \ell}{\partial \mathbf{c}_v} = (\sigma(s) - y)\,\mathbf{w}_u .
+$$
+
+That is the entire model. No autodiff required.
+
+### The one implementation trap
+
+Doing this one pair at a time in R is unusably slow, so we go in minibatches.
+But a minibatch of 1024 pairs on a 34-node graph touches every node dozens of
+times, and those updates must be **summed into the right rows**, not
+overwritten. R's `M[idx, ] <- M[idx, ] + v` silently drops duplicates. The fix:
+
+```{r}
+scatter_add
+```
+
+`rowsum()` groups the update rows by target index and sums within group, which
+is exactly the accumulation we need.
+
+The second trap follows from the first: once you sum many updates into one row,
+the effective step is enormous. Averaging over the batch instead of summing is
+what keeps this from diverging in the first epoch --- something I got wrong
+before the loss went to `NaN` and told me so.
+
+### The trainer
+
+```{r}
+skipgram_sgns
+```
+
+Two details from the original word2vec worth keeping:
+
+-   **The $3/4$ power noise distribution.** Negatives are drawn proportional to
+    $f_v^{3/4}$, not $f_v$. This over-samples rare nodes relative to their
+    frequency, and empirically beats both uniform and unigram sampling. We
+    expand it once into a lookup table so drawing negatives is a uniform gather.
+-   **Logit clamping to $\pm 6$.** $\sigma(6) \approx 0.9975$; beyond that the
+    gradient is numerically zero anyway, and clamping stops a single confident
+    pair from producing a huge update.
+
+## Putting it together: DeepWalk
+
+```{r}
+deepwalk
+```
+
+```{r}
+#| label: run-deepwalk
+Z_dw <- deepwalk(A, dim = 32, num_walks = 10, walk_length = 40,
+                 window = 5, epochs = 5, seed = 1)
+round(attr(Z_dw, "loss"), 3)
+```
+
+The loss falls from about `r round(attr(Z_dw, "loss")[1], 2)` towards
+`r round(tail(attr(Z_dw, "loss"), 1), 2)` and flattens. The starting value is
+worth checking against theory: at initialisation all dot products are zero, so
+every one of the $1 + K = 6$ terms contributes $-\log \sigma(0) = \log 2$,
+giving $6 \log 2 \approx `r round(6 * log(2), 2)`$. Our first-epoch average is
+already below that because it is measured *during* the epoch, after updates
+have begun.
+
+Does it work?
+
+```{r}
+knn_accuracy(Z_dw, lab, k = 5)
+```
+
+Perfect faction recovery by 5-nearest-neighbour vote in a 32-dimensional space
+learned from nothing but random walks.
+
+```{r}
+#| label: fig-dw-embed
+#| fig-cap: "DeepWalk embedding of the karate club, projected to 2D with PCA. Colour is the true faction."
+#| fig-width: 7
+#| fig-height: 4.5
+pca <- prcomp(Z_dw, scale. = FALSE)
+par(mar = c(4, 4, 1, 1))
+plot(pca$x[, 1:2], type = "n", xlab = "PC1", ylab = "PC2")
+text(pca$x[, 1], pca$x[, 2], labels = seq_len(nrow(A)), cex = 0.8,
+     col = ifelse(lab == "Mr Hi", "#4C72B0", "#DD8452"))
+```
+
+## node2vec: the knob
+
+@grover2016node2vec asked the obvious follow-up. Uniform walks make one
+arbitrary choice --- that every neighbour is equally interesting. What if the
+walk were biased?
+
+node2vec makes the walk **second order**: the next step depends on where you
+came from. Arriving at $v$ from $u$, a candidate neighbour $x$ gets
+unnormalised weight
+
+$$
+\alpha(x) = \begin{cases}
+1/p & \text{if } x = u \quad (\text{step straight back}) \\
+1   & \text{if } x \sim u \quad (\text{stay in } u\text{'s neighbourhood}) \\
+1/q & \text{otherwise} \quad (\text{move outward})
+\end{cases}
+$$
+
+Two parameters:
+
+-   **$p$, the return parameter.** Small $p$ makes the walk backtrack, keeping
+    it local.
+-   **$q$, the in-out parameter.** Small $q$ ($< 1$) encourages outward
+    exploration --- **depth-first**-ish, which captures *communities*. Large $q$
+    ($> 1$) keeps the walk circling its origin --- **breadth-first**-ish, which
+    captures *structural roles*.
+
+Note the direction: $q < 1$ is the community setting. It is easy to get
+backwards, because "breadth-first explores widely" is the intuition from search
+algorithms, but here BFS-like walks stay in a local neighbourhood and end up
+describing what a node's surroundings *look like* rather than where it *is*.
+
+```{r}
+node2vec_walks
+```
+
+This one genuinely needs a loop, because the transition weights depend on the
+previous node. On graphs of this size that is fine.
+
+### Does the knob turn?
+
+Two separate questions, and they have different answers. First: do $p$ and $q$
+actually change the walks? Measure how far a walk has wandered from its start,
+in shortest-path distance, after a given number of steps.
+
+```{r}
+#| label: n2v-geometry
+D <- distances(g)
+
+walk_spread <- function(p, q) {
+  W <- node2vec_walks(A, num_walks = 20, walk_length = 21, p = p, q = q, seed = 1)
+  c(`3 steps` = mean(D[cbind(W[, 1], W[, 4])]),
+    `10 steps` = mean(D[cbind(W[, 1], W[, 11])]),
+    `distinct nodes` = mean(apply(W, 1, function(r) length(unique(r)))))
+}
+
+settings <- list(`p=1, q=0.25 (outward)` = c(1, 0.25),
+                 `p=1, q=1   (uniform)` = c(1, 1),
+                 `p=1, q=4   (local)`   = c(1, 4),
+                 `p=0.25, q=1 (backtrack)` = c(0.25, 1),
+                 `p=4, q=1  (no backtrack)` = c(4, 1))
+
+round(t(sapply(settings, function(s) walk_spread(s[1], s[2]))), 2)
+```
+
+Unambiguously yes. With $q = 0.25$ a walk is `r round(walk_spread(1, 0.25)[1], 2)`
+hops from home after three steps and sees 13 distinct nodes; with $q = 4$ it is
+`r round(walk_spread(1, 4)[1], 2)` hops out and sees 10. Lowering $p$ has the
+same localising effect through a different mechanism. The walk geometry behaves
+exactly as advertised.
+
+Second question: does that translate into an embedding that captures
+*structural roles*? Here is the barbell test. Nodes 1 and 7 are the two clique
+attachment points --- six hops apart, and structurally indistinguishable.
+
+```{r}
+#| label: n2v-barbell
+gb <- barbell_graph(clique = 6, path = 5)
+Ab <- as_adj_dense(gb)
+
+fit_n2v <- function(p, q, seed = 1) {
+  node2vec(Ab, dim = 16, num_walks = 20, walk_length = 30, window = 5,
+           p = p, q = q, epochs = 6, seed = seed)
+}
+sim <- function(Z, i, j) sum(normalize_rows(Z)[i, ] * normalize_rows(Z)[j, ])
+
+Z_out <- fit_n2v(p = 1, q = 0.25)
+Z_loc <- fit_n2v(p = 1, q = 4)
+
+data.frame(
+  pair = c("1 & 7  (same role, 6 hops apart)", "1 & 2  (same clique)"),
+  q_0.25 = c(round(sim(Z_out, 1, 7), 3), round(sim(Z_out, 1, 2), 3)),
+  q_4    = c(round(sim(Z_loc, 1, 7), 3), round(sim(Z_loc, 1, 2), 3))
+)
+```
+
+No. Under both settings, same-clique similarity is around 0.7 and
+structurally-equivalent-but-distant similarity is near zero --- and the
+supposedly role-capturing setting $q = 4$ makes nodes 1 and 7 *less* similar,
+not more. The result holds across random seeds.
+
+::: {.callout-warning appearance="simple"}
+## The knob controls the walks, not the objective
+
+This is not a bug in the implementation --- it follows from the loss. SGNS only
+ever sees *co-occurrence*. Two nodes become similar by appearing together in
+walks, or by appearing with the same contexts. Nodes 1 and 7 do neither: they
+are six hops apart, and their contexts are two disjoint cliques. No reweighting
+of the walk distribution can create similarity that co-occurrence statistics do
+not contain.
+:::
+
+So treat $p$ and $q$ as controls on *how far your notion of proximity reaches*
+--- which is a real and useful thing to tune --- and not as a proximity/role
+switch. If you genuinely want structural roles, use a method whose objective
+targets them --- struc2vec [@ribeiro2017struc2vec], GraphWave, RolX --- or, very
+often good enough, plain hand-built features like degree, clustering
+coefficient and triangle counts.
+
+It is also worth checking whether the knob changes anything downstream at all.
+On a graph with clear communities, it does not:
+
+```{r}
+#| label: n2v-sbm
+gs <- sbm_graph(n_per = 30, k = 3, p_in = 0.16, p_out = 0.01, seed = 11)
+As <- as_adj_dense(gs)
+
+sapply(c(0.25, 1, 4), function(q) {
+  Z <- node2vec(As, dim = 32, num_walks = 10, walk_length = 40,
+                window = 5, p = 1, q = q, epochs = 5, seed = 1)
+  knn_accuracy(Z, V(gs)$label, k = 5)
+})
+```
+
+All three saturate. Tuning $p$ and $q$ is worth it when your task is sensitive
+to the *radius* of proximity; on a well-separated community structure it is
+effort spent for nothing, and the honest default is $p = q = 1$ --- which is
+just DeepWalk.
+
+## Cost
+
+The reason everyone uses these methods:
+
+| Stage | Cost |
+|---|---|
+| Walks | $O(n \cdot r \cdot \ell)$ --- linear in nodes, embarrassingly parallel |
+| Pairs | $O(n \cdot r \cdot \ell \cdot w)$ |
+| SGNS | $O(\text{pairs} \times K \times d)$ per epoch |
+
+Nothing is quadratic in $n$, nothing needs the graph in memory as a matrix, and
+every stage parallelises. That is what let these methods run on graphs with
+hundreds of millions of nodes in 2014, when spectral methods could not.
+
+## What we have
+
+`r format(nrow(P), big.mark = ",")` training pairs, a hand-written SGD loop, and
+an embedding that recovers the karate club's factions perfectly.
+
+But look back at what we actually did: we generated random walks to *estimate*
+how often node $j$ is reached from node $i$, then fitted a model whose optimum
+depends only on those co-occurrence rates. Those rates are a property of the
+transition matrix $P = D^{-1}A$, and we can compute them exactly.
+
+So why sample?

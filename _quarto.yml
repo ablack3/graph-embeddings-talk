@@ -12,7 +12,7 @@ book:
   author: "Adam Black"
   date: today
   search: true
-  repo-url: https://github.com/ablack3033/graph-embeddings-talk
+  repo-url: https://github.com/ablack3/graph-embeddings-talk
   repo-actions: [source, issue]
   sidebar:
     style: docked

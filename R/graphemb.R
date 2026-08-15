@@ -662,3 +662,93 @@ knn_accuracy <- function(Z, labels, k = 5) {
   })
   mean(pred == labels)
 }
+
+
+# --- A toy drug knowledge graph ----------------------------------------------
+
+#' A small hand-built drug knowledge graph: 24 drugs, their molecular targets,
+#' pharmacologic classes, indications, and the body system each indication sits
+#' in. Nothing is downloaded; the edges are the textbook ones, kept deliberately
+#' clean so that the *structure* is the only signal an embedding can use.
+#'
+#' The point of the clean structure is that it makes the word2vec parallelogram
+#' testable: drugs in a class are interchangeable, so "this drug, but for that
+#' disease" is a real direction in the graph -- if the embedding found it.
+#'
+#' Vertex attribute `type` is one of drug / target / class / indication / system.
+drug_kg <- function() {
+  # drug, target, class, indications (| separated)
+  spec <- rbind(
+    c("atorvastatin",  "HMGCR",  "statin",         "hyperlipidemia"),
+    c("simvastatin",   "HMGCR",  "statin",         "hyperlipidemia"),
+    c("rosuvastatin",  "HMGCR",  "statin",         "hyperlipidemia"),
+    c("lisinopril",    "ACE",    "ace_inhibitor",  "hypertension|heart_failure"),
+    c("enalapril",     "ACE",    "ace_inhibitor",  "hypertension|heart_failure"),
+    c("ramipril",      "ACE",    "ace_inhibitor",  "hypertension"),
+    c("metoprolol",    "ADRB1",  "beta_blocker",   "hypertension|heart_failure"),
+    c("atenolol",      "ADRB1",  "beta_blocker",   "hypertension"),
+    c("carvedilol",    "ADRB1",  "beta_blocker",   "heart_failure"),
+    c("metformin",     "AMPK",   "biguanide",      "type_2_diabetes"),
+    c("empagliflozin", "SLC5A2", "sglt2_inhibitor","type_2_diabetes|heart_failure"),
+    c("dapagliflozin", "SLC5A2", "sglt2_inhibitor","type_2_diabetes|heart_failure"),
+    c("fluoxetine",    "SLC6A4", "ssri",           "depression"),
+    c("sertraline",    "SLC6A4", "ssri",           "depression"),
+    c("citalopram",    "SLC6A4", "ssri",           "depression"),
+    c("omeprazole",    "ATP4A",  "ppi",            "gerd"),
+    c("pantoprazole",  "ATP4A",  "ppi",            "gerd"),
+    c("esomeprazole",  "ATP4A",  "ppi",            "gerd"),
+    c("ibuprofen",     "PTGS2",  "nsaid",          "osteoarthritis"),
+    c("naproxen",      "PTGS2",  "nsaid",          "osteoarthritis"),
+    c("celecoxib",     "PTGS2",  "nsaid",          "osteoarthritis"),
+    c("apixaban",      "F10",    "doac",           "atrial_fibrillation"),
+    c("rivaroxaban",   "F10",    "doac",           "atrial_fibrillation"),
+    c("edoxaban",      "F10",    "doac",           "atrial_fibrillation")
+  )
+  colnames(spec) <- c("drug", "target", "class", "indications")
+  spec <- as.data.frame(spec, stringsAsFactors = FALSE)
+
+  sys <- c(hyperlipidemia = "cardiovascular", hypertension = "cardiovascular",
+           heart_failure = "cardiovascular", atrial_fibrillation = "cardiovascular",
+           type_2_diabetes = "endocrine", depression = "psychiatric",
+           gerd = "digestive", osteoarthritis = "musculoskeletal")
+
+  ed <- function(a, b) data.frame(from = a, to = b, stringsAsFactors = FALSE)
+  E <- rbind(
+    ed(spec$drug, spec$target),
+    ed(spec$drug, spec$class),
+    ed(spec$class, spec$target),
+    do.call(rbind, lapply(seq_len(nrow(spec)), function(i) {
+      ind <- strsplit(spec$indications[i], "|", fixed = TRUE)[[1]]
+      ed(rep(spec$drug[i], length(ind)), ind)
+    })),
+    ed(names(sys), unname(sys))
+  )
+  E <- unique(E)
+
+  g <- igraph::graph_from_data_frame(E, directed = FALSE)
+  nm <- igraph::V(g)$name
+  type <- ifelse(nm %in% spec$drug, "drug",
+          ifelse(nm %in% spec$target, "target",
+          ifelse(nm %in% spec$class, "class",
+          ifelse(nm %in% names(sys), "indication", "system"))))
+  igraph::V(g)$type <- type
+  g
+}
+
+#' Nearest neighbours of an arbitrary query vector, by cosine similarity.
+#' `exclude` drops names you do not want back (the terms of an analogy).
+nearest <- function(Z, q, k = 5, exclude = character()) {
+  Zn <- normalize_rows(Z)
+  qn <- as.numeric(q) / sqrt(sum(q^2))
+  s <- as.numeric(Zn %*% qn)
+  names(s) <- rownames(Z)
+  s <- s[!(names(s) %in% exclude)]
+  head(sort(s, decreasing = TRUE), k)
+}
+
+#' The word2vec parallelogram, on a graph: `a - b + c`.
+#' "atorvastatin is to hyperlipidemia as ??? is to depression".
+analogy <- function(Z, a, b, c, k = 5) {
+  stopifnot(all(c(a, b, c) %in% rownames(Z)))
+  nearest(Z, Z[a, ] - Z[b, ] + Z[c, ], k = k, exclude = c(a, b, c))
+}

@@ -1,236 +1,656 @@
-# The seven-minute talk {#sec-talk}
+# The talk {#sec-talk}
 
-The script for the lightning talk, with timings. The deck it goes with is
-`slides/lightning-talk.qmd`.
+The script for **"Graph Embeddings 101, or: How I Learned to Stop Worrying and
+Love Claude Code."** The deck it goes with is `slides/lightning-talk.qmd`.
 
-Seven minutes is roughly 1,000 spoken words. That is enough for **one** idea
-with **three** supporting beats. The idea here is:
+This is no longer a lightning talk. The earlier version of this chapter was a
+seven-minute script and it is preserved in the git history if you want it. The
+current talk runs **25–30 minutes** at a normal speaking pace, with four parts:
 
-> Graph embeddings turn structure into vectors, the main algorithms are all the
-> same algorithm wearing different hats, and the payoff is that a transformer
-> can finally see your graph.
+| Part | What it is | Minutes |
+|---|---|---|
+| 0 | Dr. Strangelove, Boston, bike lanes | 5 |
+| 1 | Graph embeddings, built up from "what is a graph" | 12 |
+| 2 | The drug knowledge graph demo in R | 4 |
+| 3 | How I actually use Claude Code | 5 |
+| 4 | The Whitespace health check | 3 |
 
-Everything that does not serve that gets cut. In particular the talk does not
-cover: GraphSAGE sampling, over-smoothing, evaluation methodology, or node2vec's
-$p$ and $q$. Those are what the book is for, and the last slide says so.
+::: {.callout-tip}
+## What to cut when you are running long
+
+Cut **Part 0 down to the Strangelove slide and the parking-ticket line** — the
+bike lane material is the most cuttable thing in the talk because it is pure
+digression, which is also why it is the funniest. Decide before you walk on
+stage, not during.
+
+Inside Part 1, the compressible slides are *Which distance, though?* and
+*When $A$ isn't enough: GNNs*. Do not rush Part 2; the analogy result is the
+payoff for everything before it.
+:::
 
 ---
 
-## Timing plan
+## A note on the comedy
 
-| Slide | Beat | Running time |
-|---|---|---|
-| 1 | Title | 0:00 – 0:15 |
-| 2 | The problem | 0:15 – 1:00 |
-| 3 | The idea + the karate picture | 1:00 – 1:50 |
-| 4 | Spectral | 1:50 – 2:50 |
-| 5 | Random walks | 2:50 – 3:50 |
-| 6 | They are all the same algorithm | 3:50 – 4:30 |
-| 7 | GNNs, briefly | 4:30 – 5:00 |
-| 8 | Into a transformer: three doors | 5:00 – 5:45 |
-| 9 | The result | 5:45 – 6:35 |
-| 10 | Takeaways | 6:35 – 7:00 |
+Three rules that this script tries to follow, because a technical talk that is
+*trying* to be funny is much worse than one that isn't:
 
-Slides 4 and 5 are the ones to cut into if you are running long: drop the code
-from 4, drop the loss-curve mention from 5. Slide 9 is the one you must not
-rush.
+1. **The jokes are on the way to somewhere.** Every bit in Part 0 sets up a real
+   idea. The bike lane is a distributed system with no coordinator. The freeze
+   is a synchronisation failure. If a joke doesn't hand off to content, cut it.
+2. **Undersell.** "Which is why every AI lab has a blog" works if you say it
+   flatly and move on. It dies if you pause for the laugh.
+3. **Be the butt of it.** The parking tickets, not knowing the material, the
+   cherry-picked analogy. Punching at yourself is free; punching at the audience
+   is not.
 
 ---
 
 ## The script
 
-### Slide 1 — Title (0:00)
+### Part 0 — Two minutes of unrelated grievances
 
-> Graph embeddings, in R. Seven minutes, four algorithms, and one demo where
-> the accuracy goes from 11% to 96%.
+#### The title is a reference
 
-### Slide 2 — The problem (0:15)
+> The title is a reference, and if it isn't landing for anyone: *Dr. Strangelove,
+> or: How I Learned to Stop Worrying and Love the Bomb*, Kubrick, 1964.
+>
+> Here is my favourite thing about that film. Kubrick set out to make a serious
+> thriller about nuclear annihilation. He read the actual nuclear strategy
+> documents — the real ones, the ones the RAND Corporation was writing — and he
+> discovered they were already comedies. So he gave up and filmed that instead.
+>
+> I have had a similar experience reading AI discourse.
+>
+> The plot, in one sentence: the Soviets build a Doomsday Machine that destroys
+> the world automatically and cannot be switched off. And it has exactly one
+> flaw.
+>
+> *(beat)*
+>
+> They forgot to announce it. A deterrent nobody knows about deters nobody.
+>
+> Which is why every AI lab has a blog.
 
-> Here is a graph. Thirty-four people in a karate club in the 1970s, and who was
-> friends with whom. The club had a falling-out and split in two, and the
-> question people have been asking of this dataset for fifty years is: could you
-> have predicted the split from the friendships?
->
-> Now, to do anything statistical with this you need a table. One row per
-> person, a fixed number of columns. What you have is an adjacency matrix, and
-> it is the wrong shape in three ways. It is 34 columns wide, so it changes
-> shape when someone joins. It is 87% zeros. And worst of all, it has no
-> geometry — two people three hops apart in the same tight friendship group look
-> exactly as unrelated as two people in different countries.
->
-> An adjacency matrix records edges. What you want is similarity. And in a
-> graph, similarity comes from paths, not from single entries.
+::: {.callout-note appearance="minimal"}
+Say the last line flatly and go straight to the next slide. Do not wait.
+:::
 
-### Slide 3 — The idea (1:00)
+#### The bomb comparison
 
-> So: a graph embedding is a map from each node to a short dense vector — say 32
-> numbers — chosen so that *close in the vector space* means *structurally
-> close in the graph*.
+> Everybody reaches for the bomb comparison, so let me get it out of the way and
+> at least be precise about which parts hold up.
 >
-> Here is the karate club embedded into two dimensions. Colour is the faction
-> people actually joined. The algorithm never saw those labels, and the first
-> axis alone gets 33 of the 34 people right.
+> Holds: physicists knew roughly what it would do and built it anyway. "If we
+> don't, they will" is doing an enormous amount of load-bearing work in both
+> eras. And the people closest to it are the most nervous — that part is
+> genuinely eerie.
 >
-> Look at the one in the middle. That is node 9, who joined the officers'
-> faction despite being better connected to the instructor's side. A method
-> that was overconfident would have put him firmly on one side. This one puts
-> him in the middle, which is the honest answer.
+> Doesn't hold: the Manhattan Project was about two hundred people and one
+> government. It did not ship as a twenty-dollar-a-month subscription. And
+> nobody had to explain Trinity to their parents at Thanksgiving.
+>
+> Also, Oppenheimer got "Now I am become Death, destroyer of worlds."
+>
+> We got "You're absolutely right!"
+>
+> One serious note, and then I'll stop. In the film, "I learned to stop worrying"
+> is sarcasm. The whole point is that you should not love the bomb. I'm choosing
+> to read my version straight. Ask me again in five years.
 
-### Slide 4 — Spectral (1:50)
+#### Hi, I'm Adam
 
-> Four algorithms. The first is the oldest and it is four lines of R.
+> Quickly, who I am. I'm new to Boston — I moved here from the Netherlands.
 >
-> Write down what you want: connected nodes should be close. So penalise every
-> edge by the squared gap it has to stretch. Expand that square and it collapses
-> into a quadratic form in the matrix $D - A$ — degree matrix minus adjacency.
-> That is the graph Laplacian, and the whole field runs on this identity.
+> Last week I went to the DMV to get my license. Before that I collected two
+> parking tickets, for parking outside my own house. While moving into it. With
+> the boxes still in the car.
 >
-> Minimise it, constrain it so it can't collapse to zero, and the answer is
-> eigenvectors. Take the ones with the smallest eigenvalues — the smoothest
-> non-constant functions on the graph. That is the picture you just saw.
+> So I asked the guy at the DMV: genuinely, what's more expensive — the tickets,
+> or just paying for parking?
 >
-> Bonus: the eigenvalues tell you how many communities there are. Three near
-> zero, then a jump, means three communities. You get that for free.
+> *(beat)*
+>
+> "Paying for parking. Welcome to Boston."
 
-### Slide 5 — Random walks (2:50)
+#### The bike lanes
 
-> Second algorithm. 2014, and someone notices that word2vec is doing something
-> suspiciously relevant.
+> I want to be fair about this. For an American city, Boston is genuinely not
+> bad. That is the nicest available sentence and I have thought about it a lot.
 >
-> Word2vec learns word vectors from "words that appear near each other are
-> related". DeepWalk's move is: a random walk on a graph *is* a sentence. Start
-> anywhere, step to a random neighbour, forty times. Do that ten times per node.
-> Now you have a corpus, and the nodes are the words.
+> But here is a Dutch bike lane in cross-section. Three separate places, at three
+> different heights, in three different colours. Cars, kerb, bikes, footpath. No
+> negotiation required, because the negotiation was done once, in concrete, in
+> 1975.
 >
-> Then run skip-gram: every node gets a vector, real co-occurring pairs should
-> score high, random pairs should score low. Logistic regression against noise.
-> The gradient is one line, and I've written it out in the book — it's about
-> sixty lines of R with no autodiff.
+> And here is the American version. One flat surface. The bike lane is a paint
+> colour. And it is stored between moving traffic and the doors of parked cars —
+> which is, and I want to be clear about this, the two most dangerous available
+> locations, chosen simultaneously.
 >
-> On the karate club this recovers the factions perfectly. And crucially,
-> nothing here is quadratic in the number of nodes, which is why this is the
-> family that scaled to billions of edges.
+> It's also where the delivery van goes. And the police car. And the cones.
 
-### Slide 6 — They're all the same algorithm (3:50)
+#### It's not the infrastructure
 
-> Now the part I actually want you to remember.
+> But the lanes are the easy half. The hard half is that in the Netherlands
+> everyone knows the protocol.
 >
-> In 2018 Qiu and co-authors proved that DeepWalk is not really a neural
-> method. Skip-gram with negative sampling provably converges to a factorisation
-> of a pointwise-mutual-information matrix — that's Levy and Goldberg, 2014 —
-> and for random walks on a graph, that matrix has a closed form. It's this: the
-> transition matrix $P$, summed over powers 1 to T, times $D$ inverse, log of
-> the whole thing.
+> A pedestrian hears a bike coming, so they keep walking. The bike routes around
+> them. Nobody makes eye contact. It just flows. It's a distributed system with
+> no coordinator and it's genuinely beautiful.
 >
-> So you can skip the walks and the gradient descent entirely and just take an
-> SVD. In the book I check this: the learned dot products correlate 0.98 with
-> the PMI the theory predicts, and the sampled matrix converges to the exact one
-> as you draw more walks.
+> Here, someone steps into the bike lane, sees me coming, and —
 >
-> Same accuracy on the karate club. About a thousand times faster.
+> *(beat)*
 >
-> Every method on this slide is a low-rank factorisation of some matrix built
-> from $A$. They differ in *which matrix*. That's it.
+> freezes. In the bike lane. Full eye contact. Waiting for **me** to decide what
+> happens next.
+>
+> And I've come to think this is the most American thing I have ever
+> experienced. A total stranger, in a moment of real physical danger, has
+> concluded that the correct move is synchronous negotiation.
 
-### Slide 7 — GNNs (4:30)
+::: {.callout-note appearance="minimal"}
+This is the biggest laugh in Part 0 and it is the one to protect. It works
+because "synchronous negotiation" is the room's own vocabulary being used on a
+person standing in the street.
+:::
 
-> Which also tells you the ceiling. Every one of those is a function of $A$
-> alone. It can't use the fact that a node is a 34-year-old who joined in March,
-> and it can't embed anyone who wasn't there when you factorised.
->
-> Graph neural networks fix both by replacing the lookup table with a function:
-> average your neighbours' features, multiply by a shared weight matrix, repeat.
-> Shared weights, so new nodes just get a forward pass.
->
-> Two things worth knowing. A GCN layer is a learned smoother — so if you stack
-> twenty of them every node converges to the same vector, which is why GNNs are
-> almost always two or three layers deep. And graph attention, GAT, is
-> self-attention with the adjacency matrix as its mask.
->
-> Which raises the question: what if you took the mask off?
+#### Anyway
 
-### Slide 8 — Into a transformer (5:00)
-
-> Self-attention has no idea what order its inputs are in. Permute them and the
-> output permutes with them. That's why transformers need positional encodings
-> — and text has an obvious order to encode. A graph doesn't.
+> Anyway. We're here to talk about graph embeddings.
 >
-> So: how do you tell a permutation-invariant architecture about a structure
-> with no canonical ordering? Three doors.
->
-> One: use graph embeddings as your input vectors. If your tokens are entities
-> that also live in a graph — clinical codes in a vocabulary hierarchy, products
-> in a catalogue — embed the graph offline and initialise the embedding table.
-> Zero architecture changes, and the rare tokens benefit most.
->
-> Two: structural positional encodings. Feed each node its Laplacian
-> eigenvectors — literally the spectral embedding from slide 4. That analogy is
-> exact, by the way: sine waves are the eigenvectors of the Laplacian of a
-> line graph.
->
-> Three, and this is the interesting one: put the graph inside the attention
-> computation.
-
-### Slide 9 — The result (5:45)
-
-> Graphormer's trick. Attention scores are query dot key over root d. Add one
-> more term: a learnable scalar indexed by the shortest-path distance between
-> the two nodes. That's it.
->
-> Here's what it does. Ninety nodes, three communities. I reveal the true
-> community for 40% of them and zero out the rest, and the model has to infer
-> the others. The content-based part of attention is deliberately uninformative,
-> so the only route to the answer is the graph.
->
-> Without the bias, attention is flat — 33% of its mass lands on your own
-> community, which is exactly chance, because a third of the graph *is* your
-> community. The transformer is blind. Add the distance bias and that goes to
-> 88%. You can see it in the attention matrix: the block structure appears.
->
-> Downstream test accuracy: 11% without, 96% with. Same architecture, same
-> features, same parameter count. One scalar per distance, added before the
-> softmax.
-
-### Slide 10 — Takeaways (6:35)
-
-> Three things.
->
-> Graph embeddings turn structure into geometry, and they're small — I wrote all
-> four from scratch in base R.
->
-> They're all the same algorithm: a low-rank factorisation of a matrix built
-> from the adjacency. Before you reach for a library, try an SVD, and always run
-> "count the mutual friends" as a baseline — it wins more often than anyone
-> admits.
->
-> And if you're putting a transformer near a graph, the structure has to get in
-> somewhere. Input vectors, positional encodings, or attention bias. Pick at
-> least one.
->
-> Book and code are at the link. Thank you.
+> And, apparently, Claude.
 
 ---
 
-## Delivery notes
+### Part 1 — Graph embeddings, from nothing
 
-**Rehearse slide 6.** It is the intellectual core and the easiest to garble.
-Practise saying "pointwise mutual information" until it is one word.
+#### A confession
 
-**Do not read the code on slides 4 and 5.** It is there so the audience can see
-how short it is. Say "four lines" and move on.
+> A confession before we start. Until I began writing this talk, I knew very
+> little about graph embeddings.
+>
+> I didn't pick the topic because I'm an expert. I picked it because I wanted to
+> become one, and agreeing to give a talk is the only reliable forcing function I
+> have ever found.
+>
+> Which I think makes this a better talk, not a worse one, because I still
+> remember which parts were confusing.
+>
+> And I learned it from Claude, which is a genuinely excellent teacher.
 
-**The pause is on slide 9.** After "11% without, 96% with", stop for a beat
-before the last sentence. It is the only number anyone will remember.
+#### How I actually study now
 
-**If you are asked "does this beat a GNN?"** --- the honest answer is: on a
-fixed featureless graph, usually not by much, and NetMF is a much harder
-baseline than people expect. The GNN earns its keep when you have node features
-or a changing graph.
+> Here's the loop. Open-ended conversation about a thing I don't understand.
+> Then: turn that into a Quarto book, one chapter per idea, runnable code in
+> every chapter. Then: write me a lecture script from chapter three. Then that
+> script goes through the ElevenLabs API and I listen to it on the way in.
+>
+> On the T. Not on the bike. I'm not doing the bike lane thing again.
+>
+> The step that matters is *runnable code in every chapter*. A book that only
+> produces prose will happily explain something false to you for forty pages,
+> fluently, with excellent grammar. Code that has to run is a lie detector.
+>
+> Here's fifteen seconds of a synthetic voice that sounds suspiciously like a
+> certain Oscar winner, patiently explaining the Riesz representation theorem to
+> me at 1.4× speed.
+>
+> *(play clip, cut it early)*
+>
+> Donald knows what I'm talking about.
 
-**If you are asked about scale** --- NetMF as written is $O(n^3)$ and dense.
-Past about 20,000 nodes, use sparse spectral methods or go back to sampled
-walks. The sampling that looks unnecessary is exactly what makes it scale.
+#### What is a graph?
 
-**If you overrun**, cut slide 7 to one sentence: "GNNs add node features and
-handle new nodes; a GAT is masked self-attention." It buys you thirty seconds
-and slide 8 follows from it anyway.
+> Right. From the top.
+>
+> A graph is a set of nodes and a set of edges. That's it. That's the whole
+> object.
+>
+> Here's the one everybody uses: thirty-four people in a karate club in the
+> 1970s, and who was friends with whom. The club had a falling-out and split in
+> two, and the question people have been asking of this dataset for fifty years
+> is whether you could have predicted the split from the friendships.
+>
+> Now, a natural question. Is this a metric space? And I think probably yes,
+> right? Because we can define a distance. A metric is any function on pairs
+> that's non-negative and zero only on the diagonal, symmetric, and satisfies the
+> triangle inequality.
+
+#### Which distance, though?
+
+> The trouble is that lots of functions satisfy those axioms and they disagree
+> with each other.
+>
+> Shortest path — fewest hops. Fine, but it's integer-valued and on a real
+> network everything is between two and six, so it barely discriminates.
+>
+> Commute time — how long a random walk takes to get there and back. That uses
+> *all* the paths rather than just the best one, which is usually what you
+> actually want.
+>
+> Resistance distance — treat the graph as an electrical circuit. Beautiful, and
+> it degrades badly on large sparse graphs.
+>
+> And then: count the mutual friends. Which is not a metric, violates the
+> triangle inequality, and is embarrassingly hard to beat. Remember that one.
+>
+> So we do have a metric space. The problem was never that we lacked a distance.
+> The problem is that a distance is not a coordinate. `lm()` cannot take a
+> distance. Neither can a neural network. They want a row of numbers.
+
+#### What is an embedding?
+
+> So: what's an embedding? Precisely, it's a map from nodes into R-to-the-d — a
+> vector space representation of your points — with the property that close in
+> the vector space means structurally close in the graph.
+>
+> d is small. Sixteen to two hundred and fifty-six. Fixed, dense, and independent
+> of how many nodes you have.
+>
+> Here's the karate club, embedded in two dimensions. The colour is the faction
+> each person actually joined. The algorithm never saw the labels. The first axis
+> alone gets thirty-three out of thirty-four right.
+>
+> And that's the part that still surprises me: the representation ends up meaning
+> something.
+
+#### king − man + woman
+
+> Everyone has seen this. King minus man plus woman is approximately queen.
+>
+> Nobody asked for that. Nobody added a "royalty" column. It fell out of a model
+> trained to do nothing but predict nearby words. Which means the space has
+> directions that correspond to concepts.
+>
+> Obligatory honesty, because I promised myself I'd say this: the example is
+> somewhat cherry-picked. The original code excludes the input words from the
+> answer, and if you don't exclude them, the nearest vector to king minus man
+> plus woman is very often just king.
+>
+> The phenomenon is real. The demo is polished. We're going to reproduce it on a
+> graph in about eight slides, with exactly the same caveat attached.
+
+#### Why not one-hot?
+
+> Let me ask the room something. If you want to feed a node into a neural
+> network, how else might you do it?
+>
+> *(take answers — one-hot is the one you want)*
+>
+> Right, one-hot. Node seven becomes a vector of zeros with a one in position
+> seven. It works.
+>
+> It's also the least informative thing you could possibly write down. It's n
+> columns wide, so it changes shape when someone joins the club. And the distance
+> between any two distinct nodes is root two. All of them. Every pair, equally
+> far from every other pair. There is no geometry in it at all.
+>
+> An embedding carries much more than a one and a pile of zeros.
+
+#### Basis vectors
+
+> And in a way this is really a question about choice of basis.
+>
+> Quick review. A basis is a minimal set of vectors that spans the space, so that
+> every point is exactly one weighted sum of them. Changing basis doesn't change
+> the space. It changes the coordinates — and it changes which questions are
+> easy.
+>
+> One-hot *is* a basis. It's the standard basis, e-one through e-n. One axis per
+> node, n dimensions, maximally uninformative.
+>
+> Spectral embedding is also a basis — the eigenvectors of the Laplacian, keeping
+> the d smoothest ones.
+>
+> So we are picking a basis that means something. And we would like to pick a
+> good one: few coordinates, and the ones you keep should line up with things you
+> care about.
+
+#### Word to vector
+
+> So how do you get from a word to a vector? Word2vec, 2013: predict a word from
+> the words around it, throw away the prediction, keep the weights. The weights
+> are the embedding.
+>
+> There are many algorithms. The one from Stanford is GloVe — Pennington, Socher
+> and Manning, 2014 — and it takes a completely different route: build the full
+> word co-occurrence matrix, then factorise it.
+>
+> Hold on to that pairing. Sample the neighbourhood, versus factorise the
+> co-occurrence matrix. It comes back in six slides.
+>
+> Both of them rest on one sentence from a linguist in 1957: you shall know a
+> word by the company it keeps.
+
+#### Now do it for a graph
+
+> Now: how would we do the same thing for a graph? We need an algorithm that
+> maps the structure — nodes and edges — to a vector. And unsurprisingly there
+> are many ways.
+>
+> And there is a direct analogue of word2vec, and the trick is almost insultingly
+> simple.
+>
+> A random walk on a graph is a sentence.
+>
+> That's it. Take random walks. Write down the nodes you visit, in order. You now
+> have a text corpus where the words are nodes. Run word2vec on it, completely
+> unmodified. That's DeepWalk, 2014.
+>
+> Sixty lines of base R. And nothing in it is order-n-squared, which is exactly
+> why this is the family that scaled to graphs with billions of edges.
+
+#### Factorise something
+
+> Here's the other route. You want connected nodes to be close, so penalise every
+> edge by the gap it stretches. Write that down, and the sum turns into f
+> transpose L f, where L is the Laplacian.
+>
+> Minimise it, constrain it so it can't collapse to a constant, and you get the
+> eigenvectors of the Laplacian with the smallest eigenvalues. The smoothest
+> non-constant functions on the graph. Four lines.
+>
+> Free bonus: a gap in the eigenvalues tells you how many communities there are.
+> Three near zero, then a jump. Three communities. Nobody told it three.
+
+#### They're all the same algorithm
+
+> And here's the thing I actually found startling.
+>
+> DeepWalk is not really a neural method. Skip-gram provably converges to a
+> factorisation of a pointwise-mutual-information matrix — that's Levy and
+> Goldberg, 2014 — and for random walks that matrix has a closed form. Qiu et
+> al., 2018.
+>
+> So every method on this slide is a low-rank factorisation of a matrix built
+> from the adjacency matrix. They differ only in *which* matrix.
+>
+> Which is the same sample-or-factorise pairing as word2vec and GloVe, with the
+> same punchline: it doesn't much matter which you pick.
+>
+> Here they are side by side. Same accuracy. About a thousand times faster.
+>
+> So before you reach for a library: try an SVD.
+
+#### GNNs
+
+> One more, quickly, because you'll be asked about it.
+>
+> Everything so far is a function of the adjacency matrix alone. Which means it
+> can't use node features, and it can't embed a node that wasn't there when you
+> trained.
+>
+> GNNs fix that by replacing the lookup table with a function of the
+> neighbourhood. The weights are shared, so a brand-new node is just a forward
+> pass.
+>
+> Two things to know. A GCN layer is a learned smoother — stack twenty of them
+> and every node converges to the same vector, which is why GNNs are two or three
+> layers deep and everyone is oddly quiet about that.
+>
+> And a graph attention layer is just self-attention masked by the adjacency
+> matrix. That's the whole idea.
+
+---
+
+### Part 2 — The demo
+
+#### A drug knowledge graph
+
+> Let's do an actual example in R.
+>
+> This is a small drug knowledge graph. Twenty-four drugs, each joined to its
+> molecular target, its pharmacologic class, and the conditions it treats — and
+> those are joined to a body system. Fifty-five nodes, ninety-four edges.
+>
+> The important constraint: no drug is ever joined directly to another drug. So
+> every similarity you're about to see has to travel through the structure.
+
+#### Nearest neighbours
+
+> First, the easy question. What's nearest to metoprolol?
+>
+> Its two fellow beta blockers. Then the class node. Then the receptor all three
+> of them bind.
+>
+> It recovered "beta blocker" without ever being told that drug classes exist.
+
+#### The analogy
+
+> Now the fun one. I was genuinely curious whether this would work, and I want to
+> be honest that I didn't know the answer when I wrote the slide.
+>
+> Same arithmetic as king minus man plus woman. The question is whether "this
+> drug, but for a different disease" is a *direction* in this space.
+>
+> Atorvastatin, minus high cholesterol, plus depression.
+>
+> *(reveal)*
+>
+> Fluoxetine. Prozac. Top of the list — then sertraline and citalopram, with the
+> serotonin transporter all three of them bind wedged in between.
+>
+> One more. Lisinopril, minus hypertension, plus type two diabetes.
+>
+> Metformin. Which is first-line therapy for exactly that.
+>
+> Nobody put a "first-line therapy" column in this graph. There is no such
+> column. There are only edges.
+
+#### Before anyone gets excited
+
+> Now let me take that away from you a bit, because I'd rather do it than have
+> someone do it in the Q&A.
+>
+> This graph is clean by construction. I wrote it. Every class has exactly three
+> interchangeable drugs, which is precisely the parallel structure the
+> parallelogram needs. Real clinical vocabularies are not this tidy.
+>
+> It's fifty-five nodes. The function is choosing among about fifty candidates,
+> and node type alone rules out most of them.
+>
+> And drug repurposing by vector subtraction is a real research area. It does not
+> work this cleanly. If it did, we'd be finished.
+>
+> What I'd actually claim is narrower and still interesting: the geometry is
+> doing something real — it found drug classes out of nothing but edges — and
+> analogies are a fast, cheap way to *inspect* an embedding and see what it
+> learned. Not to make clinical decisions with.
+
+---
+
+### Part 3 — The Claude Code part
+
+#### One thing to understand
+
+> Okay. A few notes on actually using this thing.
+>
+> If you take one idea away, take this one: you are managing a fixed context
+> window, all the time.
+>
+> That's the whole mental model, and everything else follows from it. It is not a
+> database and it is not a colleague with a memory. It is a very good reasoner
+> looking at a fixed-size window of text that *you* chose.
+>
+> So the entire skill is being deliberate about what's in the window. Which means
+> you want to be dynamic about what you load — not everything, all the time.
+
+#### CLAUDE.md vs skills
+
+> Which is the difference between the two mechanisms people confuse.
+>
+> `CLAUDE.md` is "add this to the beginning of every conversation." Always
+> loaded. You pay for it on every single turn. Good for how you like code
+> written, your house style, the two commands that are never in the README.
+>
+> A skill is "load this when it's relevant." It's a folder with instructions and
+> a one-line description. The description is always visible; the body only gets
+> pulled in when it's needed.
+>
+> That's the actual unlock, and it took me a while to see it. It isn't *more*
+> context. It's the *right* context, on demand.
+>
+> A four-hundred-line `CLAUDE.md` is a tax you pay on every message and mostly
+> don't use.
+>
+> And memory works at both levels — global across every project, and local to
+> one.
+
+#### Why the terminal changes it
+
+> The other thing, and this is the big one. A chatbot can tell you what to type.
+> This reads files, writes files, and runs commands.
+>
+> Which sounds incremental and really isn't, because it closes the loop. It can
+> check its own work. Write the code, run the code, read the error, fix the code
+> — with no human in the middle copy-pasting tracebacks.
+>
+> Every number on the last fifteen slides was produced that way. Including the
+> ones that came out worse than I hoped, which are still on the slides.
+
+#### Things I've actually done
+
+> A few things I've actually done with it.
+>
+> Reproduced a paper. Multi-armed bandits, from the PDF to a working simulation
+> that matched the published figures.
+>
+> Written a course — this one. Quarto book, eight chapters, every number computed
+> at render time.
+>
+> Written lecture scripts and image prompts, pushed them through the ElevenLabs
+> API, and made myself an audio course I listen to on the way in. You can teach
+> yourself basically anything while walking around, which still feels vaguely
+> illegal.
+>
+> The general shape is that it adds context to anything, and it organises and
+> connects ideas that were sitting in different places in my head.
+>
+> And if you take one workflow: open-ended conversation, turn it into a
+> structured markdown file, build a project around it. The conversation is where
+> you work out what you think. The markdown file is where it stops evaporating.
+> The project is where it has to survive contact with a compiler.
+
+---
+
+### Part 4 — The bit
+
+#### A language with no visible syntax
+
+> Last thing. Another thing you can do is write code in languages no reasonable
+> person would use.
+>
+> Donald told me about one. He called it something I probably shouldn't say into
+> a microphone.
+>
+> It's actually called Whitespace. Edwin Brady and Chris Morris, 2003. The entire
+> syntax is space, tab and linefeed — every visible character is ignored, which
+> means a program can hide inside perfectly ordinary text.
+>
+> It's stack-based and Turing complete. Arithmetic, heap storage, subroutines,
+> jumps, character and numeric I/O. All of it.
+>
+> And when you open the file, you see nothing. It isn't obfuscated and it isn't
+> minified. It is illegible in the strict sense — there's nothing there to read.
+>
+> I should say, I've already been corrected on this and I deserved it: it isn't
+> "all spaces." Tabs and linefeeds are load-bearing. A language of nothing but
+> literal spaces would need something external, like run lengths, to encode
+> anything at all.
+>
+> Three characters. Which is two more than I was hoping for.
+
+#### Choosing the target
+
+> So obviously we started thinking about what we could write in it.
+>
+> We wanted the smallest program that is absolutely critical to every
+> tech-forward company on earth and that nobody has opened in six years.
+>
+> Not the payments code — people read the payments code. Not auth — people
+> definitely read auth. We wanted something that returns the same three bytes,
+> forever, to a caller that is not a human.
+>
+> *(beat)*
+>
+> The health check endpoint.
+>
+> It returns "OK". Every load balancer, orchestrator, uptime monitor and deploy
+> gate on the planet is downstream of it. It was written by an intern. Its last
+> commit message is "fix".
+>
+> If it stops returning OK, the entire company is down. And the file has
+> forty-five bytes in it.
+
+#### So we wrote it
+
+> So we wrote it. Here it is.
+>
+> *(beat — let them look at the blank column)*
+>
+> That's the whole program. That's not a placeholder, that's the source.
+>
+> Here it is again with dots for spaces and arrows for tabs. Push seventy-nine,
+> print it. Push seventy-five, print it. Push ten, print it. Exit.
+>
+> And it runs. There's an interpreter in the repo, forty lines of Python, and the
+> health check passes.
+>
+> And because every visible character is ignored, you don't even need a
+> suspicious blank file. You can paste those forty-five bytes into the trailing
+> whitespace of the README and it still runs.
+>
+> Ship it on a Friday. Nobody finds it for years.
+
+#### Takeaways
+
+> Four things.
+>
+> Graph embeddings turn structure into geometry. A graph is already a metric
+> space; what it's missing is coordinates. An embedding is a choice of basis, and
+> a good one puts the things you care about on the axes.
+>
+> They're all the same algorithm — a low-rank factorisation of a matrix built
+> from A. Sample it or factorise it, you get the same answer, and the SVD is a
+> thousand times faster. Try an SVD before a library. And always run "count the
+> mutual friends" as a baseline, because it wins more often than anyone admits.
+>
+> The geometry means something. Nearest neighbours found drug classes; analogies
+> found first-line therapies. Out of nothing but edges. And stay suspicious of
+> how clean my example was.
+>
+> And manage the context window. `CLAUDE.md` is always-on, skills are on-demand,
+> and the terminal is the thing that lets it check its own work.
+>
+> Everything's in the repo — book, code, slides, the drug graph, and yes, the
+> health check.
+>
+> Thank you. Please don't stand in the bike lane.
+
+---
+
+## Questions you will get
+
+**"Doesn't node2vec do better than DeepWalk?"**
+: Sometimes, on some graphs, after you tune $p$ and $q$ — which is two more
+  hyperparameters and a grid search. @sec-walks has the comparison. The
+  honest answer is that the gap is usually smaller than the gap between "any
+  embedding" and "no embedding".
+
+**"Why not just use a GNN for everything?"**
+: If you have node features or need to embed unseen nodes, do. If you have
+  neither, a GNN on a featureless graph is an expensive way to compute
+  something an SVD gives you in a second.
+
+**"Is the analogy result real or did you fish for it?"**
+: Both, and say so. The two on the slide are the two I tried. The graph is one I
+  wrote, with deliberately parallel structure. That is exactly what the "before
+  anyone gets excited" slide is for — get there before they do.
+
+**"What's the catch with Claude Code?"**
+: It is confidently wrong at a rate that would be disqualifying in a person, and
+  the entire discipline is building loops that catch it — tests, running the
+  code, rendering the book. That's why "runnable code in every chapter" is the
+  load-bearing part of the workflow and not a stylistic preference.

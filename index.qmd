@@ -1,7 +1,8 @@
 # Preface {.unnumbered}
 
-This little book is the long version of a seven-minute lightning talk. The talk
-has to skip almost everything; this has room for the parts worth keeping.
+This little book is the long version of a talk --- *Graph Embeddings 101, or:
+How I Learned to Stop Worrying and Love Claude Code*. The talk has to skip
+almost everything; this has room for the parts worth keeping.
 
 The question is simple to ask and surprisingly deep to answer:
 
@@ -27,7 +28,7 @@ and, as of the last few years, transformers.
 | @sec-gnn | Graph neural networks: message passing, why a GCN is a learned smoother, and what "inductive" buys you |
 | @sec-transformers | The part that motivated the talk: three places graph structure can enter a transformer, and a working demo where it moves accuracy from 0.11 to 0.96 |
 | @sec-eval | How to tell whether an embedding is any good, and which method to reach for |
-| @sec-talk | The seven-minute script itself, with timings |
+| @sec-talk | The talk script itself, with timings and the jokes |
 
 Everything is implemented from scratch in base R plus **Matrix** and
 **igraph**. Nothing is downloaded at runtime; every dataset is generated or

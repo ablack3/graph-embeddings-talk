@@ -1,8 +1,9 @@
 # Graph Embeddings in R
 
-A Quarto book and a 10-slide lightning talk on graph embeddings — what they
-are, the four main algorithm families, how to implement each from scratch in
-base R, and how to feed them into a transformer.
+A Quarto book and a talk — *Graph Embeddings 101, or: How I Learned to Stop
+Worrying and Love Claude Code* — on graph embeddings: what they are, the four
+main algorithm families, how to implement each from scratch in base R, and how
+to feed them into a transformer.
 
 Every algorithm is implemented from scratch in `R/graphemb.R` using only base R
 plus **Matrix** and **igraph**. Nothing is downloaded at runtime; every dataset

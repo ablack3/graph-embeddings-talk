@@ -1,6 +1,6 @@
 ---
-title: "Graph Embeddings in R"
-subtitle: "From Laplacians to transformers, in 7 minutes"
+title: "Graph Embeddings 101"
+subtitle: "or: How I Learned to Stop Worrying and Love Claude Code"
 author: "Adam Black"
 format:
   revealjs:
@@ -30,55 +30,337 @@ blue <- "#4C72B0"; orange <- "#DD8452"; green <- "#55A868"
 fac_col <- ifelse(lab == "Mr Hi", blue, orange)
 ```
 
-## The problem {.smaller}
+# Part 0 {.center}
+
+### Two minutes of unrelated grievances
+
+## The title is a reference {.smaller}
 
 ::: {.columns}
-::: {.column width="52%"}
+::: {.column width="55%"}
+*Dr. Strangelove, or: How I Learned to Stop Worrying and Love the Bomb* (1964).
+
+Kubrick set out to make a serious thriller about nuclear annihilation, read the
+actual strategy documents, and discovered they were **already comedies**. So he
+gave up and filmed that instead.
+
+::: {.fragment}
+I have had a similar experience reading AI discourse.
+:::
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### The plot, briefly
+The Soviets build a Doomsday Machine that destroys the world automatically and
+cannot be switched off.
+
+It has one flaw.
+
+::: {.fragment}
+**They forgot to announce it.**
+
+A deterrent nobody knows about deters nobody.
+:::
+:::
+:::
+:::
+
+::: {.fragment .highlight}
+Which is why every AI lab has a blog.
+:::
+
+## The bomb comparison, briefly {.smaller}
+
+Everyone reaches for it, so let me get it out of the way and be precise about
+which parts hold:
+
+::: {.columns}
+::: {.column width="50%"}
+### Holds
+- Physicists knew roughly what it would do and built it anyway
+- "If we don't, they will" is doing enormous load-bearing work in both eras
+- The people closest to it are the most nervous
+:::
+::: {.column width="50%"}
+### Does not hold
+- The Manhattan Project was about **200 people** and one government
+- It did not ship as a **\$20/month subscription**
+- Nobody had to explain Trinity to their parents at Thanksgiving
+:::
+:::
+
+::: {.fragment}
+Oppenheimer got *"Now I am become Death, destroyer of worlds."*
+:::
+
+::: {.fragment .highlight}
+We got "You're absolutely right!"
+:::
+
+::: {.fragment}
+::: {.callout-important appearance="minimal"}
+In the film, *"I learned to stop worrying"* is sarcasm. I am choosing to read my
+version straight. Ask me again in five years.
+:::
+:::
+
+## Hi, I'm Adam {.smaller}
+
+::: {.incremental}
+- I am new to Boston. I moved here from the Netherlands.
+- Last week I went to the DMV to get my license.
+- Before that I got **two parking tickets** — for parking outside my own house.
+  While moving into it. With the boxes still in the car.
+:::
+
+::: {.fragment}
+So I asked the guy: *what's more expensive — the tickets, or just paying for parking?*
+:::
+
+::: {.fragment .highlight}
+"Paying for parking. Welcome to Boston."
+:::
+
+## The bike lanes {.smaller}
+
+I want to be fair. **For an American city, Boston is genuinely not bad.**
+
+That is the nicest available sentence and I have thought about it a lot.
+
+::: {.columns}
+::: {.column width="50%"}
+### Rotterdam
+```{=html}
+<svg viewBox="0 0 420 150" width="100%" role="img" aria-label="Cross-section of a Dutch protected bike lane, separated from traffic by a raised kerb">
+  <rect x="0" y="60" width="150" height="60" fill="#5b6670"/>
+  <text x="75" y="96" font-size="15" fill="#fff" text-anchor="middle">cars</text>
+  <rect x="150" y="52" width="34" height="68" fill="#8fb08a"/>
+  <text x="167" y="142" font-size="12" fill="#3b6b3b" text-anchor="middle">kerb</text>
+  <rect x="184" y="52" width="130" height="68" fill="#b23b3b"/>
+  <text x="249" y="92" font-size="15" fill="#fff" text-anchor="middle">bikes</text>
+  <rect x="314" y="44" width="106" height="76" fill="#c9c4bb"/>
+  <text x="367" y="88" font-size="14" fill="#333" text-anchor="middle">people</text>
+</svg>
+```
+Three separate places, at three different heights, in three different colours.
+No negotiation required.
+:::
+::: {.column width="50%"}
+### Boston
+```{=html}
+<svg viewBox="0 0 420 150" width="100%" role="img" aria-label="Cross-section of an American painted bike lane: a stripe of paint between moving traffic and parked cars">
+  <rect x="0" y="60" width="230" height="60" fill="#5b6670"/>
+  <text x="115" y="96" font-size="15" fill="#fff" text-anchor="middle">cars</text>
+  <rect x="230" y="60" width="60" height="60" fill="#68737d"/>
+  <line x1="232" y1="60" x2="232" y2="120" stroke="#f2f2f2" stroke-width="4" stroke-dasharray="9 7"/>
+  <text x="260" y="95" font-size="12" fill="#fff" text-anchor="middle">bikes*</text>
+  <rect x="290" y="60" width="60" height="60" fill="#5b6670"/>
+  <text x="320" y="96" font-size="11" fill="#fff" text-anchor="middle">parked</text>
+  <rect x="350" y="44" width="70" height="76" fill="#c9c4bb"/>
+  <text x="385" y="88" font-size="13" fill="#333" text-anchor="middle">people</text>
+</svg>
+```
+One flat surface. The bike lane is a **paint colour**, and it is stored between
+moving traffic and the doors of parked cars.
+:::
+:::
+
+::: {.fragment}
+\* Also where the delivery van goes. And the police car. And the cones.
+:::
+
+::: {.notes}
+Swap both SVGs for real photos if you can get them — a Rotterdam protected lane
+next to a Boston painted gutter lane gets a much bigger laugh than a diagram.
+See slides/README-images.md for what to shoot and where to drop the files.
+:::
+
+## It's not the infrastructure {.smaller}
+
+The lanes are the easy half. The hard half is that in the Netherlands
+**everyone knows the protocol.**
+
+A pedestrian hears a bike, so they keep walking. The bike routes around them.
+Nobody makes eye contact. It just flows. It is a distributed system with no
+coordinator and it is beautiful.
+
+::: {.fragment}
+Here, someone steps into the bike lane, sees me coming, and —
+:::
+
+::: {.fragment .highlight}
+freezes.
+:::
+
+::: {.fragment}
+In the bike lane. Full eye contact. Waiting for **me** to decide what happens
+next.
+:::
+
+::: {.fragment}
+And I have come to think this is the most American thing I have experienced:
+a total stranger, in a moment of real physical danger, concluding that the
+correct move is **synchronous negotiation**.
+:::
+
+## Anyway {.center}
+
+::: {.fragment .highlight}
+We're here to talk about graph embeddings.
+:::
+
+::: {.fragment}
+And, apparently, Claude.
+:::
+
+# Part 1 {.center}
+
+### Graph embeddings, from nothing
+
+## A confession {.smaller}
+
+::: {.fragment}
+Before I started writing this talk, I knew **very little** about graph
+embeddings.
+:::
+
+::: {.fragment}
+I did not pick the topic because I'm an expert. I picked it because I wanted to
+*become* one, and agreeing to give a talk is the only reliable forcing function
+I have ever found.
+:::
+
+::: {.fragment}
+So this is a talk about something I learned recently — which is the best kind,
+because I still remember which parts were confusing.
+:::
+
+::: {.fragment .highlight}
+I learned it from Claude. It is a genuinely excellent teacher.
+:::
+
+## How I actually study now {.smaller}
+
+::: {.columns}
+::: {.column width="55%"}
+1. Open-ended conversation about a thing I don't understand
+2. *"Turn that into a Quarto book — one chapter per idea, **runnable code in
+   every chapter**"*
+3. *"Now write me a lecture script from chapter 3"*
+4. Pipe the script through the ElevenLabs API
+5. Listen to it on the bike. Well — on the **T**. I'm not doing the bike lane
+   thing again.
+:::
+::: {.column width="45%"}
+::: {.callout-tip appearance="minimal"}
+### The step that matters
+**Runnable code in every chapter.**
+
+A book that only produces prose will happily explain something false to you for
+forty pages, fluently.
+
+Code that has to run is a lie detector.
+:::
+:::
+:::
+
+::: {.fragment}
+Here is a clip of a synthetic voice — one that sounds *suspiciously* like a
+certain Oscar winner — patiently explaining the **Riesz representation theorem**
+and Hilbert spaces to me at 1.4× speed.
+:::
+
+::: {.fragment .highlight}
+Donald knows what I'm talking about.
+:::
+
+::: {.notes}
+Script is in `slides/riesz-lecture.md`. Play ~15 seconds — through "rhymes
+roughly with *reece*. Not *Reitz*." — then cut.
+
+Don't oversell it. The laugh is entirely in the contrast between a serene,
+expensive-sounding narrator and the words "Riesz representation theorem", so any
+calm stock voice works. Use one you have rights to; don't clone a named person
+for a talk that gets recorded and posted.
+:::
+
+## Start from the top: what is a graph? {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+A set of **nodes** $V$ and a set of **edges** $E \subseteq V \times V$.
+
+That's it. That is the whole object.
+
+::: {.fragment}
+Natural question: **is it a metric space?**
+
+Probably yes, right? Because we can define a distance.
+:::
+
+::: {.fragment}
+A metric is any $d: V \times V \to \mathbb{R}$ with
+
+- $d(x,y) \ge 0$, and $= 0$ only when $x = y$
+- $d(x,y) = d(y,x)$
+- $d(x,z) \le d(x,y) + d(y,z)$
+:::
+:::
+::: {.column width="50%"}
 ```{r}
-#| fig-width: 5.4
-#| fig-height: 5
+#| fig-width: 5.2
+#| fig-height: 4.4
 set.seed(4)
 par(mar = c(0, 0, 0, 0))
 plot(g, layout = layout_with_fr(g), vertex.color = fac_col,
      vertex.label.color = "white", vertex.size = 16,
      vertex.label.cex = 0.75, edge.color = "grey75")
 ```
+
+34 people, 78 friendships, one club that split in two.
 :::
-::: {.column width="48%"}
-A graph: 34 people, 78 friendships, and a club that split in two.
+:::
 
-Every model you want to fit needs **a table**. You have **an adjacency matrix**.
+## Which distance, though? {.smaller}
 
-It is the wrong shape in three ways:
+Plenty of functions satisfy those three axioms, and they disagree with each other:
 
-- 34 columns wide --- changes when someone joins
-- `r round(100 * mean(A == 0))`% zeros
-- **no geometry** --- 3 hops away in the same clique looks as unrelated as a different continent
+| | what it measures | trouble |
+|---|---|---|
+| **shortest path** | fewest hops | integer-valued, and everything is 2–6 |
+| **commute time** | how long a random walk takes to get there and back | uses *all* paths, not the best one |
+| **resistance** | the graph as an electrical circuit | degrades on large sparse graphs |
+| **mutual friends** | overlap of two neighbourhoods | not a metric; embarrassingly effective |
 
 ::: {.fragment}
-An adjacency matrix records *edges*. You want *similarity* --- and in a graph that comes from **paths**.
-:::
-:::
+So we do have a metric space. The problem was never that we lacked a distance —
 :::
 
-## The idea {.smaller}
+::: {.fragment .highlight}
+it's that a distance isn't a *coordinate*.
+:::
+
+::: {.fragment}
+`lm()` cannot take a distance. Neither can a neural network. They want a **row
+of numbers**.
+:::
+
+## What is an embedding? {.smaller}
 
 ::: {.columns}
 ::: {.column width="46%"}
-A map $f: V \to \mathbb{R}^d$ from nodes to short vectors, so that
+Precisely: a map
+$$f: V \to \mathbb{R}^d$$
+that represents each point as a **vector**, such that
 
 > **close in the vector space**
 > = **structurally close in the graph**
 
-$d$ is 16–256. Fixed, dense, independent of $n$.
+$d$ is 16–256. Fixed, dense, and independent of how many nodes you have.
 
 ::: {.fragment}
-Colour = the faction they actually joined.
-The algorithm **never saw the labels**.
-
-Axis 1 alone gets **33 of 34** right.
-
-Node 9 --- who joined the officers despite being better connected to the instructor --- lands in the middle. The honest answer.
+And the representation usually ends up **meaning something** — which is the part
+that still surprises me.
 :::
 :::
 ::: {.column width="54%"}
@@ -91,67 +373,145 @@ plot(Z[, 1], Z[, 2], type = "n", xlab = "dimension 1", ylab = "dimension 2")
 abline(v = 0, col = "grey85", lty = 2)
 text(Z[, 1], Z[, 2], labels = seq_len(nrow(Z)), cex = 0.9, col = fac_col)
 ```
+
+Colour = the faction they actually joined. **The algorithm never saw the
+labels.** Axis 1 alone gets 33 of 34 right.
 :::
 :::
 
-## 1. Spectral --- four lines {.smaller}
-
-Want connected nodes close? Penalise every edge by the gap it stretches:
+## Everyone has seen this one {.smaller}
 
 $$
-\tfrac{1}{2}\sum_{i,j} A_{ij}(f_i - f_j)^2 \;=\; \mathbf{f}^\top \underbrace{(D - A)}_{\text{Laplacian } L} \mathbf{f}
+\overrightarrow{\text{king}} \;-\; \overrightarrow{\text{man}} \;+\; \overrightarrow{\text{woman}} \;\approx\; \overrightarrow{\text{queen}}
 $$
 
 ::: {.fragment}
-Minimise, constrain so it can't collapse → **eigenvectors of $L$ with the smallest eigenvalues.**
-The smoothest non-constant functions on the graph.
-
-```r
-L  <- diag(rowSums(A)) - A
-ev <- eigen(L, symmetric = TRUE)
-Z  <- ev$vectors[, (n-1):(n-d)]     # drop the trivial constant vector
-```
+Nobody asked for this. Nobody added a "royalty" column. It fell out of a model
+trained to predict nearby words — which means the space has **directions that
+correspond to concepts**.
 :::
 
 ::: {.fragment}
-**Free bonus:** a gap in the eigenvalues tells you how many communities there are.
+::: {.callout-warning appearance="minimal"}
+Obligatory honesty: this example is somewhat cherry-picked. The original code
+excludes the input words from the answer, and if you don't exclude them, the
+nearest vector to *king − man + woman* is very often just **king**.
 
-```{r}
-#| echo: false
-g3 <- sbm_graph(n_per = 40, k = 3, p_in = 0.14, p_out = 0.01, seed = 42)
-round(sort(eigen(graph_laplacian(as_adj_dense(g3), "sym"), symmetric = TRUE)$values)[1:6], 3)
-```
-
-Three near zero, then a jump. Three communities.
+The phenomenon is real. The demo is polished. We'll reproduce it on a graph in
+about eight slides, with the same caveat attached.
+:::
 :::
 
-## 2. Random walks --- DeepWalk {.smaller}
+## Why not just one-hot? {.smaller}
+
+**Genuine question for the room: how else would you feed a node to a model?**
+
+::: {.fragment}
+One-hot encoding. Node 7 becomes $(0,0,0,0,0,0,1,0,\ldots)$.
+:::
+
+::: {.fragment}
+It works. It is also the least informative thing you could possibly write down:
+
+- $n$ columns wide, so it changes shape when someone joins
+- $\|x_i - x_j\| = \sqrt{2}$ for **every** pair $i \ne j$
+- so every node is exactly as far from every other node — **no geometry at all**
+:::
+
+::: {.fragment .highlight}
+An embedding carries far more than a 1 and a pile of 0s.
+:::
+
+## This is really a question about basis {.smaller}
 
 ::: {.columns}
-::: {.column width="55%"}
-2014: word2vec learns word vectors from *"words that appear near each other are related"*.
+::: {.column width="50%"}
+A **basis** is a minimal set of vectors that spans the space: every point is
+exactly one weighted sum of them.
 
-**A random walk on a graph is a sentence.**
+$$\mathbf{x} = c_1\mathbf{b}_1 + c_2\mathbf{b}_2 + \cdots + c_d\mathbf{b}_d$$
 
+Changing basis does not change the space. **It changes the coordinates** — and
+it changes which questions are easy.
+:::
+::: {.column width="50%"}
+::: {.fragment}
+One-hot **is** a basis: the standard one, $\mathbf{e}_1 \ldots \mathbf{e}_n$.
+One axis per node. Maximally uninformative, and $n$-dimensional.
+
+Spectral embedding is also a basis: eigenvectors of the Laplacian, keeping the
+$d$ smoothest.
+:::
+:::
+:::
+
+::: {.fragment .highlight}
+An embedding is a **choice of basis**. We would like a good one.
+:::
+
+::: {.fragment}
+"Good" = few coordinates, and the ones you keep line up with things you care
+about.
+:::
+
+## Word to vector {.smaller}
+
+**word2vec** (Mikolov et al., 2013): predict a word from the words around it.
+Throw away the prediction. Keep the weights. The weights are the embedding.
+
+::: {.fragment}
+The Stanford one is **GloVe** (Pennington, Socher & Manning, 2014). Different
+route: build the full word co-occurrence matrix, then factorise it.
+:::
+
+::: {.fragment}
+::: {.callout-note appearance="minimal"}
+Hold on to that pairing — *sample the neighbourhood* versus *factorise the
+co-occurrence matrix*. It comes back in six slides, and it turns out they are
+the same algorithm.
+:::
+:::
+
+::: {.fragment}
+Both rest on one sentence, Firth 1957:
+
+> You shall know a word by the company it keeps.
+:::
+
+## Now do it for a graph {.smaller}
+
+::: {.columns}
+::: {.column width="52%"}
+We need something that maps graph structure — nodes and edges — to vectors.
+Unsurprisingly there are many ways.
+
+::: {.fragment}
+And there **is** a direct analogue of word2vec. The trick is almost insultingly
+simple:
+:::
+
+::: {.fragment .highlight}
+A random walk on a graph is a sentence.
+:::
+
+::: {.fragment}
+Take random walks. Write down the nodes you visit, in order. You now have a text
+corpus whose "words" are nodes.
+
+Run word2vec on it, unmodified. That is **DeepWalk** (2014).
+:::
+:::
+::: {.column width="48%"}
 ```r
 walks <- random_walks(A, num_walks = 10,
-                      walk_length = 40)
+                      walk_length  = 40)
 pairs <- walks_to_pairs(walks, window = 5)
 fit   <- skipgram_sgns(pairs, n, dim = 32)
 ```
 
-Skip-gram with negative sampling:
-
-$$
--\log \sigma(\mathbf{w}_u^\top \mathbf{c}_v) - \sum_{k=1}^{K} \log \sigma(-\mathbf{w}_u^\top \mathbf{c}_{v'_k})
-$$
-
-Real pairs score high, random pairs low. **~60 lines of base R, no autodiff.**
-:::
-::: {.column width="45%"}
 ```{r}
 #| fig-width: 5
-#| fig-height: 4.3
+#| fig-height: 4.2
 Z_dw <- deepwalk(A, dim = 32, epochs = 5, seed = 1)
 px <- prcomp(Z_dw)$x[, 1:2]
 par(mar = c(4, 4, 2, 1))
@@ -160,14 +520,46 @@ plot(px, type = "n", xlab = "PC1", ylab = "PC2",
 text(px[, 1], px[, 2], labels = seq_len(nrow(A)), cex = 0.85, col = fac_col)
 ```
 
-Nothing is $O(n^2)$ → this is the family that scaled to **billions of edges**.
+**~60 lines of base R.** Nothing is $O(n^2)$, which is why this family scaled to
+billions of edges.
 :::
 :::
 
-## 3. They're all the same algorithm {.smaller}
+## The other route: factorise something {.smaller}
+
+Want connected nodes close together? Penalise every edge by the gap it stretches:
+
+$$
+\tfrac{1}{2}\sum_{i,j} A_{ij}(f_i - f_j)^2 \;=\; \mathbf{f}^\top \underbrace{(D - A)}_{\text{Laplacian } L} \mathbf{f}
+$$
+
+Minimise that, constrain it so it can't collapse to a constant, and you get **the
+eigenvectors of $L$ with the smallest eigenvalues** — the smoothest non-constant
+functions on the graph.
+
+```r
+L  <- diag(rowSums(A)) - A
+ev <- eigen(L, symmetric = TRUE)
+Z  <- ev$vectors[, (n-1):(n-d)]     # drop the trivial constant vector
+```
+
+::: {.fragment}
+**Free bonus:** a gap in the eigenvalues tells you how many communities there are.
+
+```{r}
+g3 <- sbm_graph(n_per = 40, k = 3, p_in = 0.14, p_out = 0.01, seed = 42)
+round(sort(eigen(graph_laplacian(as_adj_dense(g3), "sym"), symmetric = TRUE)$values)[1:6], 3)
+```
+
+Three near zero, then a jump. Three communities. Nobody told it three.
+:::
+
+## They're all the same algorithm {.smaller}
 
 ::: {.callout-important appearance="minimal"}
-**DeepWalk is not really a neural method.** Skip-gram provably converges to a factorisation of a PMI matrix (Levy & Goldberg 2014), and for random walks that matrix is closed-form (Qiu et al. 2018):
+**DeepWalk is not really a neural method.** Skip-gram provably converges to a
+factorisation of a PMI matrix (Levy & Goldberg 2014), and for random walks that
+matrix is closed-form (Qiu et al. 2018):
 
 $$
 M = \frac{\mathrm{vol}(G)}{bT}\Big(\sum_{r=1}^{T} P^r\Big) D^{-1}, \qquad P = D^{-1}A
@@ -177,7 +569,6 @@ $$
 ::: {.columns}
 ::: {.column width="50%"}
 ```{r}
-#| echo: false
 tab <- data.frame(
   Method = c("Spectral", "DeepWalk / NetMF", "node2vec", "LINE"),
   `Factorises` = c("$I - D^{-1/2}AD^{-1/2}$",
@@ -189,12 +580,11 @@ tab <- data.frame(
 knitr::kable(tab)
 ```
 
-Every method: **a low-rank factorisation of a matrix built from $A$.**
-They differ in *which matrix*.
+The same *sample-or-factorise* pairing as word2vec and GloVe — and the same
+punchline: it doesn't matter which you pick.
 :::
 ::: {.column width="50%"}
 ```{r}
-#| echo: false
 t_dw <- system.time(Zd <- deepwalk(A, dim = 32, epochs = 5, seed = 1))[["elapsed"]]
 t_nm <- system.time(Zn <- netmf(A, dim = 32))[["elapsed"]]
 knitr::kable(data.frame(
@@ -213,9 +603,10 @@ Before you reach for a library: **try an SVD.**
 :::
 :::
 
-## 4. GNNs --- when $A$ isn't enough {.smaller}
+## When $A$ isn't enough: GNNs {.smaller}
 
-Everything above is a function of $A$ **alone**. So it cannot use node features, and cannot embed a node that wasn't there.
+Everything so far is a function of the adjacency matrix **alone**. So it cannot
+use node features, and it cannot embed a node that wasn't there at training time.
 
 ::: {.fragment}
 GNNs replace the lookup table with a **function of the neighbourhood**:
@@ -224,140 +615,435 @@ $$
 H^{(l+1)} = \sigma\big(\hat{A}\,H^{(l)}\,W^{(l)}\big), \qquad \hat{A} = \tilde D^{-1/2}(A+I)\tilde D^{-1/2}
 $$
 
-Weights are **shared**, so a new node is just a forward pass.
+The weights are **shared**, so embedding a brand-new node is just a forward pass.
 :::
 
 ::: {.fragment}
-Two things to know:
+Two things worth knowing:
 
-- A GCN layer is a **learned smoother**. Stack 20 and every node converges to the same vector → GNNs are 2–3 layers deep.
-- **GAT = self-attention masked by the adjacency matrix.**
+- A GCN layer is a **learned smoother**. Stack twenty and every node converges to
+  the same vector — which is why GNNs are 2–3 layers deep and everyone is oddly
+  quiet about that.
+- **A graph attention layer is self-attention masked by the adjacency matrix.**
+  That's the whole idea.
+:::
+
+# Part 2 {.center}
+
+### Let's actually do it in R
+
+## A drug knowledge graph {.smaller}
+
+```{r}
+#| label: kg
+#| include: false
+gk <- drug_kg()
+Ak <- as_adj_dense(gk)
+set.seed(1)
+Zk <- deepwalk(Ak, dim = 32, num_walks = 40, walk_length = 20, epochs = 20, seed = 1)
+rownames(Zk) <- V(gk)$name
+```
+
+::: {.columns}
+::: {.column width="48%"}
+24 drugs, each joined to its **molecular target**, its **pharmacologic class**,
+and the **conditions it treats** — which are in turn joined to a body system.
+
+```{r}
+knitr::kable(as.data.frame(table(Type = V(gk)$type)))
+```
+
+`r vcount(gk)` nodes, `r ecount(gk)` edges, and **no drug is ever joined
+directly to another drug.** Every similarity on the next two slides has to
+travel through the structure.
+:::
+::: {.column width="52%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 5
+tcol <- c(drug = blue, target = green, class = orange,
+          indication = "#8172B2", system = "#937860")
+set.seed(11)
+par(mar = c(0, 0, 0, 0))
+plot(gk, layout = layout_with_fr(gk),
+     vertex.color = tcol[V(gk)$type], vertex.frame.color = NA,
+     vertex.size = ifelse(V(gk)$type == "drug", 6, 9),
+     vertex.label = ifelse(V(gk)$type == "drug", NA, V(gk)$name),
+     vertex.label.cex = 0.6, vertex.label.color = "black",
+     vertex.label.dist = 0.8, edge.color = "grey80")
+```
+:::
+:::
+
+## Does it know what a drug class is? {.smaller}
+
+Nearest neighbours of `metoprolol`, by cosine similarity:
+
+```{r}
+knitr::kable(t(round(nearest(Zk, Zk["metoprolol", ], 5, "metoprolol"), 3)))
+```
+
+::: {.fragment}
+Its two fellow beta blockers, then the class node, then the receptor all three
+of them bind.
 :::
 
 ::: {.fragment .highlight}
-So what happens if you take the mask *off*?
+It recovered "beta blocker" without ever being told drug classes exist.
 :::
-
-## Into a transformer: three doors {.smaller}
-
-Self-attention is **permutation-invariant** --- permute the inputs, the outputs permute too. That's why transformers need positional encodings. Text has an order. **A graph doesn't.**
-
-::: {.columns}
-::: {.column width="33%"}
-### 1. Input vectors
-Tokens that are entities in a side graph --- clinical codes, products, users.
-
-Embed the graph offline, initialise the embedding table.
-
-**Zero architecture change.**
-:::
-::: {.column width="33%"}
-### 2. Positional encodings
-Give each node its Laplacian eigenvectors --- *literally slide 4*.
-
-Sine waves are the eigenvectors of the Laplacian of a line graph. The analogy is exact.
-:::
-::: {.column width="33%"}
-### 3. Attention bias
-Put the graph **inside** the attention computation.
-
-$$
-S_{ij} = \frac{\mathbf{q}_i^\top\mathbf{k}_j}{\sqrt{d_h}} + b_{\phi(i,j)}
-$$
-
-$\phi$ = shortest-path distance.
-:::
-:::
-
-## The result {.smaller}
-
-```{r}
-#| label: demo
-#| include: false
-gs <- sbm_graph(n_per = 30, k = 3, p_in = 0.16, p_out = 0.01, seed = 11)
-As <- as_adj_dense(gs); n <- vcount(gs); y <- as.integer(V(gs)$label); K <- 3
-maxd <- 5
-D <- distances(gs); D[is.infinite(D)] <- maxd; D <- pmin(D, maxd)
-Didx <- as.integer(D) + 1L
-set.seed(3)
-revealed <- sample(n, round(0.4 * n)); hidden <- setdiff(seq_len(n), revealed)
-train <- sample(hidden, round(length(hidden) / 2)); test <- setdiff(hidden, train)
-Xlab <- matrix(0, n, K); Xlab[cbind(revealed, y[revealed])] <- 1
-X <- cbind(Xlab, lap_pe(As, 4), rwse(As, 1:4)); d <- ncol(X)
-set.seed(5)
-Wq <- matrix(rnorm(d * d, sd = sqrt(1 / d)), d, d)
-Wk <- matrix(rnorm(d * d, sd = sqrt(1 / d)), d, d)
-Sc <- (X %*% Wq) %*% t(X %*% Wk) / sqrt(d)
-same <- outer(y, y, "==")
-
-fit_readout <- function(H, steps = 400, lr = 0.5) {
-  Wo <- matrix(rnorm(ncol(H) * K, sd = 0.1), ncol(H), K)
-  for (s in seq_len(steps)) {
-    P <- softmax_rows(H %*% Wo); G <- P
-    G[cbind(train, y[train])] <- G[cbind(train, y[train])] - 1
-    G[-train, ] <- 0
-    Wo <- Wo - lr * (t(H) %*% G) / length(train)
-  }
-  Wo
-}
-set.seed(9)
-Aw0 <- softmax_rows(Sc)
-Aw2 <- softmax_rows(Sc + matrix((-2 * (0:maxd))[Didx], n, n))
-H0 <- Aw0 %*% X; H2 <- Aw2 %*% X
-W0 <- fit_readout(H0); W2 <- fit_readout(H2)
-acc <- function(H, W) mean(max.col(H %*% W)[test] == y[test])
-a0 <- acc(H0, W0); a2 <- acc(H2, W2)
-m0 <- mean(rowSums(Aw0 * same)); m2 <- mean(rowSums(Aw2 * same))
-```
-
-::: {.columns}
-::: {.column width="58%"}
-```{r}
-#| fig-width: 7
-#| fig-height: 3.9
-plot_attention(list(Aw0, Aw2), group = y,
-               titles = c("no graph", "+ distance bias"))
-```
-
-90 nodes, 3 communities. Reveal 40% of labels, infer the rest.
-The content part of attention is deliberately uninformative --- **the only route is the graph.**
-:::
-::: {.column width="42%"}
-Attention mass on your **own community**:
-
-| | |
-|---|---|
-| no graph | `r sprintf("%.0f%%", 100 * m0)` *(= chance)* |
-| + bias | **`r sprintf("%.0f%%", 100 * m2)`** |
 
 ::: {.fragment}
-Downstream **test accuracy**:
+```r
+gk <- drug_kg()
+Zk <- deepwalk(as_adj_dense(gk), dim = 32, num_walks = 40,
+               walk_length = 20, epochs = 20, seed = 1)
+rownames(Zk) <- V(gk)$name
+nearest(Zk, Zk["metoprolol", ], k = 5, exclude = "metoprolol")
+```
+:::
 
+## king − man + woman, for drugs {.smaller}
+
+I was genuinely curious whether this would work. Same arithmetic — the question
+is whether *"this drug, but for a different disease"* is a **direction**.
+
+::: {.columns}
+::: {.column width="50%"}
+```r
+analogy(Zk, "atorvastatin",
+            "hyperlipidemia",
+            "depression")
+```
+
+> *atorvastatin is to high cholesterol as \_\_\_\_ is to depression*
+
+```{r}
+knitr::kable(t(round(analogy(Zk, "atorvastatin", "hyperlipidemia", "depression", 5), 3)))
+```
+
+::: {.fragment}
+**Fluoxetine.** Prozac. Top of the list — then sertraline and citalopram, with
+the serotonin transporter all three of them bind wedged in between.
+:::
+:::
+::: {.column width="50%"}
+::: {.fragment}
+```r
+analogy(Zk, "lisinopril",
+            "hypertension",
+            "type_2_diabetes")
+```
+
+```{r}
+knitr::kable(t(round(analogy(Zk, "lisinopril", "hypertension", "type_2_diabetes", 5), 3)))
+```
+
+**Metformin.** First-line therapy for exactly that.
+:::
+:::
+:::
+
+::: {.fragment .highlight}
+Nobody put a "first-line therapy" column in this graph.
+:::
+
+## Before anyone gets excited {.smaller}
+
+Two analogies is an anecdote. So here is **every** (drug, its indication, other
+indication) triple in the graph — 193 of them — scored on whether the top hit is
+a drug that really does treat the third term:
+
+::: {.fragment}
 | | |
 |---|---|
-| no graph | `r sprintf("%.0f%%", 100 * a0)` |
-| + bias | **`r sprintf("%.0f%%", 100 * a2)`** |
+| top-1 correct | **45%** |
+| picking a drug at random | ~12% |
 
-Same architecture. Same features. Same parameter count.
-
-**One scalar per distance, added before the softmax.**
+Well above chance. Nowhere near the two I put on the previous slide.
 :::
-:::
-:::
-
-## Takeaways
 
 ::: {.incremental}
-1. **Graph embeddings turn structure into geometry.** Small vectors, ordinary models downstream --- and the algorithms are *short*. All four here are base R.
-
-2. **They're all the same algorithm:** a low-rank factorisation of a matrix built from $A$. Try an SVD before a library --- and always run *"count the mutual friends"* as a baseline. It wins more often than anyone admits.
-
-3. **If a transformer is near your graph, the structure has to get in somewhere.** Input vectors, positional encodings, or attention bias. Pick at least one.
+- The graph is **clean by construction**. I wrote it. Every class has exactly
+  three interchangeable drugs — precisely the parallel structure the
+  parallelogram needs. Real vocabularies are not this tidy.
+- 55 nodes, so `analogy()` chooses among ~50 candidates and node type rules out
+  most of them before cosine similarity does any work.
+- It excludes its own input terms, exactly as the original word2vec evaluation
+  code does. **That exclusion is load-bearing.** Comment it out and the answer is
+  frequently just the drug you started with.
 :::
 
 ::: {.fragment}
 ::: {.callout-note appearance="minimal"}
-Book, code, and every number on these slides:
-**github.com/ablack3033/graph-embeddings-talk**
+What I would actually claim: the geometry is doing something real — it recovered
+drug class from pure structure — and analogies are a fast, cheap way to
+**inspect** an embedding.
+
+Not to make clinical decisions with.
 :::
+:::
+
+::: {.fragment .highlight}
+Run it yourself: `examples/`, base R, no dependency past igraph.
+:::
+
+# Part 3 {.center}
+
+### The Claude Code part
+
+## One thing to understand {.smaller}
+
+::: {.fragment .highlight}
+You are managing a fixed context window, all the time.
+:::
+
+::: {.fragment}
+That's the whole mental model. Everything else follows from it.
+
+It is not a database and it is not a colleague with a memory. It is a very good
+reasoner looking at **a fixed-size window of text that you chose**.
+:::
+
+::: {.fragment}
+So the entire skill is: **be deliberate about what's in the window.** Which means
+loading things *dynamically* — not everything, all the time.
+:::
+
+## `CLAUDE.md` vs. skills {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### `CLAUDE.md`
+> *"Add this to the beginning of every conversation."*
+
+Always loaded. Costs you window on every single turn.
+
+Good for: how you like code written, house style, the two commands that are
+never in the README.
+
+::: {.fragment}
+Bad for: everything else. A 400-line `CLAUDE.md` is a tax you pay per message
+and mostly do not use.
+:::
+:::
+::: {.column width="50%"}
+### Skills
+> *"Load this when it's relevant."*
+
+A folder of instructions plus a one-line description. The description is always
+visible; **the body is only pulled in when it's needed.**
+
+Good for: the Snowflake auth dance, your study-package conventions, the
+deployment runbook.
+
+::: {.fragment}
+This is the actual unlock. Not *more* context — **the right context, on demand.**
+:::
+:::
+:::
+
+::: {.fragment}
+Memory works at both levels too: global, across every project, and local to one.
+:::
+
+## Why the terminal changes it {.smaller}
+
+A chatbot can tell you what to type.
+
+::: {.fragment .highlight}
+This thing reads files, writes files, and runs commands.
+:::
+
+::: {.fragment}
+Which sounds incremental and isn't, because it closes the loop: it can **check
+its own work.** Write the code, run the code, read the error, fix the code — with
+no human in the middle copy-pasting tracebacks.
+:::
+
+::: {.fragment}
+Every number on the last fifteen slides was produced that way. Including the ones
+that came out worse than I hoped, which are still on the slides.
+:::
+
+## Things I have actually done with it {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+- **Reproduced a paper.** Multi-armed bandits, from the PDF to a working
+  simulation that matched the published figures.
+- **Written a course.** This one — a Quarto book, eight chapters, every number
+  computed at render time.
+- **Lecture scripts and image prompts**, then the ElevenLabs API, then an audio
+  course I listen to on the way in.
+:::
+::: {.column width="50%"}
+- **Taught myself things while walking around**, which still feels vaguely
+  illegal.
+- The general shape: it **adds context to anything**, and it organises and
+  connects ideas that were sitting in different places in my head.
+:::
+:::
+
+::: {.fragment}
+::: {.callout-tip appearance="minimal"}
+### The pattern, if you take one thing
+**Open-ended conversation → structured markdown file → a project around it.**
+
+The conversation is where you work out what you think. The markdown file is where
+it stops evaporating. The project is where it has to survive contact with a
+compiler.
+:::
+:::
+
+# Part 4 {.center}
+
+### An idea Donald and I had
+
+## A language with no visible syntax {.smaller}
+
+Donald told me about a programming language. He called it something I probably
+shouldn't say into a microphone.
+
+::: {.fragment}
+It's actually called **Whitespace** — Edwin Brady and Chris Morris, 2003. The
+entire syntax is **space, tab, linefeed**. Every visible character is ignored,
+which means a program can hide inside perfectly ordinary text.
+:::
+
+::: {.fragment}
+It is stack-based and Turing complete: arithmetic, heap storage, subroutines,
+jumps, character and numeric I/O.
+
+And when you open a file you see **nothing**. It isn't obfuscated and it isn't
+minified — it is illegible in the strict sense. There is nothing there to read.
+:::
+
+::: {.fragment}
+::: {.callout-note appearance="minimal"}
+Pedantic correction I have already received, and deserved: it is **not** "all
+spaces". Tabs and linefeeds are load-bearing. A language of nothing but literal
+spaces would need some external distinction — run lengths, say — to encode
+anything at all.
+
+Three characters. Which is two more than I was hoping for.
+:::
+:::
+
+::: {.fragment .highlight}
+So naturally we started thinking about what to write in it.
+:::
+
+## Choosing the target {.smaller}
+
+We wanted the smallest program that is **absolutely critical** to every
+tech-forward company on earth and that **nobody has opened in six years**.
+
+::: {.incremental}
+- Not the payments code. People read the payments code.
+- Not auth. People *definitely* read auth.
+- Something that returns the same three bytes, forever, to a caller that is not
+  a human.
+:::
+
+::: {.fragment .highlight}
+The health check endpoint.
+:::
+
+::: {.fragment}
+It returns `OK`. Every load balancer, orchestrator, uptime monitor and deploy
+gate on the planet is downstream of it. It was written by an intern. Its last
+commit message is "fix".
+:::
+
+::: {.fragment}
+**If it stops returning `OK`, the whole company is down** — and the file has 45
+bytes in it.
+:::
+
+## So we wrote it {.smaller}
+
+```{r}
+#| label: ws
+#| include: false
+ws_path <- if (file.exists("examples/healthcheck.ws")) "examples/healthcheck.ws" else "../examples/healthcheck.ws"
+ws_raw <- readChar(ws_path, file.size(ws_path), useBytes = TRUE)
+```
+
+::: {.columns}
+::: {.column width="46%"}
+`examples/healthcheck.ws`, exactly as shown by every editor, reviewer and diff
+tool you own:
+
+```{r}
+#| comment: ""
+cat(ws_raw)
+```
+
+::: {.fragment}
+That is the entire program. It is not a placeholder.
+:::
+:::
+::: {.column width="54%"}
+::: {.fragment}
+The same `r nchar(ws_raw, type = "bytes")` bytes, with `·` for space and `→` for
+tab:
+
+```{r}
+#| comment: ""
+cat(gsub("\n", "$\n", gsub("\t", "→", gsub(" ", "·", ws_raw))))
+```
+
+Push 79, print it. Push 75, print it. Push 10, print it. Exit.
+:::
+
+::: {.fragment}
+```
+$ python3 scripts/whitespace.py
+output when run: 'OK\n'
+health check: PASS
+```
+:::
+:::
+:::
+
+::: {.fragment}
+And because every visible character is ignored, you don't even need a suspicious
+blank file. You can paste those 45 bytes **into the trailing whitespace of the
+README** and it still runs.
+:::
+
+::: {.fragment .highlight}
+Ship it on a Friday. Nobody finds it for years.
+:::
+
+## Takeaways {.smaller}
+
+::: {.incremental}
+1. **Graph embeddings turn structure into geometry.** A graph is already a metric
+   space; what it lacks is *coordinates*. An embedding is a choice of basis, and
+   a good one puts the things you care about on the axes.
+
+2. **They are all the same algorithm** — a low-rank factorisation of a matrix
+   built from $A$. Sample it or factorise it; same answer, and the SVD is a
+   thousand times faster. Try an SVD before a library, and always run *"count the
+   mutual friends"* as a baseline. It wins more often than anyone admits.
+
+3. **The geometry means something.** Nearest neighbours found drug classes and
+   analogies found first-line therapies, out of nothing but edges. Stay
+   suspicious of how clean my example was.
+
+4. **Manage the context window.** `CLAUDE.md` is always-on, skills are on-demand,
+   and the terminal is what lets it check its own work.
+:::
+
+## {.center}
+
+::: {.callout-note appearance="minimal"}
+Book, code, slides, the drug graph, and yes, the health check:
+
+### **github.com/ablack3/graph-embeddings-talk**
+:::
+
+::: {.fragment .highlight}
+Thank you. Please don't stand in the bike lane.
 :::

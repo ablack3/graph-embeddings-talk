@@ -1,15 +1,17 @@
 # Runnable examples
 
-Three standalone scripts, in order of difficulty. Each one prints its results to
+Five standalone scripts, in order of difficulty. Each one prints its results to
 the console and writes a figure. Nothing is downloaded at runtime.
 
 ```bash
 Rscript examples/01-hello-world.R
 Rscript examples/02-four-families.R
 Rscript examples/03-ontology-embedding.R
+Rscript examples/04-drug-knowledge-graph.R
+Rscript examples/05-deck-figures.R
 ```
 
-Run them from the repository root. Script 01 needs nothing but base R; 02 and 03
+Run them from the repository root. Script 01 needs nothing but base R; the rest
 need `Matrix` and `igraph`, the same two packages the book uses.
 
 | | Script | Needs | Runtime | Chapters |
@@ -17,6 +19,19 @@ need `Matrix` and `igraph`, the same two packages the book uses.
 | 1 | [01-hello-world.R](01-hello-world.R) | base R only | instant | 1–2 |
 | 2 | [02-four-families.R](02-four-families.R) | Matrix, igraph | ~15 s | 2–7 |
 | 3 | [03-ontology-embedding.R](03-ontology-embedding.R) | Matrix, igraph | ~5 s | 1, 4, 6 |
+| 4 | [04-drug-knowledge-graph.R](04-drug-knowledge-graph.R) | Matrix, igraph | ~10 s | talk, part 2 |
+| 5 | [05-deck-figures.R](05-deck-figures.R) | Matrix, igraph | ~15 s | the whole deck |
+
+**04** is the *king − man + woman* demo on a drug knowledge graph: nearest
+neighbours recover pharmacologic class, and analogies recover first-line
+therapies. It ends with the systematic score over all 193 triples (45% top-1 vs
+~12% chance), which is the number to quote rather than the two on the slide.
+
+**05** is every computed thing in `slides/lightning-talk.qmd`, extracted from the
+chunks into a script you can step through — the karate figures, the spectral
+embedding, DeepWalk, the eigenvalue gap, the DeepWalk-vs-NetMF timing (measured
+on your machine, not mine), and the Whitespace health check. Run it if you want
+the deck's numbers without rendering the deck.
 
 ---
 

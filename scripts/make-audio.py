@@ -45,6 +45,9 @@ API = "https://api.speechify.ai"
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "audio"
 DEFAULT_MODEL = "simba-3.2"
+# Pin the API version so a server-side default roll cannot change output.
+# Requests without this header get whatever "Latest" is that day.
+API_VERSION = "2026-09-13"
 
 # The ~15 seconds actually played on the "How I actually study now" slide.
 # Section 0 of slides/riesz-lecture.md, which is deliberately math-free so no
@@ -83,7 +86,8 @@ def request(path: str, params: dict | None = None, body: dict | None = None) -> 
     url = f"{API}{path}"
     if params:
         url += "?" + urllib.parse.urlencode(params)
-    headers = {"Authorization": f"Bearer {key()}"}
+    headers = {"Authorization": f"Bearer {key()}",
+               "Speechify-Version": API_VERSION}
     data = None
     if body is not None:
         data = json.dumps(body).encode()

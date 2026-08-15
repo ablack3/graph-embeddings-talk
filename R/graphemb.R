@@ -752,3 +752,97 @@ analogy <- function(Z, a, b, c, k = 5) {
   stopifnot(all(c(a, b, c) %in% rownames(Z)))
   nearest(Z, Z[a, ] - Z[b, ] + Z[c, ], k = k, exclude = c(a, b, c))
 }
+
+
+# --- drawing the analogy ---
+
+#' Draw the word2vec parallelogram for `a - b + c` on a graph embedding.
+#
+# The arithmetic is "a - b + c", so it lives in the plane through those three
+# points. Rather than run PCA and hope the parallelogram survives the
+# projection, build the basis from the arithmetic itself:
+#
+#   e1  along  u = a - b        the "drug minus its indication" direction
+#   e2  along  the part of (c - b) perpendicular to e1
+#
+# In these coordinates a, b, c and the query q = a - b + c are drawn *exactly*
+# -- the parallelogram is not an approximation. Everything else in the graph is
+# a genuine projection and loses whatever sits outside the plane, so the plot
+# also reports how much of the answer it is showing you.
+
+analogy_plot <- function(Z, a, b, c, k = 4, quiet = FALSE) {
+  A_ <- Z[a, ]; B_ <- Z[b, ]; C_ <- Z[c, ]
+  q  <- A_ - B_ + C_
+
+  e1 <- (A_ - B_) / sqrt(sum((A_ - B_)^2))
+  w  <- (C_ - B_) - sum((C_ - B_) * e1) * e1
+  e2 <- w / sqrt(sum(w^2))
+  proj <- function(M) cbind(as.numeric((M - rep(B_, each = nrow(M))) %*% e1),
+                            as.numeric((M - rep(B_, each = nrow(M))) %*% e2))
+
+  P   <- proj(Z);  rownames(P) <- rownames(Z)
+  pq  <- proj(matrix(q, 1))
+  hit <- names(analogy(Z, a, b, c, k = k))
+  key <- c(a, b, c)
+
+  # how much of each highlighted point actually lies in the drawn plane
+  frac <- function(nm) {
+    v <- Z[nm, ] - B_
+    sqrt(sum(P[nm, ]^2)) / sqrt(sum(v^2))
+  }
+
+  par(mar = c(4, 4, 3.4, 1))
+
+  keep <- unique(c(key, hit))
+  lim <- function(j) range(c(P[keep, j], pq[, j])) + c(-1, 1) * 0.28 * diff(range(c(P[keep, j], pq[, j])))
+  plot(P, type = "n", xlim = lim(1), ylim = lim(2), xlab = "", ylab = "",
+       main = sprintf("%s  -  %s  +  %s", a, b, c))
+  mtext(sprintf("plane spanned by (%s - %s) and %s", a, b, c), side = 1,
+        line = 2.4, cex = 0.85, col = "grey30")
+
+  points(P[setdiff(rownames(P), keep), ], pch = 16, col = "grey86", cex = 0.7)
+
+  # the parallelogram: the same vector, drawn from b and again from c
+  arrows(P[b, 1], P[b, 2], P[a, 1], P[a, 2], col = "#4C72B0", lwd = 3, length = 0.12)
+  arrows(P[c, 1], P[c, 2], pq[1], pq[2], col = "#4C72B0", lwd = 3, length = 0.12,
+         lty = 1)
+  segments(P[b, 1], P[b, 2], P[c, 1], P[c, 2], col = "grey55", lty = 3, lwd = 1.6)
+  segments(P[a, 1], P[a, 2], pq[1], pq[2], col = "grey55", lty = 3, lwd = 1.6)
+
+  # the answer the arithmetic points at
+  points(pq, pch = 4, col = "#C44E52", cex = 2.2, lwd = 3)
+  text(pq[1], pq[2], "a - b + c", pos = 3, col = "#C44E52", font = 2, cex = 0.9)
+
+  # Ranking is by COSINE with q -- an angle measured at the embedding origin,
+  # which is not in this plane. So the winner is not the dot that looks closest
+  # to the cross, and pretending otherwise would be a lie. Draw the link and
+  # label it with the similarity that actually decided the ranking.
+  sim <- analogy(Z, a, b, c, k = k)
+  segments(pq[1], pq[2], P[hit[1], 1], P[hit[1], 2],
+           col = "#C44E52", lty = 2, lwd = 1.8)
+  text(mean(c(pq[1], P[hit[1], 1])), mean(c(pq[2], P[hit[1], 2])),
+       sprintf("cos %.3f", sim[[1]]), col = "#C44E52", cex = 0.78, pos = 3)
+
+  points(P[key, , drop = FALSE], pch = 16, col = "#4C72B0", cex = 1.5)
+  points(P[hit, , drop = FALSE], pch = 16, col = "#DD8452", cex = 1.3)
+
+  # Cycle labels through all four sides. The top hits land in a tight cluster --
+  # they are supposed to -- so two directions is not enough to keep them apart.
+  lab <- c(key, hit)
+  side <- c(rep(4, 3), c(4, 2, 3, 1)[((seq_along(hit) - 1) %% 4) + 1])
+  text(P[lab, 1], P[lab, 2], lab, pos = side, cex = 0.8, offset = 0.4,
+       col = c(rep("#1b3d63", 3), rep("#8a4a1d", length(hit))))
+
+  legend("topleft", bty = "n", cex = 0.78,
+         legend = c("the three terms", "nearest to the result (by cosine)",
+                    "a - b + c", "everything else"),
+         pch = c(16, 16, 4, 16), pt.cex = c(1.5, 1.3, 1.6, 0.7),
+         col = c("#4C72B0", "#DD8452", "#C44E52", "grey86"))
+  mtext("ranking is by cosine at the embedding origin, which is not in this plane",
+        side = 3, line = 0.1, cex = 0.72, col = "#C44E52")
+
+  if (!quiet)
+    cat(sprintf("  %s: %.0f%% of its offset from %s lies in the drawn plane\n",
+                hit[1], 100 * frac(hit[1]), b))
+  invisible(P)
+}

@@ -21,6 +21,8 @@
 
 root <- if (file.exists("R/graphemb.R")) "." else ".."
 source(file.path(root, "R", "graphemb.R"))
+FIG <- file.path(root, "examples", "figures")
+dir.create(FIG, showWarnings = FALSE, recursive = TRUE)
 
 set.seed(1)
 
@@ -79,7 +81,27 @@ ask("ibuprofen",    "osteoarthritis", "gerd")            # expect a PPI
 ask("apixaban",     "F10",            "SLC6A4")          # swap the target
 
 
-# 5. How often does it actually work? -----------------------------------------
+# 5. Draw the vector math -----------------------------------------------------
+#
+# analogy_plot() lives in R/graphemb.R so the slides can call it too. See the
+# comment there for why the projection plane is built from the arithmetic
+# itself rather than from PCA.
+
+rule <- function(x) cat("\n", strrep("-", 76), "\n", x, "\n", sep = "")
+
+rule("5. The picture")
+for (spec in list(c("atorvastatin", "hyperlipidemia", "depression",
+                    "04-analogy-statin-ssri.png"),
+                  c("lisinopril", "hypertension", "type_2_diabetes",
+                    "04-analogy-ace-metformin.png"))) {
+  png(file.path(FIG, spec[4]), width = 8, height = 6.4, units = "in", res = 150)
+  cat(sprintf("  figure -> %s\n", file.path(FIG, spec[4])))
+  analogy_plot(Z, spec[1], spec[2], spec[3])   # its cat() still reaches stdout
+  invisible(dev.off())
+}
+
+
+# 6. How often does it actually work? -----------------------------------------
 #
 # Four hand-picked analogies is anecdote. Here is every (drug, its indication,
 # other indication) triple in the graph, scored by whether the top hit is a drug
@@ -109,7 +131,7 @@ cat(sprintf("Chance, if it picked a drug uniformly at random: about %.0f%%.\n",
             100 * 3 / 24))
 
 
-# 6. Caveats, which are the point ---------------------------------------------
+# 7. Caveats, which are the point ---------------------------------------------
 #
 #   * This graph is clean by construction. I wrote it. Every class holds exactly
 #     three interchangeable drugs -- precisely the parallel structure the

@@ -751,6 +751,51 @@ knitr::kable(t(round(analogy(Zk, "lisinopril", "hypertension", "type_2_diabetes"
 Nobody put a "first-line therapy" column in this graph.
 :::
 
+## How to read that {.smaller}
+
+::: {.columns}
+::: {.column width="42%"}
+**No pharmacology required.** Four facts, and they are all you need:
+
+- **hyperlipidemia** = high cholesterol; **atorvastatin** is the standard drug for it (you may know it as Lipitor)
+- **fluoxetine** is the standard drug for **depression** (Prozac)
+- the two drugs are chemically unrelated and act on different organs
+- the graph contains **only** three kinds of edge: drug→target, drug→class, drug→condition
+
+::: {.fragment}
+The blue arrow is one single idea: **"is the standard drug for."**
+
+Start at a disease, follow the arrow, land on its drug.
+:::
+
+::: {.fragment}
+Now **pick that same arrow up and move it** so its tail sits on a different disease --- depression --- and look at where the head lands.
+:::
+
+::: {.fragment .highlight}
+It lands on Prozac.
+:::
+
+::: {.fragment}
+That phrase --- *"is the standard drug for"* --- is written **nowhere** in the graph. It is a direction the geometry worked out on its own, and it points the same way in cardiology and in psychiatry.
+:::
+:::
+::: {.column width="58%"}
+```{r}
+#| fig-width: 7.2
+#| fig-height: 5.9
+analogy_plot(Zk, "atorvastatin", "hyperlipidemia", "depression", quiet = TRUE)
+```
+
+::: {.fragment}
+Two honest notes on the picture:
+
+- The parallelogram is **exact**, not a projection artefact --- the plane is built from the arithmetic itself, so all four corners are drawn where they really are.
+- The ranking is by **cosine**, an angle measured at the origin, which is not in this plane. So the winner is not the dot that *looks* nearest the ✕. Hence the labelled link.
+:::
+:::
+:::
+
 ## Before anyone gets excited {.smaller}
 
 Two analogies is an anecdote. So here is **every** (drug, its indication, other

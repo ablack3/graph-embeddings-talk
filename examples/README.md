@@ -24,8 +24,18 @@ need `Matrix` and `igraph`, the same two packages the book uses.
 
 **04** is the *king − man + woman* demo on a drug knowledge graph: nearest
 neighbours recover pharmacologic class, and analogies recover first-line
-therapies. It ends with the systematic score over all 193 triples (45% top-1 vs
-~12% chance), which is the number to quote rather than the two on the slide.
+therapies. It plots the vector arithmetic as an exact parallelogram — the
+projection plane is built from the arithmetic itself rather than by PCA, so the
+four corners are drawn where they really are — and ends with the systematic
+score over all 193 triples (45% top-1 vs ~12% chance), which is the number to
+quote rather than the two on the slide.
+
+**banana.py** is a dancing banana. It announces what time it is. `--ws` writes
+the same dance as a Whitespace program. There is no deeper point being made.
+
+```bash
+python3 examples/banana.py            # ctrl-c to stop
+```
 
 **quarterly_report.py** is not in the numbered sequence because it is a joke.
 It is one file that is two programs. Run it with Python and you get an A/B test

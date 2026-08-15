@@ -20,3 +20,7 @@ Rplots.pdf
 .DS_Store
 
 **/*.quarto_ipynb
+
+# secrets and generated audio
+.env
+/audio/

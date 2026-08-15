@@ -1,1 +1,35 @@
-It's Riesz. Frigyes Riesz, Hungarian, nineteen oh seven. Rhymes roughly with reece. Not Reitz. And be careful, because two different theorems carry his name. There's the one about representing functionals on continuous functions as integrals against a measure. That's not this one. This one is the Hilbert space version, and it is the one that quietly underwrites half of modern statistics.
+Let's talk about the Riesz representation theorem. It's Riesz, by the way — Frigyes Riesz, Hungarian, nineteen oh seven. Rhymes roughly with "reece." And it's one of those results that sounds technical but is really about something simple: the difference between a thing, and a measurement of a thing.
+
+Start in ordinary space. Take arrows in three dimensions. You have a dot product, and everything else comes out of it. Length is the square root of a vector dotted with itself. Two vectors are perpendicular when their dot product is zero. Angle, distance, projection — all of it from that one operation.
+
+A Hilbert space is what you get when you keep that structure but stop insisting the space be finite dimensional. A vector space, an inner product, and one technical condition called completeness: any sequence that ought to converge actually does, so limits never fall out of the space. That condition sounds like bookkeeping. It isn't. It is exactly what lets you project onto an infinite dimensional subspace and know the answer exists.
+
+Here is the Hilbert space you should care about. Take all random variables with finite variance. That's a vector space — you can add random variables, you can scale them. Now define the inner product of X and Y to be the expected value of their product.
+
+Look at what that buys you. The length of a centered random variable is its standard deviation. The inner product of two centered variables is their covariance. Two variables are perpendicular exactly when they are uncorrelated. And correlation is the cosine of the angle between them. That is not a metaphor and it is not a mnemonic. Once you are in this space, that is what correlation is. The space is called L two, and it is a Hilbert space.
+
+And in a Hilbert space, the most powerful move available is projection. Given a subspace, every point has a unique nearest point inside it, and the error is perpendicular to the entire subspace.
+
+Which is the whole of least squares. Regression is projecting your outcome onto the span of your covariates. The normal equations are just the statement that the residual is perpendicular to every predictor. And conditional expectation — the expected value of Y given X — is the projection of Y onto the space of all functions of X. Which is precisely why it is the best possible predictor under squared error, and why the residual cannot be correlated with anything you could have built out of X. You did not need a calculation for that. You needed a picture.
+
+Now, the theorem.
+
+A linear functional is a machine that eats a vector and returns a single number, linearly. Take the third coordinate. Integrate this function against a weight. Evaluate this function at the point x. Take the expectation.
+
+In finite dimensions you already know what these look like. Every linear functional on n dimensional space is "dot with some fixed vector." A row vector. There is nothing else it could be.
+
+The Riesz representation theorem says that stays true in infinite dimensions, with one condition attached. Every continuous linear functional on a Hilbert space is an inner product with one fixed element of that space — and that element is unique.
+
+Sit with how strange that is. A functional is a process. An element of the space is a point. The theorem says that in a Hilbert space, these are the same kind of object. Every measurement is secretly a vector, and it measures by taking an inner product with itself. The space and its dual are the same space.
+
+That fixed element is called the Riesz representer. And here is the intuition worth carrying around: the representer is the direction the functional cares about. It is the gradient. Differentiation hands you a derivative, which is a functional. Riesz is the step that converts it into a gradient, which is a vector you can actually walk along.
+
+The word "continuous" is carrying the entire theorem. For a linear map, continuous means bounded — the output cannot blow up when the input is small. Drop that and the statement is simply false; there are wild unbounded functionals with no representer at all. So in practice the whole game is: prove your functional is bounded, then go and find its representer.
+
+And it is worth finding, because the representer is usually something you already use and assumed was a convention.
+
+In a reproducing kernel Hilbert space, "evaluate at the point x" is assumed to be continuous. That is the definition of the space; that is the assumption you are making. Riesz then hands you a function, call it k sub x, with the property that f of x equals the inner product of f with k sub x. That is your kernel. It is not a clever trick somebody invented. It is the Riesz representer of point evaluation, and it exists the moment you assume evaluation does not blow up. Kernel ridge regression, support vector machines, Gaussian processes — all of it is downstream of that one application.
+
+And in causal inference: the average treatment effect is a linear functional of the outcome regression. Ask what its Riesz representer is, and out falls the inverse propensity weight. Horvitz and Thompson wrote that down in nineteen fifty-two by reasoning about survey sampling, with no Hilbert space anywhere in sight. The theorem tells you it was the only thing it could have been.
+
+So, three things. A Hilbert space is where geometry survives infinite dimensions. Projection is the move that does the work. And Riesz says that every continuous measurement on such a space is secretly a point inside it — which turns questions about procedures into questions about vectors. And that is almost always the easier question.

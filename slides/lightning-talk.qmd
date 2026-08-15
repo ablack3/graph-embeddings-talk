@@ -275,8 +275,12 @@ Donald knows what I'm talking about.
 :::
 
 ::: {.notes}
-Script is in `slides/riesz-lecture.md`. Play ~15 seconds — through "rhymes
-roughly with *reece*. Not *Reitz*." — then cut.
+Clip text is `slides/riesz-clip.txt` (6–7 min in full; the long-form version
+with references is `slides/riesz-lecture.md`).
+
+On stage play only the **first paragraph, ~20 seconds** — cut on "the difference
+between a thing, and a measurement of a thing." That is the whole bit: it sounds
+like a real lecture because it is one.
 
 Don't oversell it. The laugh is entirely in the contrast between a serene,
 expensive-sounding narrator and the words "Riesz representation theorem", so any

@@ -202,15 +202,19 @@ inevitable.
 
 ## Production notes
 
-- **Runtime:** about 1,450 words, so 9–10 minutes at a normal narration pace.
-- **For the talk you only need §0 and the first paragraph of §1** — roughly 15
-  seconds. Cut on "…rhymes roughly with *reece*. Not *Reitz*." The correction is
-  the funniest part and it's the part you were wrong about, which is better.
-- Read the display equations as words; don't let TTS attempt the LaTeX. The two
-  that matter, spoken: *"f of x equals the inner product of f with k-sub-x"* and
-  *"the expected value of m equals the expected value of alpha-zero times g."*
-- If you generate audio, keep the API call in `scripts/` next to
-  `whitespace.py` so the repo stays reproducible, and keep the key out of git.
+**Don't narrate this file.** It has LaTeX in it, and TTS engines make a meal of
+notation. Narrate `slides/riesz-clip.txt` instead — same explanation, written as
+continuous prose, equations already converted to spoken words and numbers spelled
+out. 968 words, 6–7 minutes. This file is the reference version: same argument,
+plus the maths set properly and the citations attached.
+
+- **On stage, play the first paragraph only** — about 20 seconds — and cut on
+  "the difference between a thing, and a measurement of a thing." The joke works
+  *because* it's a real lecture that you're cutting off, not a parody of one.
+- Generating by hand (`--list` can't see the celebrity voices, or you have no
+  API key): paste `riesz-clip.txt` into the Speechify app, pick the voice, record
+  the output. `scripts/make-audio.py` reads the same file, so the two paths can't
+  drift.
 
 ## References
 

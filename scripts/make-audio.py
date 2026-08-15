@@ -49,18 +49,17 @@ DEFAULT_MODEL = "simba-3.2"
 # Requests without this header get whatever "Latest" is that day.
 API_VERSION = "2026-09-13"
 
-# The ~15 seconds actually played on the "How I actually study now" slide.
-# Section 0 of slides/riesz-lecture.md, which is deliberately math-free so no
-# TTS engine has to attempt LaTeX.
-CLIP = (
-    "It's Riesz. Frigyes Riesz, Hungarian, nineteen oh seven. "
-    "Rhymes roughly with reece. Not Reitz. "
-    "And be careful, because two different theorems carry his name. "
-    "There's the one about representing functionals on continuous functions "
-    "as integrals against a measure. That's not this one. "
-    "This one is the Hilbert space version, and it is the one that quietly "
-    "underwrites half of modern statistics."
-)
+# The clip text lives in one place so the file you paste into the Speechify app
+# by hand and the file this script sends are never out of sync. It is already
+# plain prose -- no LaTeX, no markdown, numbers spelled out -- so no TTS engine
+# has to guess at notation.
+CLIP_FILE = ROOT / "slides" / "riesz-clip.txt"
+
+
+def clip_text() -> str:
+    if not CLIP_FILE.exists():
+        sys.exit(f"Missing {CLIP_FILE.relative_to(ROOT)}")
+    return CLIP_FILE.read_text().strip()
 
 
 def key() -> str:
@@ -183,7 +182,7 @@ def main() -> None:
     if not a.voice:
         p.error("--voice is required (run --list to find one)")
 
-    text = a.text_file.read_text() if a.text_file else CLIP
+    text = a.text_file.read_text() if a.text_file else clip_text()
     synth(a.voice, text, a.out, a.model, a.fmt)
 
 

@@ -1,35 +1,71 @@
 Let's talk about the Riesz representation theorem. It's Riesz, by the way — Frigyes Riesz, Hungarian, nineteen oh seven. Rhymes roughly with "reece." And it's one of those results that sounds technical but is really about something simple: the difference between a thing, and a measurement of a thing.
 
-Start in ordinary space. Take arrows in three dimensions. You have a dot product, and everything else comes out of it. Length is the square root of a vector dotted with itself. Two vectors are perpendicular when their dot product is zero. Angle, distance, projection — all of it from that one operation.
+I'm going to do this backwards from how it's usually taught. Instead of stating the theorem and then looking for examples, we'll do two examples first — one so easy it looks like nothing, one that should make you sit up — and by the time the general statement arrives you'll have seen it twice already.
 
-A Hilbert space is what you get when you keep that structure but stop insisting the space be finite dimensional. A vector space, an inner product, and one technical condition called completeness: any sequence that ought to converge actually does, so limits never fall out of the space. That condition sounds like bookkeeping. It isn't. It is exactly what lets you project onto an infinite dimensional subspace and know the answer exists.
+Here's the first one, and I want you to notice how boring it is.
 
-Here is the Hilbert space you should care about. Take all random variables with finite variance. That's a vector space — you can add random variables, you can scale them. Now define the inner product of X and Y to be the expected value of their product.
+Take ordinary three dimensional space, and take this function: it eats a vector and returns two times the first coordinate, minus the second coordinate, plus five times the third. That's a machine. You feed it a point, it gives you back a number, and it does so linearly.
 
-Look at what that buys you. The length of a centered random variable is its standard deviation. The inner product of two centered variables is their covariance. Two variables are perpendicular exactly when they are uncorrelated. And correlation is the cosine of the angle between them. That is not a metaphor and it is not a mnemonic. Once you are in this space, that is what correlation is. The space is called L two, and it is a Hilbert space.
+Now: is there a single fixed vector such that this machine is just "dot product with that vector"? Obviously yes. It's two, negative one, five. You read it straight off the coefficients. There's nothing to prove and nothing to discover.
 
-And in a Hilbert space, the most powerful move available is projection. Given a subspace, every point has a unique nearest point inside it, and the error is perpendicular to the entire subspace.
+But look at what just happened, because it's the whole theorem. The measurement and the point are the same three numbers. One of them is written lying down and the other standing up. In finite dimensions, the Riesz representation theorem is nothing more than the observation that a row vector is a column vector wearing a different hat. It is completely trivial. That's why I'm starting there — you already believe it.
 
-Which is the whole of least squares. Regression is projecting your outcome onto the span of your covariates. The normal equations are just the statement that the residual is perpendicular to every predictor. And conditional expectation — the expected value of Y given X — is the projection of Y onto the space of all functions of X. Which is precisely why it is the best possible predictor under squared error, and why the residual cannot be correlated with anything you could have built out of X. You did not need a calculation for that. You needed a picture.
+The theorem is the claim that this survives when the space gets infinitely big. And to see why that's worth something, we need a space where it isn't obvious.
 
-Now, the theorem.
+So. Ordinary space gives you a dot product, and everything else comes out of it. Length is the square root of a vector dotted with itself. Two vectors are perpendicular when their dot product is zero. Angle, distance, projection — all from that one operation.
 
-A linear functional is a machine that eats a vector and returns a single number, linearly. Take the third coordinate. Integrate this function against a weight. Evaluate this function at the point x. Take the expectation.
+A Hilbert space is what you get when you keep that structure but stop insisting the space be finite dimensional. A vector space, an inner product, and one technical condition called completeness: any sequence that ought to converge actually does, so limits never fall out of the space. That sounds like bookkeeping. It isn't. It's exactly what lets you project onto an infinite dimensional subspace and know the answer exists.
 
-In finite dimensions you already know what these look like. Every linear functional on n dimensional space is "dot with some fixed vector." A row vector. There is nothing else it could be.
+Now here's the Hilbert space you should care about, and this is the step where people usually get left behind, so let's go slowly.
 
-The Riesz representation theorem says that stays true in infinite dimensions, with one condition attached. Every continuous linear functional on a Hilbert space is an inner product with one fixed element of that space — and that element is unique.
+Take all random variables with finite variance. I want you to stop thinking of a random variable as a distribution or a histogram, and start thinking of it as a point. As one single object floating in a space. Can you add two of them? Yes — X plus Y is another random variable. Can you scale one? Yes — two X is another random variable. So they form a vector space. Random variables are vectors. That's the leap, and everything else is downhill from it.
 
-Sit with how strange that is. A functional is a process. An element of the space is a point. The theorem says that in a Hilbert space, these are the same kind of object. Every measurement is secretly a vector, and it measures by taking an inner product with itself. The space and its dual are the same space.
+Now define the inner product of X and Y to be the expected value of their product.
 
-That fixed element is called the Riesz representer. And here is the intuition worth carrying around: the representer is the direction the functional cares about. It is the gradient. Differentiation hands you a derivative, which is a functional. Riesz is the step that converts it into a gradient, which is a vector you can actually walk along.
+Watch what that buys you. The length of a centered random variable — the square root of it dotted with itself — is the square root of its expected square. That's the standard deviation. The inner product of two centered variables is their covariance. Two variables are perpendicular exactly when they're uncorrelated. And correlation is the cosine of the angle between them.
 
-The word "continuous" is carrying the entire theorem. For a linear map, continuous means bounded — the output cannot blow up when the input is small. Drop that and the statement is simply false; there are wild unbounded functionals with no representer at all. So in practice the whole game is: prove your functional is bounded, then go and find its representer.
+That is not a metaphor and it is not a mnemonic. Once you're in this space, that is what correlation is. The space is called L two, and it's a Hilbert space.
 
-And it is worth finding, because the representer is usually something you already use and assumed was a convention.
+Right. Second example, and this is the one that should land.
 
-In a reproducing kernel Hilbert space, "evaluate at the point x" is assumed to be continuous. That is the definition of the space; that is the assumption you are making. Riesz then hands you a function, call it k sub x, with the property that f of x equals the inner product of f with k sub x. That is your kernel. It is not a clever trick somebody invented. It is the Riesz representer of point evaluation, and it exists the moment you assume evaluation does not blow up. Kernel ridge regression, support vector machines, Gaussian processes — all of it is downstream of that one application.
+Take the machine that computes the expectation. You hand it a random variable, it hands you back a number. And it's linear: the mean of a sum is the sum of the means. So it's exactly the same kind of object as our little function on three dimensional space.
 
-And in causal inference: the average treatment effect is a linear functional of the outcome regression. Ask what its Riesz representer is, and out falls the inverse propensity weight. Horvitz and Thompson wrote that down in nineteen fifty-two by reasoning about survey sampling, with no Hilbert space anywhere in sight. The theorem tells you it was the only thing it could have been.
+So — is it a dot product with some fixed vector? And remember, in this space "vector" means "random variable." We're asking: is there a particular random variable such that taking the expectation is the same as taking the inner product with it?
 
-So, three things. A Hilbert space is where geometry survives infinite dimensions. Projection is the move that does the work. And Riesz says that every continuous measurement on such a space is secretly a point inside it — which turns questions about procedures into questions about vectors. And that is almost always the easier question.
+There is, and you can find it in one line. The expected value of X is the expected value of X times one. And the expected value of X times one is, by our definition, the inner product of X with the constant random variable one.
+
+So the representer of the mean is the constant one. Taking an expectation is taking the inner product with the number one. Which means, geometrically, that averaging is projecting onto the constants.
+
+And now sit still, because a lot falls out for free.
+
+Centering a variable — subtracting its mean — is subtracting off its component in the direction of the constant one. That is exactly orthogonal projection onto everything perpendicular to the constants. Centering isn't a normalization convention. It's a projection.
+
+And variance is the squared length of what's left over. So variance is the squared distance from X to the nearest constant. That is what variance is, geometrically: how far your random variable is from being just a number.
+
+None of that required a calculation. It required knowing that the mean is an inner product with one.
+
+So now the general statement, which you have already seen twice.
+
+A linear functional is a machine that eats a vector and returns a single number, linearly. Take the third coordinate. Take the expectation. Integrate this function against a weight. Evaluate this function at the point x.
+
+The Riesz representation theorem says: every continuous linear functional on a Hilbert space is an inner product with one fixed element of that space, and that element is unique. It's called the Riesz representer.
+
+Every measurement is secretly a vector, and it measures by taking an inner product with itself. The space and its dual are the same space. In three dimensions that was the trivial remark about rows and columns. The theorem says it never stops being true.
+
+Two things to hold onto.
+
+First, the intuition: the representer is the direction the functional cares about. It's the gradient. When you differentiate you get a derivative, which is a functional — a machine. Riesz is the step that converts it into a gradient, which is a vector you can actually walk along. Every time you've turned a derivative into a direction, you were using this.
+
+Second, the catch, because otherwise the theorem sounds too good. The word "continuous" is carrying all the weight. For a linear map, continuous means bounded — the output can't blow up when the input is small. And in infinite dimensions there really are linear functionals that are unbounded, and those have no representer at all. Nothing in the space works. So the theorem isn't "every machine is a vector." It's "every machine that doesn't blow up is a vector." Boundedness is the price of admission, and in practice the whole game is: prove your functional is bounded, then go find its representer.
+
+And it's worth finding, because it's usually something you already use and assumed was a convention.
+
+Take reproducing kernel Hilbert spaces. Here the functional is "evaluate this function at the point x" — hand it a function, get back the number the function takes there. In most function spaces that's not even well defined, let alone continuous. An RKHS is defined as a space of functions where that evaluation is continuous. That's not a theorem, that's the assumption you're making when you say the words.
+
+But once you've assumed it, Riesz hands you the representer for free: a function, call it k sub x, with the property that f of x equals the inner product of f with k sub x. That is your kernel. It's not a clever trick somebody invented — it is the Riesz representer of point evaluation, and it exists the instant you assume evaluation doesn't blow up. Kernel ridge regression, support vector machines, Gaussian processes: all downstream of that.
+
+And in causal inference. The average treatment effect is a linear functional of the outcome regression. Ask what its Riesz representer is, and out falls the inverse propensity weight. Horvitz and Thompson wrote that down in nineteen fifty-two by reasoning about survey sampling, with no Hilbert space anywhere in sight. The theorem tells you it was the only thing it could have been.
+
+So, to put it back together. A Hilbert space is where geometry survives infinite dimensions. Random variables live in one, where length is standard deviation and perpendicular means uncorrelated. Projection is the move that does the work — it gives you least squares, and conditional expectation, and centering. And Riesz says every continuous measurement on such a space is secretly a point inside it.
+
+Which turns questions about procedures into questions about vectors. And that is almost always the easier question.

@@ -27,6 +27,18 @@ neighbours recover pharmacologic class, and analogies recover first-line
 therapies. It ends with the systematic score over all 193 triples (45% top-1 vs
 ~12% chance), which is the number to quote rather than the two on the slide.
 
+**quarterly_report.py** is not in the numbered sequence because it is a joke.
+It is one file that is two programs. Run it with Python and you get an A/B test
+readout; feed the same bytes to a Whitespace interpreter and you get an ASCII
+animation. Whitespace ignores every visible character, and Python ignores
+whitespace-only lines, so the two languages are blind to each other in exactly
+complementary ways — 99% of that file's lines look blank and are not.
+
+```bash
+python3 examples/quarterly_report.py          # the businessy half
+python3 scripts/make-polyglot.py --run        # the playful half
+```
+
 **05** is every computed thing in `slides/lightning-talk.qmd`, extracted from the
 chunks into a script you can step through — the karate figures, the spectral
 embedding, DeepWalk, the eigenvalue gap, the DeepWalk-vs-NetMF timing (measured
